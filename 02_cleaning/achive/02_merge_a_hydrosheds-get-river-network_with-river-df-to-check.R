@@ -1,0 +1,218 @@
+# _______________________________#
+# Environment
+# Clean 02: Merge DHS and GPS Data
+# 
+# Stallman
+# Started: 2023-10-23
+# Last edited: 2023-11-13
+# Edit: added get elevation to merge function merge_dhs_gps
+# Last edited: 2023-12-09
+# Edit: made it just getting the river network given having dhs_child-mortality data
+#________________________________#
+
+
+
+
+# Startup
+
+  rm(list = ls())
+
+  # https://cran.r-project.org/web/packages/riverdist/vignettes/riverdist_vignette.html
+
+# bring in the packages, folders, paths ----
+  
+  code_folder <- file.path("P:","Projects","environment","code")
+  source(file.path(code_folder,"00_startup_master.R"))
+  #source(file.path(code_startup_general,"merge_dhs_gps.R")) # function for merging dhs and gps data
+
+  if (!require("pacman")) install.packages("pacman")
+  pacman::p_load(
+    stringr, # string operations
+    countrycode, # country naming conversions
+    sf, # vector spatial geometry
+    ggrepel, # for jittering text in a plot
+    riverdist, # calculating river distances
+    rdhs, # getting DHS data
+    elevatr, # for getting elevation from points
+    RColorBrewer, # for getting gradients and colors
+    parallel, # for parallelizing operations
+    tictoc # timing # more ability to customize to output to latex. use with kableExtra to output tables
+    # to console, latex, Rmarkdown, html etc.
+  )
+
+  level <- 1
+  dhs_gps_filename <- "UGGE7AFL" # # UGGE7AFL and #UGGC7BFL
+  
+  country          <- "UG"
+  n_cores          <- 8 #detectCores(logical = TRUE) - 2
+  #units_name       <- c("Uganda")
+  equal_area_crs   <- "ESRI:102022"
+  max_distance_to_snap <- 10000 # max distance at which to snap to a river; 10km b/c that's max perturbation
+  surveyyear_start <- 2018 %>% as.character()
+  surveyyear_end   <- 2020 %>% as.character()
+  long_river_threshold <- 4000
+  period_length    <- 60 # what months window is used for the mortality data
+# bring in hydrorivers ----
+  
+  path <- file.path(data_raw,"hydroSHEDS","HydroRIVERS_v10_af.gdb","HydroRIVERS_v10_af.gdb")
+  
+  system.time(
+    hydro_rivers <- st_read(dsn = path) %>% 
+      st_transform(crs = equal_area_crs) %>% 
+      rename(geometry = Shape) # need this to use riverdist package
+  )
+  # without st_transform
+  # user  system elapsed 
+  # 1.83    1.47   31.17
+  # 
+  # with st_transform
+  # user  system elapsed 
+  # 7.39    2.53   40.36
+
+  names(hydro_rivers)
+  # [1] "HYRIV_ID"     "NEXT_DOWN"    "MAIN_RIV"     "LENGTH_KM"    "DIST_DN_KM"  
+  # [6] "DIST_UP_KM"   "CATCH_SKM"    "UPLAND_SKM"   "ENDORHEIC"    "DIS_AV_CMS"  
+  # [11] "ORD_STRA"     "ORD_CLAS"     "ORD_FLOW"     "HYBAS_L12"    "Shape_Length"
+  # [16] "geometry" 
+  
+  # country codes 
+  #  https://dhsprogram.com/data/File-Types-and-Names.cfm#CP_JUMP_10136
+  
+  
+  dhs_mortality_data <- readRDS(file = file.path(data_external_clean,"merged",
+                          paste0("Africa_all_years_DHS_",period_length,"_months_window_child_mortality_with_GPS.rds"))) %>%
+                        st_as_sf(crs = 4326) %>%
+                        st_transform(crs = equal_area_crs)
+  
+  countries <- dhs_mortality_data$DHSCC %>% unique()
+  
+
+  gadm_in_path <- file.path(data_external_clean,"GADM","global")
+  
+  gadm_in_filename <- paste0("GADM_global_ADM_",level,".rds")
+  tic("Bringing in GADM data")
+  gadm_data  <- readRDS(file.path(gadm_in_path,gadm_in_filename)) %>%
+    st_transform(crs = equal_area_crs)
+    
+  toc()
+  gadm_data$continent <- countrycode(gadm_data$GID_0,
+                                     origin = "iso3c",
+                                     destination = "continent")
+
+  # a little circular since this file got created within the loop below but whatevs for now
+  out_path <- file.path(data_external_temp,"shape-files","hydroRIVERS")
+  hydro_rivers_units <- readRDS(file = file.path(out_path,paste0("SEN_hydrorivers.rds")))
+  
+  main_rivers_senegal <- hydro_rivers_units$MAIN_RIV %>% unique() %>% .[-c(1)] # got this from restricting units to Senegal later on
+  
+  # get all the main rivers and convert to a vector to loop through
+  main_rivers_all <- hydro_rivers %>% st_drop_geometry() %>% select(MAIN_RIV) %>%
+                     filter(!MAIN_RIV %in% main_rivers_senegal) %>% 
+                    unique() %>% as.vector() %>% .[[1]]
+                  
+  # need to keep track of which rivers have been checked
+  main_rivers_df <- hydro_rivers %>% st_drop_geometry() %>% select(MAIN_RIV) %>%
+    unique()
+  
+  main_rivers_df <- main_rivers_df %>%
+                    mutate(checked = 0) %>%
+                    mutate(checked = ifelse(row_number()< 67, 1, 0))
+
+  #saveRDS(main_rivers_df, file = file.path(data_external_clean,"HydroSHEDS","main_rivers_checking_df.rds"))
+  
+  # this is the most updated
+  main_rivers_df <- readRDS(file = file.path(data_external_clean,"HydroSHEDS","main_rivers_checking_df.rds") )
+  #main_river <- 11395641
+
+  # started 2023-12-06 at around 16:20pm
+  
+# parallelize making the river network ----
+  
+  ## create get river network function ----
+  out_path <- file.path(data_external_clean,"HydroSHEDS","long_rivers")
+  if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
+  out_path <- file.path(data_external_clean,"HydroSHEDS","river_networks")
+  if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
+  
+  
+  get_river_network <- function(main_river,
+                                out_path = file.path("E:","data","03_clean","HydroSHEDS"),
+                                long_river_threshold = 12000,
+                                hydro_rivers = hydro_rivers
+                                ){
+  
+    if (file.exists(file = file.path(out_path,"river_networks",paste0("MAIN_RIV_",main_river,"_cleaned_river_network.rds")))){
+      
+      print(paste0("Current river network for main_river ",main_river," already exists. No need to create."))
+      
+    } else {
+    single_river <- hydro_rivers %>%
+    filter(MAIN_RIV==main_river)%>%
+    mutate(width = 1/as.numeric(ORD_CLAS)) 
+  
+    if (nrow(single_river)>long_river_threshold){
+      
+  saveRDS(main_river,file = file.path(out_path,"long_rivers",paste0("long_river_MAIN_RIV_",main_river,".rds")))
+    } else {
+      
+  mouth_segment <- which(single_river$NEXT_DOWN == 0)
+
+  current_river_network <- line2network(sf = single_river)
+  
+  current_river_network$mouth$mouth.seg <- mouth_segment
+  current_river_network$mouth$mouth.vert<- 1
+  
+  # try cleaning up the river network
+  
+  # tic(paste0("cleaning up river network",main_river," with ",nrow(single_river)," segments"))
+  # # started around 6:26pm 2023-12-05
+  # #current_river_network_fix <- cleanup(current_river_network)
+  # 
+  # #current_river_network <- current_river_network_fix
+  # 
+  # 
+  # toc()
+  
+  buildsegroutes(current_river_network,
+                 lookup = TRUE,
+                 verbose = FALSE)
+  
+  saveRDS(current_river_network, file = file.path(out_path,"river_networks",paste0("MAIN_RIV_",main_river,"_cleaned_river_network.rds")))
+  
+  rm(current_river_network)
+  
+  gc()
+    } # end if-else that if river is really big we'll deal with it later
+    } # end if-else that if river network already exists we won't create it
+  }
+  
+  # run as an example
+  get_river_network(10538109)
+  
+
+  ## run getting the river network function ----
+  
+  tic(paste0("Get river networks for all the HydroRIVERS"))
+
+  cl <- makeCluster(n_cores) # n_cores
+  clusterEvalQ(cl,library(sf)) # send these separately, clusterEvalQ(cl, fun) is the call format
+  clusterEvalQ(cl,library(riverdist))
+  clusterEvalQ(cl, library(dplyr))
+  clusterExport(cl, c("hydro_rivers")) # this is a big export b/c the hydro_rivers is huge
+  
+  
+  parLapply(cl, main_rivers_all, get_river_network)
+  
+  stopCluster(cl)
+  
+  # running this on 8 cores over all the main_rivers_all (16352 rivers in Africa) used up 50-60% CPU and hovered around 27-32 GB of RAM
+  # probably could go up to 12 or 14 if I wanted to throttle other functions on the computer; but this amount allows for other 
+  # programs to run pretty uninterrupted.
+  
+  gc()
+  toc()
+  
+  # ran through for all rivers (minus some 2000 that were done earlier as tests)
+  # Get river networks for all the HydroRIVERS: 160043.16 sec elapsed
+  # 44.45643 hours
+  

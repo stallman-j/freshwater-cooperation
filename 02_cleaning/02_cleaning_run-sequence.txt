@@ -1,0 +1,137 @@
+# Last edited: 2024-03-27
+# edits made: 
+
+# NOTE: the 02_clean_xxx tag means that no additional datasets are required to run this file
+# the 02_merge_a_xxx notation means that one or more files of the form 02_clean_xxx is required in order to run this file
+# but no files of the form 02_merge_a_xxx are required
+
+# 02_merge_b_xxx: at least one file of the form 02_merge_a_xxx is required in order to run this file
+# and files of the form 02_clean_xxx may also be required to run this file
+
+
+# 1)  Not requiring any other cleaned datasets ----
+
+02_clean_glow_global-long-term-river-width
+# requires GLOW downloaded 
+
+
+
+02_clean_era5
+# function: takes raw raster files downloaded from ERA5 and outputs a raster which contains monthly raster values from 1940 to the month of 
+# latest download
+# requires: running the Python script from the Copernicus API in order to download the files
+
+02_clean_GADM
+# function: takes the 6 levels of GADM country polygon datasets and converts them into RDS files
+# requires: downloaded GADM data
+
+02_clean_choose-DHS-countries
+# function: selects which DHS countries and GPS datasets to use throughout the rest of the analysis
+# last run: 2024-03-27
+# run status: successful
+
+# 2) requiring datasets which are created in a 02_clean_xxx file ----
+
+
+
+02_merge_a_all-dhs-gps
+# generates a single dataset of the DHS GPS data
+# use this as the input for getting river distances and points along the river
+# requires: 02_clean_choose-DHS-countries
+# last run: 2024-03-27
+# run status: successful
+
+
+02_merge_a_dhs-gps_gadm
+# function: merges together the administrative level units of the GADM datafiles with the DHS GPS datasets
+# requires: GADM datasets cleaned in 02_clean_GADM
+# unclear whether this is used currently; but this would provide the main files to use if a larger administrative
+# unit were the most relevant unit of analysis
+
+02_merge_a_get-hydrorivers-glow-units
+# function: creates shapefiles which contain the hydrorivers and glow datasets (separate) restricted to certain countries / combinations of countries which share rivers
+# requires:
+# gadm_data which is cleaned in XXXXX
+# there's a parallel function which went and got all the combos of countries that we needed to have
+
+
+02_merge_a_era5_dhs
+# function: merge DHS GPS datasets and ERA5 precipitation by extracting the raster values to DHS GPS points
+# requires: 
+# DHS GPS datasets (no cleaning needed but they do need to be brought in)
+# ERA5 cleaned data cleaned in 02_clean_era5
+
+02_merge_a_era5_gadm
+# function: merge ERA5 precipitation with GADM shapefiles at different administrative levels
+# this is the polygon equivalent to 02_merge_a_era5_dhs and would be necessary for analysis at a greater administrative level
+# requires:
+# ERA5 cleaned data cleaned in 02_clean_era5
+# GADM polygons cleaned in 02_clean_GADM
+
+02_merge_dhs_river_intersections
+# change this to a 02_merge_a_xxx format once finished running
+# Notes: this takes an extremely long time to run even in parallel, because running for a single large river can take over 4 hours
+# function: gets which DHS GPS datasets can be snapped to a HydroRIVERS river by 
+# 1) finding which countries intersect with a 20km buffer around the polygon formed by the river
+# 2) selecting the DHS datasets of these countries
+# 3) restricting the GADM polygons to these DHS datasets
+# 4) finding the rivers which are closest to the DHS points
+# 5) determining the distances (which respect flow direction) between all DHS clusters on the river network
+# 6) plotting the river network a) in isolation and b) on the merged countryfile map
+# requires:
+# hydro_rivers (raw data)
+# gadm_data cleaned in 02_clean_GADM
+# dhs_mortality_data cleaned in 02_clean_dhs_child-mortality-annual
+
+
+# 3) requiring datasets created in a 02_merge_a_xxx file  ----
+
+02_merge_b_hydrosheds-get-river-network 
+# function: gets river networks and saves them for all MAIN_RIV values in the hydrosheds dataset
+# requires:
+02_merge_a_all-dhs-gps
+# 02_clean_GADM
+
+## Currently revised Revise in order to remove dependence on such a highly modified script
+# gadm_data which is cleaned in XXXXX
+# hydro_rivers which are raw data
+
+02_merge_b_dhs_glow
+# requires cleaning GLOW river widths 02_clean_glow_global-long-term-river-width
+# requires DHS cleaned and merged from 02_merge_a_all-dhs-gps
+
+02_merge_b_dhs-br-gps_child-mortality_household-level
+# requires downloading DHS births recode (BR) datasets
+# requires downloading DHS GPS datasets
+# requires 02_clean_GADM
+# requires 02_clean_choose-DHS-countries
+# requires 02_merge_a_dhs-gps_gadm
+# calculates child mortality for the DHS births recode (BR) datasets for which GPS information exists
+
+# 02_merge_b_era5_dhs-gps
+# requires 02_clean_era5
+# requires 02_clean_choose-DHS-countries
+# extracts precipiation data to DHS GPS coordinates
+
+02_merge_b_get_river_distances_dhs
+# requires hydro_rivers
+# requires gadm_data which is cleaned in XXXXX
+# requires dhs_data which was generated from 02_merge_b_dhs_child_mortality_household-level
+
+# 4) Requiring datasets created in a 02_merge_b_xxx file ----
+
+02_merge_c_era5_dhs-gps_dhs-child-mortality
+# requires 02_merge_b_era5_dhs-gps
+# requires 02_merge_b_dhs-br-gps_child-mortality_household-level
+# merges precipitation and child mortality data
+
+
+02_merge_c_river-distances_era5-dhs-childmort
+# function: merges river distances with the childmort+precipitation+gps data
+# requires 02_clean_choose-DHS-countries
+# requires: 02_merge_a_era5_dhs
+# requires 02_merge_b_dhs_child-mortality_household-level
+
+02_merge_c_get_river_points_dhs-glow
+# requires merge_b_get_river_points_dhs to figure out the singletons, dyads and triads to select distances over first
+
