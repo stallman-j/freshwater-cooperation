@@ -7,8 +7,6 @@
 # Last edited: 
 #________________________________#
 
-
-
 # Startup
 
 rm(list = ls())
@@ -16,14 +14,14 @@ rm(list = ls())
 
 # bring in the packages, folders, paths
 
-home_folder <- file.path("P:","Projects","environment")
+home_folder <- file.path("P:","Projects","freshwater-cooperation")
 
 source(file.path(home_folder,"code","00_startup_master.R"))
 
 # required files ----
 
-  source(file.path(code_clean,"02_clean_era5.R"))
-  source(file.path(code_clean,"02_clean_choose-DHS-countries.R"))
+  #source(file.path(code_clean,"02_clean_era5.R"))
+  #source(file.path(code_clean,"02_clean_choose-DHS-countries.R"))
 
 # packages ----
 
