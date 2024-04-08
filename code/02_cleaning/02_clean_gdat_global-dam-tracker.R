@@ -16,7 +16,7 @@
   
   # bring in the packages, folders, paths
   
-  home_folder <- file.path("P:","Projects","environment")
+  home_folder <- file.path("P:","Projects","freshwater-cooperation")
   
   source(file.path(home_folder,"code","00_startup_master.R"))
 
@@ -54,7 +54,16 @@
   
   dams <- st_read(dsn = path, 
                         layer = "GDAT_v1_dams") %>%
-          st_make_valid()
+          st_make_valid() %>%
+    dplyr::rename(ID = Feature_ID,
+                  lat = Lat,
+                  lon = Long
+    ) %>%
+    dplyr::mutate(country_iso3c = countrycode::countrycode(Admin0,
+                                                           origin = "country.name",
+                                                           destination = "iso3c"))
+  
+  
   
   names(dams)
   
@@ -81,6 +90,13 @@
   
   saveRDS(dams,
           file = file.path(out_path,paste0("GDAT_dams.rds")))
+  
+  dams_africa_restricted <- dams_africa %>%
+    select(ID,lat,lon,country_iso3c)
+  
+  saveRDS(dams_africa_restricted,
+          file = file.path(data_external_clean,"GDAT_global-dam-tracker",paste0("GDAT_dams-africa_for_river_points.rds")))
+  
   
 # make a plot ----
 

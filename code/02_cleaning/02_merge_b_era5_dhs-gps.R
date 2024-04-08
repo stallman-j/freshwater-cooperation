@@ -18,10 +18,11 @@ home_folder <- file.path("P:","Projects","freshwater-cooperation")
 
 source(file.path(home_folder,"code","00_startup_master.R"))
 
-# required files ----
+# required origin codes ----
 
   #source(file.path(code_clean,"02_clean_era5.R"))
   #source(file.path(code_clean,"02_clean_choose-DHS-countries.R"))
+  #source(file.path(code_clean,"02_merge_a_all-dhs-gps.R"))
 
 # packages ----
 
@@ -42,23 +43,17 @@ pacman::p_load(
   #func           <- "weighted_sum"
   #weights       <- "area"
   level         <- 2
-  levels        <- 1:5
-  time_interval <- "months"
   layer_substrings  <- c("tp_expver=1")
-  #vector_sf_path         <- file.path(data_external_clean,"GADM","global")
   my_function <- "mean"
   my_weights  <- NULL
-  period_length <- 60
-  
+
 # bring in data ----
   
   # to check that the raster rotate works and to run this through with a raw file
   #rast_in_path <- file.path(data_external_raw,"ERA_5",paste0(current_file,".nc"))
   #terra_raster <- terra::rast(x=rast_in_path)
-  
-  # 
-  # rast_in_path <- file.path(data_external_clean,"ERA_5","raster",paste0(current_file,
-  #                                                                       "_monthly_",
+  # rast_in_path <- file.path(data_external_clean,"ERA_5","raster",paste0(
+  #                                                                       "total_precipitation_monthly_",
   #                                                                       min_time,"_to_",
   #                                                                       max_time,".rds"))
   
@@ -74,8 +69,6 @@ pacman::p_load(
   #rast_in_path <- file.path(data_external_clean,"ERA_5","example_era5_clean.tif")
   
   #terra_raster <- terra::rast(x = rast_in_path)
-  
-
   
   terra::crs(terra_raster) <- "epsg:4326"
   
@@ -147,8 +140,6 @@ pacman::p_load(
                        out_path = file.path(data_external_clean,"merged","DHS_ERA5","annual"),
                        out_filename = "africa_dhs_gps_era5_annual_with_lr_vars.rds")
   
-  
-  
 # Create a monthly df ----
 # TO DO: fix this up if you want monthly, turn it into a function
   monthly_temp_df <- out_df %>%
@@ -186,6 +177,7 @@ pacman::p_load(
            precip_lr_zscore  = (monthly_precip_mm - mean(monthly_precip_mm))/sd(monthly_precip_mm),
            precip_lr_sd_deviation = precip_current_annual_sd_mm_month - sd(monthly_precip_mm)) 
   
+# would need to revise these as well 
   out_path <- file.path(data_external_clean,"merged","DHS_ERA5","survey-level","monthly")
   
   if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories

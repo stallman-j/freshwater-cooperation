@@ -31,46 +31,6 @@ pacman::p_load(
   markdown, # for RMD writing
   knitr, # extends markdown syntax to allow chunks of R code
   tidyverse # for all your data wrangling needs
-  # purrr # for using nicer functions like map() i.e. avoiding FOR loops
-  #data.table,
-  #stringr, # for ops with strings
-  #dichromat, # to get colors between a group, need to use yale_scheme in 00-startup_plot-functions
-  #Matrix, # for working quickly with matrices
-  #igraph, # networks
-  #rnaturalearth, # for getting country maps
-  #rgeos, # for doing geocoding
-  #rworldmap, # another map
-  #rworldxtra, # for high-res map of world
-  #sf, # spatial operations
-  #terra, # raster spatial data
-  #spData, # spatial data fancier
-  #rgdal, # allows for importing raster/vector map data
-  #tmap, # plotting maps
-  #statnet, # networks
-  #cshapes, # gis dataset of country borders, 1886 to today, includes 
-  #states, # list of independent states from 1816 on 
-  #countrycode, # for converting among differing codings for countries
-  #parallel, # for running on multiple cores
-  #MASS, # for high-powered statistics operations
-  #sna, # network objecst
-  #maps, # mapping
-  #network, # careful will clash with igraph
-  #ggrepel, # automatically position non-overlapping text labels with ggplot2
-  #foreign, # for de-garbling stata.dta files
-  #btergm, # bootstrapping temporal exponential random graphs
-  #ergm, # exponential random graph models
-  #modelsummary, # regression table generation
-  #lfe, # fast regression with many fixed effects
-  #haven, # for converting datasets
-  #sandwich, # for Stata's robust SEs
-  #lmtest, # for coeff tests for robust SEs
-  #boot,  # for cross-validation and bootstrapping
-  # stargazer # for pretty reg tables into latex 
-  #cobalt, # for pretty balance tables
-  
-  # scraping packages
-  # rvest # for web scraping
-  
   )
 
 #install.packages("devtools")
@@ -104,7 +64,7 @@ pacman::p_load(
 
 # directories
   # decide where the working directory is
-  home_folder <- file.path("P:","Projects","environment")
+  home_folder <- file.path("P:","Projects","freshwater-cooperation")
   setwd(home_folder)
   
 
