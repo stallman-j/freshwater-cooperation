@@ -18,7 +18,7 @@ create_long_run_vars <- function(panel_df,
                                  variable_to_manipulate = "precip_annual_mean",
                                  variable_namestub      = "precip",
                                  out_path = NULL,
-                                 output_filename = NULL
+                                 out_filename = NULL
                                  
 ){
   # create some variables to manipulate; this is easier in base R than dplyr?

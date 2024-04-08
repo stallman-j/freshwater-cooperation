@@ -260,6 +260,16 @@ clean_era5(input_path      = file.path(data_external_raw,"ERA_5"),
 
 toc()
 
+tic("Cleaned ERA5 precipitation raster")
+clean_era5(input_path      = file.path(data_external_raw,"ERA_5"),
+           input_filename  = "total_precipitation",
+           input_filetype  = "nc",
+           keep_substrings = c("tp_expver=1"),
+           output_path     = file.path(data_external_clean,"ERA_5"),
+           output_filename = paste0("total_precipitation_era5_clean.tif"))
+
+toc()
+
 #Cleaned ERA5 for 1940-2023 monthly, including rotation, for total precipitation: 156.73 sec elapsed
 # takes up about 2.3G in the external data
 

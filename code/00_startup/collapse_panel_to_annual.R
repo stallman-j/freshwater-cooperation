@@ -6,8 +6,8 @@
 #' @param value_varname_old the current name of the values you're using for the values column
 #' @param value_varname_new new variable name for the values you're interested in summarizing from monthly to annually
 #' @param id_varname the observation ID. default is "vector_cast_id" because that's what raster_extract_to_long_df outputs as the id, the observation ID
-#' @param out_path the file.path() to where you would like to save the annual df. Gets created if it doesn't already exist. Defaults to working directory
-#' @param out_filename The name you would like the long annual panel to be saved as. defaults to "annualized_df.rds"
+#' @param out_path the file.path() to where you would like to save the annual df. Gets created if it doesn't already exist. Defaults to NULL in which case the outputted df is not saved anywhere
+#' @param out_filename The name you would like the long annual panel to be saved as. default of NULL means that the annual df won't get saved
 #' @param merge_df if you'd like to merge on another DF to this annual panel, input here the df. This will do left_join(annual_temp_df,merge_df). Default NULL which is do not merge any other DFs on here. Assumes you're just merging by the id_varname which is present in both or something equally obvious that dplyr can recognize
 #' @returns an annualized df with 3 annual rolling averages
 #' @examples
@@ -19,12 +19,11 @@ collapse_panel_to_annual <- function(in_df,
                                      value_varname_old  = "precip_mean",
                                      value_varname_new  = "precip",
                                      id_varname    = "vector_cast_id",
-                                     out_path      = getwd(), #file.path(data_external_clean,"merged","DHS_ERA5","annual")
-                                     out_filename  = "annualized_df.rds",
+                                     out_path      = NULL, #file.path(data_external_clean,"merged","DHS_ERA5","annual")
+                                     out_filename  = NULL,
                                      merge_df      = NULL
 ){
   
-  if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
   # for converting character varnames to grouping vars
   # https://stackoverflow.com/questions/52437463/function-calling-variable-names-for-group-by-in-dplyr-how-do-i-vectorise-this
   
@@ -45,8 +44,8 @@ collapse_panel_to_annual <- function(in_df,
     filter(!is.na(annual_mean)) %>%
     group_by(!!! syms(id_varname)) %>% # group by ID, then get rolling averages of the k prior years, pulling the names from the varnames vec
     dplyr::mutate(!!sym(varnames_vec[1]) := zoo::rollmean(annual_mean, k=rolling_average_years[1],   fill = NA, align = "right"),
-           !!sym(varnames_vec[2]) := zoo::rollmean(annual_mean, k=rolling_average_years[2],   fill = NA, align = "right"),
-           !!sym(varnames_vec[3]) := zoo::rollmean(annual_mean, k=rolling_average_years[3],  fill = NA, align = "right")) %>%
+                  !!sym(varnames_vec[2]) := zoo::rollmean(annual_mean, k=rolling_average_years[2],   fill = NA, align = "right"),
+                  !!sym(varnames_vec[3]) := zoo::rollmean(annual_mean, k=rolling_average_years[3],  fill = NA, align = "right")) %>%
     rename(!!sym(varnames_vec[4]) := annual_mean)
   
   if (!is.null(merge_df)){
@@ -54,12 +53,15 @@ collapse_panel_to_annual <- function(in_df,
     annual_temp_df <- dplyr::left_join(annual_temp_df,merge_df)
   }
   
+  if (!is.null(out_path) & !is.null(out_filename)){
+    if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
+    
+    saveRDS(annual_temp_df,
+            file = file.path(out_path,
+                             out_filename))
+    
+  }
   
-  if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
-  
-  saveRDS(annual_temp_df,
-          file = file.path(out_path,
-                           out_filename))
   
   return(annual_temp_df)
   

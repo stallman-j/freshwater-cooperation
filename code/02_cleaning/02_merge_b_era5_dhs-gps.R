@@ -39,7 +39,6 @@ pacman::p_load(
 # parameters ----
   min_time      <- "1940-01-01"
   max_time      <- "2023-09-01"
-  current_file  <- "total_precipitation"
   #func           <- "weighted_sum"
   #weights       <- "area"
   level         <- 2
@@ -57,11 +56,13 @@ pacman::p_load(
   #rast_in_path <- file.path(data_external_raw,"ERA_5",paste0(current_file,".nc"))
   #terra_raster <- terra::rast(x=rast_in_path)
   
+  # 
+  # rast_in_path <- file.path(data_external_clean,"ERA_5","raster",paste0(current_file,
+  #                                                                       "_monthly_",
+  #                                                                       min_time,"_to_",
+  #                                                                       max_time,".rds"))
   
-  rast_in_path <- file.path(data_external_clean,"ERA_5","raster",paste0(current_file,
-                                                                        "_monthly_",
-                                                                        min_time,"_to_",
-                                                                        max_time,".rds"))
+  rast_in_path <- file.path(data_external_clean,"ERA_5","total_precipitation_era5_clean.tif")
   
   tic("Reading in terra raster")
   terra_raster <- terra::rast(x= rast_in_path)
@@ -135,20 +136,6 @@ pacman::p_load(
   toc()
   # Collapsed monthly DHS-ERA5 to annual: 448.49 sec elapsed
   
-  #annual_dhs_era5 <- readRDS(file.path(data_external_clean,"merged","DHS_ERA5","annual","africa_dhs_gps_era5_annual.rds"))
-  
-  # annual_dhs_era5_withvars <- left_join(annual_dhs_era5,GPS_data)
-  # 
-  # # make a cleaned version
-  # out_path <- file.path(data_external_temp,"merged","DHS_ERA5","annual")
-  # 
-  # if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
-  # 
-  # 
-  # saveRDS(annual_dhs_era5_withvars, file.path(out_path,"africa_dhs_gps_era5_annual.rds"))
-  #
-  #
-  
   # create a test df
   test_df <- annual_dhs_era5 %>% filter(DHSID == "AO200600000001" | DHSID == "AO200600000022") 
   
@@ -158,11 +145,12 @@ pacman::p_load(
                        variable_to_manipulate = "precip_annual_mean",
                        variable_namestub      = "precip",
                        out_path = file.path(data_external_clean,"merged","DHS_ERA5","annual"),
-                       out_filename = "africa_dhs_gps_era5_annual.rds")
+                       out_filename = "africa_dhs_gps_era5_annual_with_lr_vars.rds")
   
   
   
-# Choose additional long-run variables
+# Create a monthly df ----
+# TO DO: fix this up if you want monthly, turn it into a function
   monthly_temp_df <- out_df %>%
     filter(!is.na(date)) %>% # take out some missing vals
     group_by(date) %>% # arrange chronologically
