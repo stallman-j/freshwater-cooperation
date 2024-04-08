@@ -1,24 +1,21 @@
 #' Extracts terra rasters to a vector SF
 #'
-#' \code{raster_extract_to_long_df} returns polygon shapefiles with longitudinal data from rasters
-#' extracted to those polygons and writes two sf files, one with the polygons shapefiles, which are
-#' cast so that no single row contains multiple geometries,
-#' and one with a long data frame that includes the raster extracted values
-#' and an identifier that allows for linking to the sf polygons.
+#' \code{raster_extract_to_long_df} takes a terra spatial raster stack and extracts from this to either points, polygons or lines to generate for each spatial unit an extracted value for each raster layer. Outputs a long data frame where an observation is spatial-unit-by-raster-layer. This is typically going to be a spatial unit (e.g. city) by time (e.g. 2004 July) for a particular variable (e.g. sea surface temperature). Optionally casts polygon shapefile to one which is cast so that no single row contains multiple geometries. 
 #' @author jillianstallman
-#' @param terra_raster a terra raster, currently required to be from 0-360 degrees longitude and -90 to 90 degrees latitude, must have a time dimension given. you could use the clean_era5 function to create this raster, for example
+#' @param terra_raster a terra raster. If not from 0-360 degrees longitude and -90 to 90 degrees latitude will rotate the latitude (which takes a while). Easiest to use the output of clean_era5 to generate this input raster.
 #' @param vector_sf an sf object with polygons, points or lines to be extracted to
 #' @param cast_vector_sf logical with default FALSE. set this to TRUE if you have a multipolygon,multipoint or multilinestring and you want to create a sf in which each row gives a single geometry unit rather than aggregating over possibly geographically disparate units (e.g. if you are aggregating temperature up to a mean annual value for a country and are using the United States, this includes Alaska and Hawaii which geographically are located far from the contiguous continental United States, which may not give you the average you wanted)
-#' @param vector_cast_out_path if casting multipolygons to their component polygons, filepath to where the vector sf that gets cast is output
-#' @param vector_cast_out_filename if cast_vector_sf is TRUE, filename for the vector sf output
+#' @param vector_cast_out_path if casting multipolygons to their component polygons, filepath to where the vector sf that gets cast is output. Default is working directory
+#' @param vector_cast_out_filename if cast_vector_sf is TRUE, filename for the vector sf output. default is vector_cast.rds
 #' @param save_raster_copy default FALSE, logical. Set to TRUE if you want to save a copy of the raster you bring in
 #' with possibly updated coordinate reference system or rotated correctly
-#' @param raster_out_path if you're saving a copy of the raster, file path to save your copy of the raster to
-#' @param raster_out_filename if saving a raster copy, name of the file you want to save it as
+#' @param raster_out_path if you're saving a copy of the raster, file path to save your copy of the raster to. Default is working directory.
+#' @param raster_out_filename if saving a raster copy, name of the file you want to save it as. Default is "terra_raster_rotated_and_wgs84.tif"
 #' @param extracted_out_path filepath, where you want to save the vector sf with its extracted values
 #' @param extracted_out_filename filename of output file from extracted raster to vector (no geometry kept)
 
-#' @param layer_substrings character vector, giving the substrings to identify layers to keep. Default is "all," keep everything.
+#' @param layer_substrings character vector, giving the substrings to identify layers to keep. Default is "all," keep everything. But if you have a single layer type (e.g. surface temperature), change this because it'll become part of the column name for the long data frame.
+#' @param long_df_colname character vector, column name of the panel data you're going to extract to, e.g. "precip," the final colname of which will be paste0(long_df_colname,"_",func)
 #' @param layer_names_vec character vector, needs to be of the same length as the number of layers of your raster. Default NULL populates this with the output of time(terra_raster)
 #' @param layer_names_title default "date", the column(i.e. variable) name that you want for the ultimate data frame that has a column with title "layer_names_title" and which has the value for each raster layer the corresponding element of layer_names_vec.
 #' @param func character vector, default "mean", also e.g. "weighted_sum" for exactextractr, function to be used for aggregating, from terra (points) or exactextractr (polygons)
@@ -31,22 +28,24 @@
 
 
 raster_extract_to_long_df <- function(terra_raster,
-                                    vector_sf,
-                                    cast_vector_sf = FALSE,
-                                    vector_cast_out_path  = getwd(),
-                                    vector_cast_out_filename = "vector_cast.rds",
-                                    save_raster_copy = FALSE,
-                                    raster_out_path = getwd(),
-                                    raster_out_filename = "terra_raster.rds",
-                                    extracted_out_path = getwd(),
-                                    extracted_out_filename = "terra_raster_extracted_to_vector.rds",
-                                    layer_substrings = "all",
-                                    layer_names_vec = NULL,
-                                    layer_names_title = "date",
-                                    func = "mean", #"weighted_sum" if polygons
-                                    weights = NULL, #"area" if polygons
-                                    #time_interval = "months",
-                                    remove_files = FALSE
+                                      vector_sf,
+                                      cast_vector_sf = FALSE,
+                                      vector_cast_out_path  = getwd(),
+                                      vector_cast_out_filename = "vector_cast.rds",
+                                      save_raster_copy = FALSE,
+                                      raster_out_path = getwd(),
+                                      raster_out_filename = "terra_raster_rotated_and_wgs84.tif",
+                                      extracted_out_path = getwd(),
+                                      extracted_out_filename = "terra_raster_extracted_to_vector.rds",
+                                      layer_substrings = "all",
+                                      long_df_colname  = "precip",
+                                      layer_names_vec = NULL,
+                                      layer_names_title = "date",
+                                      func = "mean", #"weighted_sum" if polygons
+                                      weights = NULL, #"area" if polygons
+                                      #time_interval = "months",
+                                      remove_files = FALSE,
+                                      ...
 ){
   
   # TO DO: add more explicit statement for rotating the terra_raster
@@ -117,7 +116,7 @@ raster_extract_to_long_df <- function(terra_raster,
   }
   
   
-# make sure raster extent is correct ----
+  # make sure raster extent is correct ----
   
   # ext() gives the extent of the raster as provided by the layers, not the crs() function
   
@@ -155,10 +154,7 @@ raster_extract_to_long_df <- function(terra_raster,
     #dates <- seq(min(time_vec),max(time_vec), by = time_interval)
     
   }
-  # if the terra_raster longitude isn't the same as the vector_sf's, take for now that this basically
-  # is because the terra_raster must be 0-360 degrees, while the vector_sf will be -180-180
-  
-  
+ 
   tictoc::tic("Extracted all terra_raster separate layer_substrings to vector_cast")
   
   # layer_substr <- layer_substrings[1]
@@ -168,34 +164,32 @@ raster_extract_to_long_df <- function(terra_raster,
     
     tictoc::tic("Successfully extracted raster ")
     
-    if ("POINT" %in% vector_type | "MULTIPOINT" %in% vector_type ){
+    if ("POINT" %in% vector_type | "MULTIPOINT" %in% vector_type | "LINE" %in% vector_type | "MULTILINE" %in% vector_type){
       
       out_df <- terra::extract(x = terra_raster,
                                y = vector_cast,
                                method = "simple",
-                               weights = FALSE,
-                               ...)%>%
-        dplyr::mutate(vector_cast_id = row_number()) %>%
+                               weights = FALSE,...) %>%
+        dplyr::rename(vector_cast_id = ID) %>%
         tidyr::pivot_longer(cols = !vector_cast_id,
-                     names_to = layer_names_title,
-                     #names_prefix = paste0(weights,"."),
-                     #names_transform = ymd,
-                     values_to = paste0(layer_substrings,"_",func,weights))
-    } else{
+                            names_to = layer_names_title,
+                            #names_prefix = paste0(weights,"."),
+                            #names_transform = ymd,
+                            values_to = paste0(long_df_colname,"_",func,weights))
+    } else{ # only works for POLYGON or MULTIPOLYGON
       
       out_df <- exactextractr::exact_extract(x = terra_raster,
-                              y = vector_cast,
-                              progress = F,
-                              fun = func,
-                              weights = weights,
-                              ...
+                                             y = vector_cast,
+                                             progress = F,
+                                             fun = func,
+                                             weights = weights,...
       )  %>%
         dplyr::mutate(vector_cast_id = row_number()) %>%
         tidyr::pivot_longer(cols = !vector_cast_id,
-                     names_to = layer_names_title,
-                     #names_prefix = paste0(weights,"."),
-                     #names_transform = ymd,
-                     values_to = paste0(layer_substring,"_",func,"_",weights))
+                            names_to = layer_names_title,
+                            #names_prefix = paste0(weights,"."),
+                            #names_transform = ymd,
+                            values_to = paste0(long_df_colname,"_",func,"_",weights))
       
     } # end else if geometry is non-point
     tictoc::toc()
@@ -217,18 +211,17 @@ raster_extract_to_long_df <- function(terra_raster,
       # https://codes.ecmwf.int/grib/param-db/?id=228
       tictoc::tic("Successfully extracted raster ")
       temp_df <- exactextractr::exact_extract(x = temp_raster,
-                               y = vector_cast,
-                               progress = F,
-                               fun = func,
-                               weights = weights,
-                               ...
+                                              y = vector_cast,
+                                              progress = F,
+                                              fun = func,
+                                              weights = weights,...
       )  %>%
         dplyr::mutate(vector_cast_id = row_number()) %>%
         tidyr::pivot_longer(cols = !vector_cast_id,
-                     names_to = layer_names_title,
-                     #names_prefix = paste0(weights,"."),
-                     #names_transform = ymd,
-                     values_to = paste0(layer_substring,"_",func,"_",weights))
+                            names_to = layer_names_title,
+                            #names_prefix = paste0(weights,"."),
+                            #names_transform = ymd,
+                            values_to = paste0(long_df_colname,"_",func,"_",weights))
       
       tictoc::toc()
       
@@ -245,14 +238,14 @@ raster_extract_to_long_df <- function(terra_raster,
   tictoc::toc()
   
   if (cast_vector_sf==TRUE){
-  tictoc::tic("Saved vector cast with geometry to an RDS")
-  saveRDS(vector_cast,
-          file = file.path(vector_cast_out_path,vector_cast_out_filename))
-  tictoc::toc()
+    tictoc::tic("Saved vector cast with geometry to an RDS")
+    saveRDS(vector_cast,
+            file = file.path(vector_cast_out_path,vector_cast_out_filename))
+    tictoc::toc()
   }
   
   
-  tictoc::tic("Merged extracted polygons back to polygons df")
+  tictoc::tic("Merged extracted sf units back to the units sf")
   out_df <- left_join(st_drop_geometry(vector_cast),out_df)
   
   tictoc::toc()

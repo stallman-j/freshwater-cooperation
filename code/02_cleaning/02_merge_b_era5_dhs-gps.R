@@ -66,105 +66,103 @@ pacman::p_load(
   tic("Reading in terra raster")
   terra_raster <- terra::rast(x= rast_in_path)
   toc()
-  
   # Reading in terra raster: 28.44 sec elapsed
+  
+  
+  # easy example file
+  #rast_in_path <- file.path(data_external_clean,"ERA_5","example_era5_clean.tif")
+  
+  #terra_raster <- terra::rast(x = rast_in_path)
+  
 
   
   terra::crs(terra_raster) <- "epsg:4326"
   
-
-  source(file.path(code_startup_general,"raster_extract_to_panel.R"))
-
 # set up a loop for DHS datasets
   
-  countries_DHS <- readRDS(
-    file= file.path(data_external_clean,"DHS","datasets-for-selection",
-                    paste0("countries_DHS.rds")))
+  # need to have run the following: 
+  # source(file.path(code_folder,"02_cleaning","02_merge_a_all-dhs-gps.R"))
+   
+  GPS_data <- readRDS(file = file.path(data_external_temp,"DHS","GPS","merged","africa_DHS_GPS.rds"))
   
-  gps_datasets_all <- readRDS(
-    file= file.path(data_external_clean,"DHS","datasets-for-selection",
-                    paste0("gps_datasets_all.rds")))
+  tic("Extracted ERA5 to DHS clusters")
+  out_df <- raster_extract_to_long_df(terra_raster = terra_raster,
+                                        vector_sf = GPS_data,
+                                        cast_vector_sf = FALSE,
+                                        vector_cast_out_path  = NULL, 
+                                        vector_cast_out_filename = NULL, #"vector_cast.rds",
+                                        save_raster_copy = FALSE,
+                                        raster_out_path = NULL, #getwd(),
+                                        raster_out_filename = NULL, #"terra_raster_rotated_and_wgs84.tif",
+                                        extracted_out_path = file.path(data_external_clean,"merged","DHS_ERA5"), #getwd(),
+                                        extracted_out_filename = "era5_monthly_precip_extracted_to_DHS.rds",
+                                        layer_substrings = "tp_expver=1",
+                                        long_df_colname  = "precip",
+                                        layer_names_vec = NULL,
+                                        layer_names_title = "date",
+                                        func = "mean", #"weighted_sum" if polygons
+                                        weights = NULL, #"area" if polygons
+                                        #time_interval = "months",
+                                        remove_files = FALSE
+  )
+  
+  toc()
+  
+  # the thing that took a long time is saving as a RDS since there are 71 million obs (71k towns x 1005 months)
+  # Extracted ERA5 to DHS clusters: 132.52 sec elapsed
+
+  # small version
+  # let's get 2 DHSIds
+  # 
+  test_out_df <- out_df %>% filter(DHSID == "AO200600000001" | DHSID == "AO200600000002")
   
   
-  #country <- "SN"
-  
-  #country <- "BJ"
-  tic("Got ERA5 + DHS GPS data for all countries")
-  for (country in countries_DHS) {
-    
-    
-    continent <- countrycode(country,
-                             origin = "dhs",
-                             destination = "continent")
-    
-    countryname <- countrycode(country,
-                               origin = "dhs",
-                               destination = "country.name")
-    
-    print(paste0("Country is ",country," ie ", countryname))
-    
-    if (continent!= "Africa") {
-      print("Continent of DHS country not in Africa, deal with it later")
-    } else{ # if the continent is africa, move ahead
-      
-      # get the GPS data first
-      gps_datasets   <- dhs_datasets() %>% 
-        filter(DatasetType == "GPS Datasets") %>% 
-        filter(FileType == "Geographic Data") %>% 
-        filter(DHS_CountryCode == country)%>% 
-        filter(SurveyType == "DHS") %>%
-        arrange(DHS_CountryCode,SurveyYear)
-      
-      # pick out the years the GPS data exists for 
-      years <- unique(gps_datasets$SurveyYear)
-      
-      # now go through and do the exercise for each year
-      
-      for (year in years) {
-
-        
-        
-        gps_dataset <- gps_datasets %>% filter(SurveyYear == year)
-        
-        
-        dhs_gps_filename <- stringr::str_extract(gps_dataset$FileName,"[^.]+")
-
-        path_gps <- file.path(data_external_temp,"DHS","GPS",
-                                paste0(dhs_gps_filename,"_GADM_ADM_",level,".rds"))
-          
-          
-          if ( !file.exists(path_gps)){
-            
-            print("GPS file does not exist")
-            
-          } else {
-            
-            GPS_data <- readRDS(file = path_gps) %>% st_transform(crs = "epsg:4326")
-            
-            
-
-# extract raster data to points
-    
-  out_df <- raster_extract_to_panel(terra_raster = terra_raster,
-                          vector_sf    = GPS_data,
-                          cast_vector_sf = FALSE,
-                          save_raster_copy = FALSE,
-                          raster_out_path = NULL,
-                          raster_out_filename = NULL,
-                          vector_cast_out_path = file.path(data_external_clean,"GADM","global"),
-                          vector_cast_out_filename = paste0("GADM_ADM_",level,"_cast.rds"),
-                          layer_substrings = layer_substrings,
-                          func = my_function, #"weighted_sum"
-                          weights = my_weights, #"area",
-                          time_interval = "months",
-                          remove_files = FALSE
-                          )
-
 # add precipitation variables 
   
   # total precipitation conversions:
   #https://confluence.ecmwf.int/pages/viewpage.action?pageId=197702790
+
+  tic("Collapsed monthly DHS-ERA5 to annual")
+   annual_dhs_era5 <- collapse_panel_to_annual(in_df = out_df,
+                           value_varname_old = "precip_mean",
+                           value_varname_new = "precip",
+                           id_varname = "DHSID",
+                           rolling_average_years = c(3,5,11),
+                           out_path = file.path(data_external_temp,"merged","DHS_ERA5","annual"),
+                           out_filename = "africa_dhs_gps_era5_annual.rds",
+                           merge_df = GPS_data)
+                            
+  toc()
+  # Collapsed monthly DHS-ERA5 to annual: 448.49 sec elapsed
   
+  #annual_dhs_era5 <- readRDS(file.path(data_external_clean,"merged","DHS_ERA5","annual","africa_dhs_gps_era5_annual.rds"))
+  
+  # annual_dhs_era5_withvars <- left_join(annual_dhs_era5,GPS_data)
+  # 
+  # # make a cleaned version
+  # out_path <- file.path(data_external_temp,"merged","DHS_ERA5","annual")
+  # 
+  # if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
+  # 
+  # 
+  # saveRDS(annual_dhs_era5_withvars, file.path(out_path,"africa_dhs_gps_era5_annual.rds"))
+  #
+  #
+  
+  # create a test df
+  test_df <- annual_dhs_era5 %>% filter(DHSID == "AO200600000001" | DHSID == "AO200600000022") 
+  
+  panel_df_out <- create_long_run_vars(panel_df = annual_dhs_era5,
+                       id_varname = "DHSID",
+                       time_varname = "year",
+                       variable_to_manipulate = "precip_annual_mean",
+                       variable_namestub      = "precip",
+                       out_path = file.path(data_external_clean,"merged","DHS_ERA5","annual"),
+                       out_filename = "africa_dhs_gps_era5_annual.rds")
+  
+  
+  
+# Choose additional long-run variables
   monthly_temp_df <- out_df %>%
     filter(!is.na(date)) %>% # take out some missing vals
     group_by(date) %>% # arrange chronologically
@@ -217,128 +215,4 @@ pacman::p_load(
   
   out_filename <- paste0(country,"_",current_file,"_",dhs_gps_filename,"_",min_time,"_to_",max_time,"_GADM_ADM_",level,"_annual.rds")
   
-
-  # annual version
-  annual_temp_df <- monthly_temp_df %>%
-                    filter(year!=2023) %>% # take out 2023 which is an incomplete year
-                    group_by(vector_cast_id,year) %>%
-                    filter(row_number()==1) %>%
-                    select(-c(month,precip_003m_ra,precip_013m_ra,precip_025m_ra,precip_037m_ra,precip_121m_ra,
-                              precip_lr_monthly_avg,precip_lr_monthly_sd,precip_monthly_zscore)) %>% # month is just 1 now, remove
-                    ungroup() %>%
-                    group_by(vector_cast_id) %>% # group by 
-                    mutate(precip_003y_ra = zoo::rollmean(monthly_precip_mm, k=3,   fill = NA, align = "right"), # rolling averages of the k prior months
-                           precip_005y_ra = zoo::rollmean(monthly_precip_mm, k=13,  fill = NA, align = "right"),
-                           precip_011y_ra = zoo::rollmean(monthly_precip_mm, k=25,  fill = NA, align = "right"))
   
-  saveRDS(annual_temp_df,
-          file = file.path(out_path,
-                           out_filename))
-  
-  # start rbinding these 
-  if (year == years[1]){
-    
-    annual_df  <- annual_temp_df
-    monthly_df <- monthly_temp_df
-    
-  } else{
-    
-    annual_df  <- rbind(annual_df,annual_temp_df)
-    monthly_df <- rbind(monthly_df,monthly_temp_df)
-    
-    
-    
-  }
-  
-  rm(annual_temp_df,monthly_temp_df)
-  gc()
-  
-          } # end IFELSE statement whether GPS dataset exists
-
-      } # end loop over years
-      
-} # end ifelse statement if continent of the DHS datset is Africa
-    
-    
-    
-    out_path <- file.path(data_external_clean,"merged","DHS_ERA5","country-level","monthly")
-    
-    if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
-    
-    out_filename <- paste0(country,"_",current_file,"_",min_time,"_to_",max_time,"_GADM_ADM_",level,"_monthly.rds")
-    
-    
-    saveRDS(monthly_df, file= file.path(out_path,out_filename))
-    
-    out_path <- file.path(data_external_clean,"merged","DHS_ERA5","country-level","annual")
-    
-    if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
-    
-    out_filename <- paste0(country,"_",current_file,"_",min_time,"_to_",max_time,"_GADM_ADM_",level,"_annual.rds")
-    
-    saveRDS(annual_df,
-            file = file.path(out_path,
-                             out_filename))
-    
-    rm(annual_df,monthly_df)
-    
-    gc()
-  } # end loop over all countries DHSs
-  toc() # end toc of going through to raster extract for all countries
-    
- # Got ERA5 + DHS GPS data for all countries: 1918.46 sec elapsed
-
-  # create merged datasets by country ----
-  
-  #countries_DHS # all countries
-  
-  # clear out some space
-  rm(terra_raster)
-  gc()
-  
-  time_type <- c("annual","monthly")
-  
-  time_type <- c("annual")
-  
-  # WARNING: this gets big in RAM, up to around 20GB for the annual, over 36GB for the monthly
-  # final filesize: 140MB for annual; 1.4GB for monthly
-  
-  tic("Merged countries ERA5 DHS")
-  for (time in time_type){
-  
-  for (country in countries_DHS){
-    
-    in_path     <- file.path(data_external_clean,"merged","DHS_ERA5","country-level",time)
-    in_filename <- paste0(country,"_",current_file,"_",min_time,"_to_",max_time,"_GADM_ADM_",level,"_",time,".rds")
-    
-
-    if (country == countries_DHS[1]){
-    
-      country_dhs_era5  <- readRDS(file = file.path(in_path,in_filename))
-
-    } else{
-      
-      temp  <- readRDS(file = file.path(in_path,in_filename))
-
-      country_dhs_era5  <- rbind(country_dhs_era5,temp)
-
-      
-    } # end ifelse if first country then create the df, otherwise rbind to it
-
-    
-  } # end loop over countries
-    
-    
-    out_path    <- file.path(data_external_clean,"merged","DHS_ERA5","all-countries")
-    
-    out_filename <- paste0("all_countries_",current_file,"_",min_time,"_to_",max_time,"_GADM_ADM_",level,"_",time,".rds")
-    if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
-    
-    
-    saveRDS(country_dhs_era5, file = file.path(out_path, out_filename))
-    
-    rm(country_dhs_era5,temp)
-    gc()
-  } # end loop over time type
-
-  toc() # Merged countries ERA5 DHS: 82.1 sec elapsed
