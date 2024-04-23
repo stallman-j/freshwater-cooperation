@@ -4,7 +4,7 @@
 # 
 # Stallman
 # Started 2023-10-11
-# Last edited: 
+# Last edited: 2024-04-08
 #________________________________#
 
 
@@ -18,13 +18,14 @@ rm(list = ls())
 
 # bring in the packages, folders, paths
 
-home_folder <- file.path("P:","Projects","environment")
+home_folder <- file.path("P:","Projects","freshwater-cooperation")
 
 source(file.path(home_folder,"code","00_startup_master.R"))
 
 # requires having run
 # 02_merge_a_era5_dhs
 # 02_clean_dhs_child-mortality_annual
+# 02_merge_d_era5_dhs-gps_dhs-child-mortality.R
 
 # packages ----
 
@@ -53,16 +54,28 @@ current_seed <- 2024
 # bring in data ----
 
 
-  era5_gps_childmort <- readRDS(file.path(data_external_clean,"merged",paste0("Africa_all_years_DHS_HH_infant_mortality_GPS_ERA5.rds"))) %>% st_drop_geometry()
+system.time(
+  era5_gps_childmort <- readRDS(file.path(file.path(data_external_clean,"merged",paste0("DHS_HH_infant_mortality_GPS_ERA5_river_points_under_100_towns.rds")))) %>% st_drop_geometry()
+)
   
+
   
 # make a training dataset of 2/3 of the obs
   set.seed(current_seed)
   
+  n_dhsid_full <- length(unique(era5_gps_childmort$DHSID))
+  n_slice_sample <- ceiling(.4*n_dhsid_full)
+  
   system.time(
   era5_gps_childmort_train <- era5_gps_childmort %>% 
-                              sample_frac(.67)
+                              group_by(DHSID) %>% # want 60% of the DHS ID, not 60% of total obs
+                              slice_sample(prop = 0.6) %>%
+                              ungroup()
 )
+  
+  # 1.58s elapsed
+ n_dhsid_train <- length(unique(era5_gps_childmort_train$DHSID))
+
   
   saveRDS(era5_gps_childmort_train,file.path(data_external_clean,"merged",paste0("Africa_all_years_DHS_HH_infant_mortality_GPS_ERA5_training-data.rds")))
   
@@ -72,12 +85,11 @@ current_seed <- 2024
   
   
 era5_gps_childmort_train2 <- era5_gps_childmort_train %>%
-                      filter(!is.na(precip_current_annual_avg_mm_month)) %>%
+                      filter(!is.na(precip_annual_mean)) %>%
                       mutate(infant_death_1000 = infant_death*1000
                              ) %>%
                       group_by(DHSID) %>%
-                      mutate(n_children_in_DHSID = n()/2,
-                             precip_lr_zscore_annual = (precip_current_annual_avg_mm_month - precip_lr_mean)/precip_lr_sd) %>%
+                      mutate(n_children_in_DHSID = n()/2) %>%
                       ungroup()%>%
                       group_by(year) %>%
                       mutate(n_children_in_year = n()/2) %>% ungroup() %>%
@@ -88,14 +100,23 @@ era5_gps_childmort_train2 <- era5_gps_childmort_train %>%
                              infant_death_1000_exposure = infant_death_1000*share_year_t) %>%
                       mutate(rural = if_else(URBAN_RURA == "R",
                                              1,
-                                             0))
+                                             0)) %>%
+                      filter(DHSCC!="MD") %>% # Madagascar is weird
+                      group_by(MAIN_RIV) %>%
+                      mutate(main_riv_mean_precip = mean(precip_annual_mean)) %>%
+                      ungroup() %>%
+                      mutate(median_precip = median(precip_annual_mean)) %>%
+                      filter(main_riv_mean_precip<=median_precip)
+
+  # create a variable that's 
 
 era5_gps_childmort_train_namibia <- era5_gps_childmort_train2 %>%
                                 filter(DHSCC == "NM")
 
-length(unique(era5_gps_childmort$DHSID))
-length(unique(era5_gps_childmort$DHSID))
+n_dhsid_namibia <- length(unique(era5_gps_childmort_train_namibia$DHSID))
 
+
+share_dhsid_lost <- (n_dhsid_full-n_dhsid_train)/(n_dhsid_full)
 
 reg_equation <- function(outcome_var = "lge_15",
                          regressor_vars = c("gdp_pc","tfr"),
@@ -123,22 +144,25 @@ for (i in 1:2){
   if (i==1) {
     current_data     <- era5_gps_childmort_train2
     filestub <- "no_rivers_training"
-    name_stub     <- "DHS Data: 2/3 Random Sample"
+    name_stub     <- "DHS Data: 3/5 Random Sample"
   } else {
     current_data = era5_gps_childmort_train_namibia
     filestub <- "no_rivers_namibia"
-    name_stub     <- "DHS Data: 2/3 Random Sample of Namibia"
+    name_stub     <- "DHS Data: 3/5 Random Sample, Namibia"
   }
 node_df_to_summarize <- current_data %>%
   select(year,
-         precip_current_annual_avg_mm_month,
-         precip_current_annual_sd_mm_month,
-         precip_lr_zscore_annual, 
-         precip_003y_ra,
-         precip_005y_ra,
+         precip_annual_mean,
+         precip_lr_avg,
+         precip_lr_zscore, 
+         precip_rolling_avg_3_years,
+         precip_rolling_avg_5_years,
          infant_death_1000,
          infant_death_1000_exposure,
          rural,
+         has_dam,
+         has_glow,
+         had_adhi,
          n_children_in_DHSID,
          n_children_in_year,
          n_children_town_year
@@ -146,13 +170,16 @@ node_df_to_summarize <- current_data %>%
 
 var_labels <- c("Year",
                 "Average annual precip. (mm/month)",
-                "Annual precipitation SD (mm/month)",
+                "Long-run avg. precip (mm/month)",
                 "Annual precipitation Z-score",
                 "3-year avg. precip.",
                 "5-year avg. precip.",
                 "Infant Mortality (/1000 births)",
                 "Infant Mort., Exposure-weighted",
                 "Rural",
+                "On a Dammed River",
+                "On a River with Width Obs",
+                "On a River with Hydro Station",
                 "N infants per town",
                 "N infants per year",
                 "N infants/town/year"
@@ -192,27 +219,29 @@ stargazer(node_df_to_summarize,
 
 # get country names
 # 
-countries <- era5_gps_childmort$DHSCC %>% unique()
+countries <- era5_gps_childmort_train2$DHSCC %>% unique()
 country_names <- countrycode(sourcevar = countries,
                              origin = "dhs",
                              destination = "country.name")
 
-countries_df <- data.frame(country_dhs = era5_gps_childmort$DHSCC %>% unique(),
-                           country_names = countrycode(sourcevar = era5_gps_childmort$DHSCC %>% unique(),
+countries_df <- data.frame(country_dhs = era5_gps_childmort_train2$DHSCC %>% unique(),
+                           country_names = countrycode(sourcevar = era5_gps_childmort_train2$DHSCC %>% unique(),
                                                        origin = "dhs",
                                                        destination = "country.name")) %>%
                 arrange(countries)
 
-plot <- ggplot(mapping = aes(x = era5_gps_childmort$DHSCC)) +
+plot <- ggplot(mapping = aes(x = era5_gps_childmort_train2$DHSCC)) +
   geom_bar(fill = "steelblue") +
   geom_text(stat = "count", aes(label = after_stat(count)/2), vjust = -0.3, size = 3.5) +
-  labs(title = paste0("Observations per country"),
+  labs(title = paste0("Observations per country, below-median rain"),
        caption = c("Data from DHS (1984-2023)")) +
   theme_map()
 
+plot
+
 save_map(output_folder = output_figures,
          plotname = plot,
-         filename = paste0("obs-per-country.png"),
+         filename = paste0("obs-per-country_under-median.png"),
          width = 10,
          height = 4,
          dpi  = 300)
@@ -220,46 +249,37 @@ save_map(output_folder = output_figures,
 ## set up regression formulas
 
 
-  reg_1_vars  <- c("precip_lr_zscore_annual")
-  reg_2_vars  <- c("precip_lr_zscore_annual","I(precip_lr_zscore_annual^2)")
-  reg_3_vars  <- c("precip_lr_zscore_annual","precip_005y_ra")
-  reg_4_vars  <- c("precip_lr_zscore_annual","precip_005y_ra","rural")
-  reg_5_vars  <- c("precip_lr_zscore_annual","precip_005y_ra","DIST_UP_KM")
-  reg_6_vars  <- c("precip_lr_zscore_annual","precip_005y_ra","DIST_UP_KM","precip_005y_ra:DIST_UP_KM")
-  reg_7_vars  <- c("precip_lr_zscore_annual","precip_005y_ra","precip_005y_ra:DIST_UP_KM")
+  reg_1_vars  <- c("precip_annual_mean")
+  reg_2_vars  <- c("precip_annual_mean","I(precip_annual_mean^2)")
+  reg_3_vars  <- c("precip_annual_mean","precip_rolling_avg_5_years")
+  reg_4_vars  <- c("precip_annual_mean","precip_rolling_avg_5_years","rural")
+  reg_5_vars  <- c("precip_annual_mean","precip_rolling_avg_5_years","DIST_UP_KM")
+  reg_6_vars  <- c("precip_annual_mean","precip_rolling_avg_5_years","DIST_UP_KM","precip_annual_mean:DIST_UP_KM")
+  reg_7_vars  <- c("precip_annual_mean","precip_rolling_avg_5_years","precip_rolling_avg_5_years:DIST_UP_KM")
   
 reg_1_form <- reg_equation(outcome_var = "infant_death_1000_exposure",
-                           regressor_vars = reg_1_vars,
+                           regressor_vars = reg_3_vars,
                            fe_vars = NULL)
 
 reg_2_form <- reg_equation(outcome_var = "infant_death_1000_exposure",
-                           regressor_vars = reg_1_vars,
+                           regressor_vars = reg_3_vars,
                            fe_vars = "DHSID")
 
 reg_3_form <- reg_equation(outcome_var = "infant_death_1000_exposure",
-                           regressor_vars = reg_1_vars,
-                           fe_vars = "year")
+                           regressor_vars = reg_3_vars,
+                           fe_vars = c("DHSID","year"))
 
 reg_4_form <- reg_equation(outcome_var = "infant_death_1000_exposure",
-                           regressor_vars = reg_1_vars,
-                           fe_vars = c("DHSID","year"))
-
-reg_5_form <- reg_equation(outcome_var = "infant_death_1000_exposure",
-                           regressor_vars = reg_4_vars,
+                           regressor_vars = reg_7_vars,
                            fe_vars = NULL)
 
-reg_6_form <- reg_equation(outcome_var = "infant_death_1000_exposure",
-                           regressor_vars = reg_4_vars,
+reg_5_form <- reg_equation(outcome_var = "infant_death_1000_exposure",
+                           regressor_vars = reg_7_vars,
                            fe_vars = c("DHSID"))
 
-reg_7_form <- reg_equation(outcome_var = "infant_death_1000_exposure",
-                           regressor_vars = reg_4_vars,
-                           fe_vars = c("year"))
-
-reg_8_form <- reg_equation(outcome_var = "infant_death_1000_exposure",
-                           regressor_vars = reg_4_vars,
+reg_6_form <- reg_equation(outcome_var = "infant_death_1000_exposure",
+                           regressor_vars = reg_7_vars,
                            fe_vars = c("DHSID","year"))
-
 
 #for (i in 1:2){
 if (i==1) {
@@ -278,9 +298,7 @@ models <- list(
   "(3)" = feols(reg_3_form,  data = current_data),
   "(4)" = feols(reg_4_form,  data = current_data),
   "(5)" = feols(reg_5_form,  data = current_data),
-  "(6)" = feols(reg_6_form,  data = current_data),
-  "(7)" = feols(reg_7_form,  data = current_data),
-  "(8)" = feols(reg_8_form,  data = current_data)
+  "(6)" = feols(reg_6_form,  data = current_data)
   
   
   
@@ -294,24 +312,19 @@ models[[3]]
 models[[4]]
 models[[5]]
 models[[6]]
-models[[7]]
-models[[8]]
+
 
 ## Set  Labels
 
 title_tab_01 <- paste0("Precipitation and Mortality", name_stub, "\\label{tab:basic-reg-tab}")
 
 cov_labels <- c("Intercept",
-                "Annual avg precip (mm/month)",
-                "Annual avg precip $^2$",
+                "Annual avg precip",
                 "5-year avg precip",
-                "Rural",
-                "5-yr precip x Rural",
-                "Dist. to source (km)",
                 "5-yr precip x Dist to source")
 
 if (i == 1){
-my_notes <- c("Outcome is infant deaths per 1000 infants observed. Precipitation data from ERA5 (2023); river data from HydroSHEDS (2022); DHS surveys from 1988 to 2023, covering 1099 towns on 941 rivers over 1957-2022. ")
+my_notes <- c(paste0("Outcome is infant deaths per 1000 infants observed. Precipitation data from ERA5 (2023), in millimeters per month (averaged over the year); river data from HydroSHEDS (2022); DHS surveys from 1988 to 2023, covering ",length(unique(era5_gps_childmort_train2$DHSID)), " towns on ",length(unique(era5_gps_childmort_train2$MAIN_RIV))," rivers over 1957-2022. Omits Madagascar and any rivers with rainfall above the median of river-level mean precipitation."))
 } else {
   my_notes <- c("Outcome is infant deaths per 1000 infants observed. Precipitation data from ERA5 (2023); river data from HydroSHEDS (2022); DHS surveys from 1988 to 2023, covering 538 towns on 576 rivers over 1958-2022. ")
   
@@ -321,22 +334,6 @@ my_notes <- c("Outcome is infant deaths per 1000 infants observed. Precipitation
 options(modelsummary_format_numeric_latex = "plain") # there was a "\num{}# argument wrapping around the latex tables
 options(modelsummary_factory_html = 'kableExtra')
 
-
-# add dependent variable means
-# get length of the number of unique regressors
-# n_total_regressor_vars <- c(reg_1_vars,reg_2_vars,reg_3_vars,reg_4_vars,reg_5_vars,reg_6_vars) %>% unique() %>% length()
-# 
-# rows <- data.frame("term" = c("Mean","Town FE", "Country FE", "Year FE"),
-#                    "(1)"  = c(round(mean(data$infant_death_1000),2),"Y","Y"),
-#                    "(2)"  = c(round(mean(data$infant_death_1000),2),"Y","Y"),
-#                    "(3)"  = c(round(mean(data$infant_death_1000),2),"Y","Y"),
-#                    "(4)"  = c(round(mean(data$infant_death_1000),2),"Y","Y"),
-#                    "(5)"  = c(round(mean(data$infant_death_1000),2),"Y","Y"),
-#                    "(6)"  = c(round(mean(data$infant_death_1000),2),"N","Y"))
-# 
-# attr(rows, 'position') <- c(2*n_total_regressor_vars+2,2*n_total_regressor_vars+3,2*n_total_regressor_vars+4) # this should put it right after the number of observations
-# # there are 2 rows per regressor var, plus the Number of Observations, plus 2 for the intercept, and then put the Num Obs at
-# # the next one down
 
 
 modelsummary(models,
@@ -359,6 +356,23 @@ if (!dir.exists(path)) dir.create(path, recursive = TRUE) # recursive lets you c
 
 out_path <- file.path(path,paste0("reg-tab-01_",filestub,".tex"))
 
+# add dependent variable means 
+# get length of the number of unique regressors
+n_total_regressor_vars <- c(reg_3_vars,reg_7_vars) %>% unique() %>% length()
+
+rows <- data.frame("term" = c("Mean","Cluster FE","Year FE"),
+                   "(1)"  = c(round(mean(current_data$infant_death_1000_exposure),2),"N","N"),
+                   "(2)"  = c(round(mean(current_data$infant_death_1000_exposure),2),"Y","N"),
+                   "(3)"  = c(round(mean(current_data$infant_death_1000_exposure),2),"Y","Y"),
+                   "(4)"  = c(round(mean(current_data$infant_death_1000_exposure),2),"N","N"),
+                   "(5)"  = c(round(mean(current_data$infant_death_1000_exposure),2),"Y","N"),
+                   "(6)"  = c(round(mean(current_data$infant_death_1000_exposure),2),"Y","Y"))
+
+attr(rows, 'position') <- c(2*n_total_regressor_vars+3,2*n_total_regressor_vars+4,2*n_total_regressor_vars+5) # this should put it right after the number of observations
+# there are 2 rows per regressor var, plus the Number of Observations, plus 2 for the intercept, and then put the Num Obs at 
+# the next one down
+# 
+# 
 modelsummary(models,
              stars = FALSE,
              vcov = "HC1",
@@ -367,7 +381,7 @@ modelsummary(models,
              # #statistic = "conf.int",
              coef_rename = cov_labels,
              output = "latex",
-             #add_rows = rows,
+             add_rows = rows,
              #title = title_tab_01,
              #escape = FALSE, # what allows the math to go through
              gof_omit = "AIC|BIC|RMSE|Log.Lik|Std.Errors|:|Within|Adj." # omit several of the goodness of fit stats
@@ -403,21 +417,7 @@ options(modelsummary_format_numeric_latex = "plain") # there was a "\num{}# argu
 options(modelsummary_factory_html = 'kableExtra')
 
 
-# add dependent variable means 
-# get length of the number of unique regressors
-n_total_regressor_vars <- c(reg_1_vars,reg_2_vars,reg_3_vars) %>% unique() %>% length()
 
-rows <- data.frame("term" = c("Mean","Dyad FE","Year FE"),
-                   "(1)"  = c(round(mean(data_cut$R_NNMR_ud),2),"N","Y"),
-                   "(2)"  = c(round(mean(data_cut$R_NNMR_ud),2),"N","Y"),
-                   "(3)"  = c(round(mean(data_cut$R_NNMR_ud),2),"N","Y"),
-                   "(4)"  = c(round(mean(data_cut$R_IMR_ud),2),"N","Y"),
-                   "(5)"  = c(round(mean(data_cut$R_IMR_ud),2),"N","Y"),
-                   "(6)"  = c(round(mean(data_cut$R_IMR_ud),2),"N","Y"))
-
-attr(rows, 'position') <- c(2*n_total_regressor_vars+2,2*n_total_regressor_vars+3,2*n_total_regressor_vars+4) # this should put it right after the number of observations
-# there are 2 rows per regressor var, plus the Number of Observations, plus 2 for the intercept, and then put the Num Obs at 
-# the next one down
 
 
 # output to console to check that we're getting what we want

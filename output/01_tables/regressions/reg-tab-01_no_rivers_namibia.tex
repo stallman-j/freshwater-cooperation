@@ -1,0 +1,26 @@
+\begin{table}[H]
+\centering
+\begin{threeparttable}
+\begin{tabular}[t]{lcccccccc}
+\toprule
+  & (1) & (2) & (3) & (4) & (5) & (6) & (7) & (8)\\
+\midrule
+Intercept & \num{20.386} &  &  &  & \num{20.301} &  &  & \\
+ & (\num{1.782}) &  &  &  & (\num{1.776}) &  &  & \\
+Annual avg precip (mm/month) & \num{3056.948} & \num{3141.590} & \num{8838.783} & \num{10058.592} & \num{3034.121} & \num{3188.603} & \num{8784.942} & \num{10104.181}\\
+ & (\num{3270.711}) & (\num{3296.286}) & (\num{5362.302}) & (\num{5399.217}) & (\num{3273.086}) & (\num{3291.480}) & (\num{5357.964}) & (\num{5398.204})\\
+5-year avg precip & \num{-3200.849} & \num{1047.890} & \num{-8416.288} & \num{-2253.439} & \num{-4244.116} & \num{-5009.910} & \num{-9247.253} & \num{-8744.047}\\
+ & (\num{3506.131}) & (\num{6562.630}) & (\num{5748.248}) & (\num{11419.052}) & (\num{3624.506}) & (\num{9908.661}) & (\num{5899.717}) & (\num{13646.165})\\
+5-yr precip x Dist to source &  &  &  &  & \num{33.093} & \num{177.590} & \num{27.505} & \num{194.740}\\
+ &  &  &  &  & (\num{31.923}) & (\num{223.126}) & (\num{31.287}) & (\num{218.700})\\
+\midrule
+Num.Obs. & \num{13675} & \num{13675} & \num{13675} & \num{13675} & \num{13675} & \num{13675} & \num{13675} & \num{13675}\\
+R2 & \num{0.000} & \num{0.030} & \num{0.005} & \num{0.035} & \num{0.000} & \num{0.031} & \num{0.006} & \num{0.035}\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item \textit{Notes: } 
+\item Outcome is infant deaths per 1000 infants observed. Precipitation data from ERA5 (2023); river data from HydroSHEDS (2022); DHS surveys from 1988 to 2023, covering7223 towns on 1101 rivers over 1957-2022. 
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

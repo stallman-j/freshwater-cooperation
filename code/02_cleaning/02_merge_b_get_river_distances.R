@@ -4,8 +4,7 @@
 # 
 # Stallman
 # Started: 2023-10-23
-# Last edited: 2023-11-13
-# Edit: added get elevation to merge function merge_dhs_gps
+# Last edited: 2024-04-08
 #________________________________#
 
 
@@ -18,10 +17,10 @@
 
 # bring in the packages, folders, paths ----
   
-  code_folder <- file.path("P:","Projects","environment","code")
-  source(file.path(code_folder,"00_startup_master.R"))
-  source(file.path(code_startup_general,"get_river_distances.R")) # function for getting along-river distances
-  source(file.path(code_startup_general,"upstreammat_upper_triangle.R")) # function for taking the upper triangle of distance matrices rather than the entire thing
+  home_folder <- file.path("P:","Projects","freshwater-cooperation")
+  source(file.path(home_folder,"code","00_startup_master.R"))
+  source(file.path(code_startup_project_specific,"get_river_distances.R")) # function for getting along-river distances
+  source(file.path(code_startup_project_specific,"upstreammat_upper_triangle.R")) # function for taking the upper triangle of distance matrices rather than the entire thing
   
   if (!require("pacman")) install.packages("pacman")
   pacman::p_load(
@@ -41,7 +40,7 @@
   )
 
 
-  n_cores          <- 23 #detectCores(logical = TRUE) - 2
+  n_cores          <- 18 #detectCores(logical = TRUE) - 2
 
   
   # bring in data ----
@@ -79,10 +78,12 @@
   singletons <- readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","singletons_node-level.rds"))
   dyads      <- readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","dyads_node-level.rds"))
   triads     <- readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","triads_node-level.rds"))
+  under_100  <-  readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","river-distances_under-100-towns.rds"))
   
   main_rivers_singletons <- singletons %>% select(MAIN_RIV) %>% unique() %>% as.vector()%>% .[[1]]
   main_rivers_dyads <- dyads %>% select(MAIN_RIV) %>% unique() %>% as.vector() %>% .[[1]]
   main_rivers_triads <- triads %>% select(MAIN_RIV) %>% unique() %>% as.vector() %>% .[[1]]
+  main_rivers_under_100 <- under_100 %>% select(MAIN_RIV) %>% unique() %>% as.vector() %>% .[[1]]
   
 
 
@@ -178,10 +179,40 @@ clusterExport(cl, c("get_river_distances","upstreammat_upper_triangle"))
 # for everywhere
 #parLapply(cl, main_rivers_all, get_dhs_river_distances)
 
-
+tic("Got distances for singletons")
 parLapply(cl, main_rivers_singletons, get_river_distances)
+toc()
+
+tic("Got distances for dyads") 
 parLapply(cl, main_rivers_dyads, get_river_distances)
+toc()
+
+tic("Got distances for triads")
 parLapply(cl, main_rivers_triads, get_river_distances)
+toc()
+
+tic("Got distances for n_Towns < 100")
+parLapply(cl, main_rivers_under_100, get_river_distances, max_current_points = 500)
+toc()
+
+# Got distances for n_Towns < 100: 8687.74 sec elapsed if stopped when max_current_points == 500
+
+
+tic("Got distances for n_Towns < 100 and max_current_points == 1000 (| done for <500)")
+parLapply(cl, main_rivers_under_100, get_river_distances, max_current_points = 1000)
+toc()
+
+# Got distances for n_Towns < 100: 58180.95 sec elapsed
+
+
+tic("Got distances for n_Towns < 100 and max_current_points == 2000 (| done for <1000)")
+parLapply(cl, main_rivers_under_100, get_river_distances, max_current_points = 2000)
+toc()
+
+#896556.36 sec elapsed;  10.37681 days
+
+
+# 
 
 # this is for all the DHS distances ----
 

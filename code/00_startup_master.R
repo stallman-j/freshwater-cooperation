@@ -141,7 +141,7 @@ pacman::p_load(
   
   # 00 startup environment
   startup_env_download_functions                            <-    0
-  startup_env_cleaning_functions                            <-    0
+  startup_env_cleaning_functions                            <-    1
   startup_env_analysis_functions                            <-    0
   startup_parameters                                        <-    0
   
@@ -201,7 +201,7 @@ pacman::p_load(
   }
   
     if(startup_env_cleaning_functions==1){
-    source(file.path(code_startup_project_specific,"00_startup_env-cleaning-functions.R"))
+    source(file.path(code_startup_project_specific,"cleaning_functions.R"))
   }
   
   if(startup_env_analysis_functions==1){

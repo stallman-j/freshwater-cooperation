@@ -18,7 +18,7 @@ rm(list = ls())
 
 # bring in the packages, folders, paths ----
 
-code_folder <- file.path("P:","Projects","environment","code")
+code_folder <- file.path("P:","Projects","freshwater-cooperation","code")
 source(file.path(code_folder,"00_startup_master.R"))
 
 
@@ -87,10 +87,33 @@ gps_datasets_africa <- gps_datasets_all %>%
                        filter(DHS_CountryCode %in% countries_DHS_africa)
 
 # 158 GPS datasets for Africa
+# 
+hr_datasets_africa   <- dhs_datasets() %>%
+                      filter(DHS_CountryCode %in% countries_DHS_africa) %>% 
+                      filter(DatasetType != "GPS Datasets") %>%
+                      filter(FileType == "Household Recode") %>% # "Household Member Recode" makes the DF longer: each HH member is a row
+                      filter(FileFormat == "SPSS dataset (.sav)")
+
+
+ir_datasets_africa   <- dhs_datasets() %>%
+  filter(DHS_CountryCode %in% countries_DHS_africa) %>% 
+  filter(DatasetType != "GPS Datasets") %>%
+  filter(FileType == "Individual Recode") %>% # "Household Member Recode" makes the DF longer: each HH member is a row
+  filter(FileFormat == "SPSS dataset (.sav)")
+
+
+# 227 GPS datasets overall
+
+# generate Africa GPS datasets
+
+gps_datasets_africa <- gps_datasets_all %>%
+  filter(DHS_CountryCode %in% countries_DHS_africa)
+
 
 
 path <- file.path(data_external_clean,"DHS","datasets-for-selection")
 if (!dir.exists(path)) dir.create(path, recursive = TRUE) # recursive lets you create any needed subdirectories
+
 
 
 
@@ -101,6 +124,15 @@ saveRDS(countries_DHS_all,
 saveRDS(countries_DHS_africa,
         file= file.path(data_external_clean,"DHS","datasets-for-selection",
                         paste0("countries_DHS_africa.rds")))
+
+saveRDS(hr_datasets_africa,
+        file= file.path(data_external_clean,"DHS","datasets-for-selection",
+                        paste0("hr_datasets_africa.rds")))
+
+saveRDS(ir_datasets_africa,
+        file= file.path(data_external_clean,"DHS","datasets-for-selection",
+                        paste0("ir_datasets_africa.rds")))
+
 
 saveRDS(gps_datasets_all,
         file= file.path(data_external_clean,"DHS","datasets-for-selection",

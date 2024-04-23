@@ -1,0 +1,29 @@
+\begin{table}[H]
+\centering
+\begin{threeparttable}
+\begin{tabular}[t]{lcccccc}
+\toprule
+  & (1) & (2) & (3) & (4) & (5) & (6)\\
+\midrule
+Intercept & 26.031 &  &  & 25.828 &  & \\
+ & (0.466) &  &  & (0.467) &  & \\
+Annual avg precip & -428.899 & 780.196 & 1412.516 & -366.323 & 781.712 & 1415.134\\
+ & (943.647) & (947.642) & (1005.618) & (943.808) & (947.673) & (1005.608)\\
+5-year avg precip & 2724.538 & 6829.531 & -2314.844 & 2132.502 & 6390.520 & -1194.588\\
+ & (1000.256) & (2150.993) & (2314.810) & (1006.695) & (2435.252) & (2582.609)\\
+5-yr precip x Dist to source &  &  &  & 26.242 & 16.730 & -43.234\\
+ &  &  &  & (5.023) & (47.202) & (47.310)\\
+\midrule
+Mean & 28.56 & 28.56 & 28.56 & 28.56 & 28.56 & 28.56\\
+Cluster FE & N & Y & Y & N & Y & Y\\
+Year FE & N & N & Y & N & N & Y\\
+Num.Obs. & 248678 & 248678 & 248678 & 248678 & 248678 & 248678\\
+R2 & 0.000 & 0.029 & 0.033 & 0.000 & 0.029 & 0.033\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item \textit{Notes: } 
+\item Outcome is infant deaths per 1000 infants observed. Precipitation data from ERA5 (2023), in millimeters per month (averaged over the year); river data from HydroSHEDS (2022); DHS surveys from 1988 to 2023, covering 3488 towns on 533 rivers over 1957-2022. Omits Madagascar and any rivers with rainfall above the median of river-level mean precipitation.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

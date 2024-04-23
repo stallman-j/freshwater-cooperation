@@ -37,26 +37,30 @@ rm(list = ls())
 
 # parameters ----
 # 
-  min_time      <- "1940-01-01"
-  max_time      <- "2023-09-01"
-  current_file  <- "total_precipitation"
-  #func           <- "weighted_sum"
-  #weights       <- "area"
-  level         <- 2
-  levels        <- 1:5
-  time_interval <- "months"
-  layer_substrings  <- c("tp_expver=1")
-  #vector_sf_path         <- file.path(data_external_clean,"GADM","global")
-  my_function <- "mean"
-  my_weights  <- NULL
+  # min_time      <- "1940-01-01"
+  # max_time      <- "2023-09-01"
+  # current_file  <- "total_precipitation"
+  # #func           <- "weighted_sum"
+  # #weights       <- "area"
+  # level         <- 2
+  # levels        <- 1:5
+  # time_interval <- "months"
+  # layer_substrings  <- c("tp_expver=1")
+  # #vector_sf_path         <- file.path(data_external_clean,"GADM","global")
+  # my_function <- "mean"
+  # my_weights  <- NULL
 
 
 # merge ERA5 + DHS GPS + DHS Child mortality
 # bring in ERA5+DHSGPS
   in_path     <- file.path(data_external_clean,"merged","DHS_ERA5","annual")
-  in_filename <- "africa_dhs_gps_era5_annual_with_lr_vars.rds"
+  in_filename <- "africa_dhs_gps_era5_annual_with_lr_vars.rds" 
   era5_dhsgps <- readRDS(file.path(in_path,in_filename)) 
-  
+
+# bring in the DHS HR 
+
+  dhs_hr <- readRDS(file.path(data_external_temp,"DHS","HR","merged","africa_DHS_HR_varnames.rds"))
+
 # bring in DHS Child mortality
 
   dhs_childmort <- readRDS(file= file.path(data_external_clean,"merged",
@@ -80,12 +84,40 @@ era5_dhsgps <- era5_dhsgps %>%
 
 #test <- era5_dhsgps[26,]
 
+tic("Joined ERA5 and DHS data")
 joined_df <- inner_join(era5_dhsgps,dhs_childmort,
                         by = c("DHSID","year","DHSYEAR","DHSCC","DHSCLUST","CCFIPS","ADM1FIPS","ADM1FIPSNA","ADM1SALBNA","ADM1SALBCO",
                                "ADM1DHS","ADM1NAME","DHSREGCO","DHSREGNA","SOURCE","URBAN_RURA","LATNUM","LONGNUM","ALT_GPS","ALT_DEM",
                                "DATUM", "geometry"))
 
-test <- joined_df %>% sample_n(size = 100)
+toc()
+
+# Joined ERA5 and DHS data: 109.16 sec elapsed
+
+test_year <- unique(joined_df$DHSYEAR)
+
+# issue is 1996 test_year[7]
+# 
+test <- joined_df %>% filter(DHSYEAR == test_year[7])
+
+test_row <- test[38733,]
+
+tic("Joined HR to ERA5 DHS BR")
+test_join <- left_join(test_row, dhs_hr,
+                       by = c("DHSID" = "DHSID",
+                              "DHSYEAR" = "SurveyYear",
+                              "DHSCC"   = "DHS_CountryCode",
+                              "v001"="hv001", # cluster number
+                              "v002"="hv002", # household number
+                              "v021"="hv021", # primary sampling unit
+                              "v022"="hv022", # sample strata
+                              "v024"="hv024", # region
+                              "v025"="hv025"  # type of place of residence
+                              ) 
+                       )
+toc()
+  
+  # Joined HR to ERA5 DHS BR: 9.28 sec elapsed
 
 # save 
 
@@ -113,11 +145,14 @@ test <- joined_df %>% sample_n(size = 100)
 
   
   river_points_df <- readRDS(file =file.path(river_points_path,file)) %>% st_drop_geometry() %>% 
-    select(-my_linestring,-closest_point,-snapped_point_cond) %>% as.data.table() %>%
-    mutate(has_dam  = as.integer(stringr::str_detect(type,"Dam")),
-           has_adhi = as.integer(stringr::str_detect(type,"hydrology_station")),
-           has_dhs  = as.integer(stringr::str_detect(type,"DHS_town")),
-           has_glow = as.integer(stringr::str_detect(type,"GLOW")))
+    select(-my_linestring,-closest_point,-snapped_point_cond)  %>%
+    group_by(MAIN_RIV) %>%
+    mutate(Count = n(),
+           has_dam  = +("Dam" %in% type),
+           has_adhi = +("hydrology_station" %in% type),
+           has_dhs  = +("DHS_town" %in% type),
+           has_glow = +("GLOW" %in% type)) %>%
+    ungroup() %>% as.data.table()
            
   
 
@@ -140,11 +175,14 @@ test <- joined_df %>% sample_n(size = 100)
     file <- river_points_files[i]
     
   river_points_df <- readRDS(file = file.path(river_points_path,file)) %>% st_drop_geometry() %>% 
-    select(-my_linestring,-closest_point,-snapped_point_cond) %>% as.data.table() %>%
-    mutate(has_dam = as.integer(stringr::str_detect(type,"Dam")),
-           has_adhi = as.integer(stringr::str_detect(type,"hydrology_station")),
-           has_dhs  = as.integer(stringr::str_detect(type,"DHS_town")),
-           has_glow = as.integer(stringr::str_detect(type,"GLOW")))
+    select(-my_linestring,-closest_point,-snapped_point_cond) %>%
+    group_by(MAIN_RIV) %>%
+    mutate(Count = n(),
+           has_dam  = +("Dam" %in% type),
+           had_adhi = +("hydrology_station" %in% type),
+           has_dhs  = +("DHS_town" %in% type),
+           has_glow = +("GLOW" %in% type)) %>%
+    ungroup() %>% as.data.table()
   
   setkey(river_points_df,ID)
   
@@ -224,6 +262,10 @@ test <- joined_df %>% sample_n(size = 100)
   saveRDS(big_df,file.path(data_external_clean,"merged",paste0("DHS_HH_infant_mortality_GPS_ERA5_dams_adhi_river_points_under_100_towns.rds")))
   
   infant_mort_df <- readRDS(file.path(data_external_clean,"merged",paste0("DHS_HH_infant_mortality_GPS_ERA5_rivers_under_100_towns.rds")))
+  
+  
+  
+  
   
   
   

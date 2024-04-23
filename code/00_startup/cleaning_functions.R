@@ -1,3 +1,26 @@
+#' Create NA columns
+#' @description creates columns of NAs for DFs if the columns don't already exist. Good for merging a lot of similar but not exactly the same dfs
+#' https://stackoverflow.com/questions/45857787/adding-column-if-it-does-not-exist
+#' @param data data frame / df
+#' @param desired_cols vector of colnames
+#' @returns data frame with columns added in NA if they didn't already exist
+#' @@examples
+#' # example code
+#' add_na_cols(mtcars, "mpg")
+#' add_na_cols(mtcars, c("topspeed","nhj","mpg"))
+#' @export
+
+add_na_cols <- function(data, desired_cols) {
+  add <-desired_cols[!desired_cols%in%names(data)]
+  
+  if(length(add)!=0) data[add] <- NA
+  data
+}
+
+
+
+
+
 #' Description: Create Long-run variables
 #' @description With a df with a time dimension, create a bunch of long-run variables
 #' @param panel_df panel data frame

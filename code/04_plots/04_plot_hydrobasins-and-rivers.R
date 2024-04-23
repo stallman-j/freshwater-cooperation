@@ -16,7 +16,7 @@ rm(list = ls())
 
 # bring in the packages, folders, paths
 
-  home_folder <- file.path("P:","Projects","environment")
+  home_folder <- file.path("P:","Projects","freshwater-cooperation")
   
   source(file.path(home_folder,"code","00_startup_master.R"))
 
@@ -26,6 +26,22 @@ rm(list = ls())
   
   #library(raster) # to use tmap with raster
   # for interactive ggplot
+  # 
+  # packages ----
+  
+  if (!require("pacman")) install.packages("pacman")
+  pacman::p_load(
+    tictoc, #measuring time to run operations
+    countrycode, # for translating between country names
+    rdhs, # for dealing with DHS in R
+    sf, # vector operations
+    terra, # raster operations
+    data.table, # fast data manipulation
+    lubridate, # for dates
+    zoo # time series stuff, easy calc of rolling averages
+    
+  )
+  
   if (!require(plotly)) install.packages("plotly")
   
   library(plotly)

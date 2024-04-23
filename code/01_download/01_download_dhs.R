@@ -16,7 +16,7 @@
   
 # bring in the packages, folders, paths ----
   
-  code_folder <- file.path("P:","Projects","environment","code")
+  code_folder <- file.path("P:","Projects","freshwater-cooperation","code")
   source(file.path(code_folder,"00_startup_master.R"))
   
    
