@@ -1,0 +1,9 @@
+# To push to git, do this in a gitbash terminal
+git add .
+git commit -m "commit message here"
+git push -u origin main
+
+# to knit the README file so it can be viewed on Github
+# do this in R Console
+library(knitr)
+knitr::knit(input = "README.Rmd", output = "README.md")

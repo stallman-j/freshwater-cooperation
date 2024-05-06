@@ -95,6 +95,14 @@ hr_datasets_africa   <- dhs_datasets() %>%
                       filter(FileFormat == "SPSS dataset (.sav)")
 
 
+br_datasets_africa   <- dhs_datasets() %>%
+  filter(DHS_CountryCode %in% countries_DHS_africa) %>% 
+  filter(DatasetType != "GPS Datasets") %>%
+  filter(FileType == "Births Recode") %>% # "Household Member Recode" makes the DF longer: each HH member is a row
+  filter(FileFormat == "SPSS dataset (.sav)")
+
+
+
 ir_datasets_africa   <- dhs_datasets() %>%
   filter(DHS_CountryCode %in% countries_DHS_africa) %>% 
   filter(DatasetType != "GPS Datasets") %>%
@@ -128,6 +136,11 @@ saveRDS(countries_DHS_africa,
 saveRDS(hr_datasets_africa,
         file= file.path(data_external_clean,"DHS","datasets-for-selection",
                         paste0("hr_datasets_africa.rds")))
+
+saveRDS(br_datasets_africa,
+        file= file.path(data_external_clean,"DHS","datasets-for-selection",
+                        paste0("br_datasets_africa.rds")))
+
 
 saveRDS(ir_datasets_africa,
         file= file.path(data_external_clean,"DHS","datasets-for-selection",

@@ -77,7 +77,9 @@ hr_datasets_africa <- readRDS(file= file.path(data_external_clean,"DHS","dataset
   # bring in one dataframe
   df <- readRDS(dhs_hr_in[1]) %>%
         mutate(SurveyYear = hr_datasets_africa$SurveyYear[1],
-               DHS_CountryCode = hr_datasets_africa$DHS_CountryCode[1])
+               DHS_CountryCode = hr_datasets_africa$DHS_CountryCode[1],
+               DHSID           =paste0(DHS_CountryCode,SurveyYear,stringr::str_pad(hv001, 8, pad = "0"))
+)
   
   
   df <- sjlabelled::remove_all_labels(df)
@@ -91,12 +93,10 @@ hr_datasets_africa <- readRDS(file= file.path(data_external_clean,"DHS","dataset
   # woman's age, height, weight hemoglobin etc)
   # 
   keep_vars <- c("hhid", # HH id
-                 "hv000", # country code + phase
-                 "hv001", # cluster number
                  "SurveyYear",
                  "DHS_CountryCode",
+                 "DHSID",
                  "hv002", #household number
-                 "hv003", # respondent line number
                  "hv004", # ultimate area unit
                  "hv005", # sample weight
                  "hv006", # interview month
@@ -197,24 +197,10 @@ hr_datasets_africa <- readRDS(file= file.path(data_external_clean,"DHS","dataset
 
   toc()
 
-  # Merged all Africa DHS HR files into one mega HR DHS file: 189.36 sec elapsed
-  # 1877905 obs 
-  
-  
-  out_path      = file.path(data_external_temp,"DHS","HR","merged")
-  if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE)
-  
-  
-  saveRDS(df,
-          file = file.path(data_external_temp,"DHS","HR","merged","africa_DHS_HR.rds"))
-  
-  df <- readRDS(file = file.path(data_external_temp,"DHS","HR","merged","africa_DHS_HR.rds"))
-
-# create DHSID variable to merge onto for later
-# 
-  df_2 <- df %>%
+# Merged all Africa DHS HR files into one mega HR DHS file: 225.1 sec elapsed  
+   
+  df <- df %>%
           mutate(
-                 DHSID              = paste0(DHS_CountryCode,SurveyYear,stringr::str_pad(hv001, 8, pad = "0")),
                  language_survey    = hv045a,
                  language_interview = hv045b,
                  language_native    = hv045c,
@@ -222,63 +208,12 @@ hr_datasets_africa <- readRDS(file= file.path(data_external_clean,"DHS","dataset
                  water_scarce       = hv201a,
                  land_ha            = hv245,
                  livestock          = hv246,
-                 water_source       = hv235,
-                 SurveyYear         = as.integer(SurveyYear)
+                 water_source       = hv235
                  )
             
+  out_path      = file.path(data_external_temp,"DHS","HR","merged")
+  if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE)
   
-  saveRDS(df_2,
-          file = file.path(data_external_temp,"DHS","HR","merged","africa_DHS_HR_varnames.rds"))
+  saveRDS(df,
+          file = file.path(data_external_temp,"DHS","HR","merged","africa_DHS_HR.rds"))
   
-
-  # keep_vars <- c("hhid", # HH id
-  #                "hv000", # country code + phase
-  #                "hv001", # cluster number
-  #                "SurveyYear",
-  #                "DHS_CountryCode",
-  #                "hv002", #household number
-  #                "hv003", # respondent line number
-  #                "hv004", # ultimate area unit
-  #                "hv005", # sample weight
-  #                "hv006", # interview month
-  #                "hv007", #interview year
-  #                "hv008", # date of interview
-  #                "hv021", # primary sampling unit
-  #                "hv022", # sample stratum number
-  #                "hv023", # sample domain
-  #                "hv024", # region
-  #                "hv025", # type of place of residence
-  #                "hv040", # cluster altitude, meters
-  #                "hv045a", # language of questionnaire
-  #                "hv045b", # language of interview
-  #                "hv045c", # native language of respondent
-  #                "hv201", # source of drinking water
-  #                #https://dhsprogram.com/data/Guide-to-DHS-Statistics/Household_Drinking_Water.htm
-  #                "hv201a", # water not available for at least a day in last 4 weeks
-  #                "hv202", # source non-drinking water
-  #                "hv204", # time to get to water source # lots of 996 and 998. 998 is "I don't know"
-  #                "hv205", # type of toilet
-  #                "hv206", #has electricity
-  #                "hv207", # has radio
-  #                "hv208", # has TV
-  #                "hv209", #has fridge
-  #                "hv210", # has bike
-  #                "hv211", # has moto / scooter
-  #                "hv212", # has car/truck
-  #                "hv221", # has telephone
-  #                "hv235", # location of source for water 
-  #                "hv236", # person fetching water
-  #                "hv238", # # HHs sharing a toilet
-  #                "hv243a",# has mobile telephone
-  #                "hv243c",# has animal-drawn cart
-  #                "hv244", # own land usable for ag.
-  #                "hv245", # hectares of agricultural land
-  #                "hv246", # livestock, herds, farm animals
-  #                "hv246a", # cattle
-  #                "hv246b", #cows/bulls
-  #                "hv246c", # horses, donkeys, mules
-  #                "hv246d", # goats
-  #                "hv246e", # sheep
-  #                "hv246f", # chickens
-  #                "hv246g" # country specific
-  # )

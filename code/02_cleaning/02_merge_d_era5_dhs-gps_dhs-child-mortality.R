@@ -51,24 +51,19 @@ rm(list = ls())
   # my_weights  <- NULL
 
 
-# merge ERA5 + DHS GPS + DHS Child mortality
+# merge ERA5 + DHS GPS + DHS HR + DHS BR
 # bring in ERA5+DHSGPS
-  in_path     <- file.path(data_external_clean,"merged","DHS_ERA5","annual")
-  in_filename <- "africa_dhs_gps_era5_annual_with_lr_vars.rds" 
-  era5_dhsgps <- readRDS(file.path(in_path,in_filename)) 
+
+  era5_dhsgps <- readRDS(file.path(data_external_clean,"merged","DHS_ERA5","annual","africa_dhs_gps_era5_annual_with_lr_vars.rds") )
 
 # bring in the DHS HR 
 
   dhs_hr <- readRDS(file.path(data_external_temp,"DHS","HR","merged","africa_DHS_HR_varnames.rds"))
 
-# bring in DHS Child mortality
+# bring in DHS BR
 
-  dhs_childmort <- readRDS(file= file.path(data_external_clean,"merged",
-                                           paste0("Africa_all_years_DHS_HH_infant_mortality_with_GPS.rds")))
+  dhs_br <- readRDS(file.path(data_external_temp,"DHS","HR","merged","africa_DHS_BR_varnames.rds"))
   
-  dhs_childmort <- dhs_childmort %>%
-    select(-c(vector_sf_id,vector_cast_id))
-
   names(dhs_childmort)
   
   names(era5_dhsgps)
@@ -77,7 +72,7 @@ rm(list = ls())
 ## some cleanup ----
 # restrict years of the era5 to those which exist in the DHS
 
-years_to_keep <- dhs_childmort$year %>% unique()
+years_to_keep <- dhs_br$year %>% unique()
 
 era5_dhsgps <- era5_dhsgps %>%
   filter(year %in% years_to_keep) 
@@ -85,7 +80,7 @@ era5_dhsgps <- era5_dhsgps %>%
 #test <- era5_dhsgps[26,]
 
 tic("Joined ERA5 and DHS data")
-joined_df <- inner_join(era5_dhsgps,dhs_childmort,
+joined_df <- inner_join(era5_dhsgps,dhs_br,
                         by = c("DHSID","year","DHSYEAR","DHSCC","DHSCLUST","CCFIPS","ADM1FIPS","ADM1FIPSNA","ADM1SALBNA","ADM1SALBCO",
                                "ADM1DHS","ADM1NAME","DHSREGCO","DHSREGNA","SOURCE","URBAN_RURA","LATNUM","LONGNUM","ALT_GPS","ALT_DEM",
                                "DATUM", "geometry"))
@@ -105,9 +100,8 @@ test_row <- test[38733,]
 tic("Joined HR to ERA5 DHS BR")
 test_join <- left_join(test_row, dhs_hr,
                        by = c("DHSID" = "DHSID",
-                              "DHSYEAR" = "SurveyYear",
-                              "DHSCC"   = "DHS_CountryCode",
-                              "v001"="hv001", # cluster number
+                              "DHSYEAR"="SurveyYear",
+                              "DHSCC"="DHS_CountryCode",
                               "v002"="hv002", # household number
                               "v021"="hv021", # primary sampling unit
                               "v022"="hv022", # sample strata

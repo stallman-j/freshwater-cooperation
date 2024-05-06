@@ -140,59 +140,67 @@ pacman::p_load(
                        out_path = file.path(data_external_clean,"merged","DHS_ERA5","annual"),
                        out_filename = "africa_dhs_gps_era5_annual_with_lr_vars.rds")
   
-# Create a monthly df ----
-# TO DO: fix this up if you want monthly, turn it into a function
-  monthly_temp_df <- out_df %>%
-    filter(!is.na(date)) %>% # take out some missing vals
-    group_by(date) %>% # arrange chronologically
-    arrange(vector_cast_id) %>% # sorted now by vector_cast_id and chronoligcally within
-    ungroup() %>%
-    mutate(precip = `tp_expver=1_mean`,
-           n_days_in_month = days_in_month(date),
-           month = month(date),
-           year  = year(date),
-           dhs_gps_filename = dhs_gps_filename,
-           monthly_precip_mm = precip*n_days_in_month*1000,
-           ) %>%
-    filter(!is.na(precip)) %>% # take out if the precip value is actually just NA
-    group_by(vector_cast_id) %>% # group by 
-    mutate(precip_003m_ra = zoo::rollmean(monthly_precip_mm, k=3,   fill = NA, align = "right"), # rolling averages of the k prior months
-           precip_013m_ra = zoo::rollmean(monthly_precip_mm, k=13,  fill = NA, align = "right"),
-           precip_025m_ra = zoo::rollmean(monthly_precip_mm, k=25,  fill = NA, align = "right"),
-           precip_037m_ra = zoo::rollmean(monthly_precip_mm, k=37,  fill = NA, align = "right"),
-           precip_121m_ra = zoo::rollmean(monthly_precip_mm, k=121, fill = NA, align = "right")) %>%
-    group_by(vector_cast_id,month) %>% # generate monthly precip stats
-    mutate(precip_lr_monthly_avg = mean(monthly_precip_mm),
-           precip_lr_monthly_sd  = sd(monthly_precip_mm),
-           precip_monthly_zscore = (monthly_precip_mm - mean(monthly_precip_mm))/sd(monthly_precip_mm)) %>%
-    ungroup() %>%
-    group_by(vector_cast_id,year) %>% # generate current
-    mutate(precip_current_annual_avg_mm_month  = mean(monthly_precip_mm),
-           precip_current_annual_sd_mm_month   = sd(monthly_precip_mm),
-           precip_annual_zscore_mm_month       = (monthly_precip_mm - mean(monthly_precip_mm))/sd(monthly_precip_mm)) %>% 
-    ungroup() %>%
-    group_by(vector_cast_id) %>% # generate long-run averages
-    mutate(precip_lr_sd = sd(monthly_precip_mm),
-           precip_lr_mean = mean(monthly_precip_mm),
-           precip_lr_zscore  = (monthly_precip_mm - mean(monthly_precip_mm))/sd(monthly_precip_mm),
-           precip_lr_sd_deviation = precip_current_annual_sd_mm_month - sd(monthly_precip_mm)) 
-  
-# would need to revise these as well 
-  out_path <- file.path(data_external_clean,"merged","DHS_ERA5","survey-level","monthly")
-  
-  if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
-  
-  out_filename <- paste0(country,"_",current_file,"_",dhs_gps_filename,"_",min_time,"_to_",max_time,"_GADM_ADM_",level,"_monthly.rds")
-  
-  
-  saveRDS(monthly_temp_df, file= file.path(out_path,out_filename))
   
   
   
-  out_path <- file.path(data_external_clean,"merged","DHS_ERA5","survey-level","annual")
-  
-  if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
-  
-  out_filename <- paste0(country,"_",current_file,"_",dhs_gps_filename,"_",min_time,"_to_",max_time,"_GADM_ADM_",level,"_annual.rds")
   
   
+  
+  
+  
+# # Create a monthly df ----
+# # TO DO: fix this up if you want monthly, turn it into a function
+#   monthly_temp_df <- out_df %>%
+#     filter(!is.na(date)) %>% # take out some missing vals
+#     group_by(date) %>% # arrange chronologically
+#     arrange(vector_cast_id) %>% # sorted now by vector_cast_id and chronoligcally within
+#     ungroup() %>%
+#     mutate(precip = `tp_expver=1_mean`,
+#            n_days_in_month = days_in_month(date),
+#            month = month(date),
+#            year  = year(date),
+#            dhs_gps_filename = dhs_gps_filename,
+#            monthly_precip_mm = precip*n_days_in_month*1000,
+#            ) %>%
+#     filter(!is.na(precip)) %>% # take out if the precip value is actually just NA
+#     group_by(vector_cast_id) %>% # group by 
+#     mutate(precip_003m_ra = zoo::rollmean(monthly_precip_mm, k=3,   fill = NA, align = "right"), # rolling averages of the k prior months
+#            precip_013m_ra = zoo::rollmean(monthly_precip_mm, k=13,  fill = NA, align = "right"),
+#            precip_025m_ra = zoo::rollmean(monthly_precip_mm, k=25,  fill = NA, align = "right"),
+#            precip_037m_ra = zoo::rollmean(monthly_precip_mm, k=37,  fill = NA, align = "right"),
+#            precip_121m_ra = zoo::rollmean(monthly_precip_mm, k=121, fill = NA, align = "right")) %>%
+#     group_by(vector_cast_id,month) %>% # generate monthly precip stats
+#     mutate(precip_lr_monthly_avg = mean(monthly_precip_mm),
+#            precip_lr_monthly_sd  = sd(monthly_precip_mm),
+#            precip_monthly_zscore = (monthly_precip_mm - mean(monthly_precip_mm))/sd(monthly_precip_mm)) %>%
+#     ungroup() %>%
+#     group_by(vector_cast_id,year) %>% # generate current
+#     mutate(precip_current_annual_avg_mm_month  = mean(monthly_precip_mm),
+#            precip_current_annual_sd_mm_month   = sd(monthly_precip_mm),
+#            precip_annual_zscore_mm_month       = (monthly_precip_mm - mean(monthly_precip_mm))/sd(monthly_precip_mm)) %>% 
+#     ungroup() %>%
+#     group_by(vector_cast_id) %>% # generate long-run averages
+#     mutate(precip_lr_sd = sd(monthly_precip_mm),
+#            precip_lr_mean = mean(monthly_precip_mm),
+#            precip_lr_zscore  = (monthly_precip_mm - mean(monthly_precip_mm))/sd(monthly_precip_mm),
+#            precip_lr_sd_deviation = precip_current_annual_sd_mm_month - sd(monthly_precip_mm)) 
+  
+# # would need to revise these as well 
+#   out_path <- file.path(data_external_clean,"merged","DHS_ERA5","survey-level","monthly")
+#   
+#   if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
+#   
+#   out_filename <- paste0(country,"_",current_file,"_",dhs_gps_filename,"_",min_time,"_to_",max_time,"_GADM_ADM_",level,"_monthly.rds")
+#   
+#   
+#   saveRDS(monthly_temp_df, file= file.path(out_path,out_filename))
+#   
+#   
+#   
+#   out_path <- file.path(data_external_clean,"merged","DHS_ERA5","survey-level","annual")
+#   
+#   if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
+#   
+#   out_filename <- paste0(country,"_",current_file,"_",dhs_gps_filename,"_",min_time,"_to_",max_time,"_GADM_ADM_",level,"_annual.rds")
+#   
+#   
