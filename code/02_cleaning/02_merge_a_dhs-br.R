@@ -41,7 +41,7 @@
   # if the required input datasets don't exist, run the cleaning code to get those datasets
   
   if (!file.exists(file.path(data_external_clean,"DHS","datasets-for-selection",
-                             paste0("hr_datasets_africa.rds")))) {
+                             paste0("br_datasets_africa.rds")))) {
     
     source(file.path(code_clean,"02_clean_choose-DHS-countries.R"))
   }

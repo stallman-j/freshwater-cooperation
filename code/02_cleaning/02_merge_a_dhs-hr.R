@@ -177,7 +177,10 @@ hr_datasets_africa <- readRDS(file= file.path(data_external_clean,"DHS","dataset
       
         temp <- readRDS(dhs_hr_in[i])%>%
           mutate(SurveyYear = hr_datasets_africa$SurveyYear[i],
-                 DHS_CountryCode = hr_datasets_africa$DHS_CountryCode[i])
+                 DHS_CountryCode = hr_datasets_africa$DHS_CountryCode[i],
+                 DHSID           =paste0(DHS_CountryCode,SurveyYear,stringr::str_pad(hv001, 8, pad = "0"))
+                 
+                 )
         
         temp <- sjlabelled::remove_all_labels(temp)
         
@@ -197,20 +200,24 @@ hr_datasets_africa <- readRDS(file= file.path(data_external_clean,"DHS","dataset
 
   toc()
 
-# Merged all Africa DHS HR files into one mega HR DHS file: 225.1 sec elapsed  
-   
+ # Merged all Africa DHS HR files into one mega HR DHS file: 197.96 sec elapsed   
   df <- df %>%
-          mutate(
+          mutate(SurveyYear         = as.numeric(SurveyYear),
+                 altitude_m         = hv040,
                  language_survey    = hv045a,
                  language_interview = hv045b,
                  language_native    = hv045c,
-                 own_land           = hv244,
                  water_scarce       = hv201a,
+                 own_land           = hv244,
                  land_ha            = hv245,
                  livestock          = hv246,
                  water_source       = hv235
                  )
             
+
+  sum(is.na(df$DHSID))
+  # 0
+  
   out_path      = file.path(data_external_temp,"DHS","HR","merged")
   if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE)
   
