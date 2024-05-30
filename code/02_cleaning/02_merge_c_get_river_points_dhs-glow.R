@@ -39,6 +39,12 @@
     zoo # time series stuff, easy calc of rolling averages
   )
 
+  # parameters ----
+  
+  level <- 1 # GADM administrative level, for polygons
+  n_cores  <- 12 # 16 put 100% CPU; 14 was 93-97% CPU, just about right
+  
+  
 # prior cleaning code ----  
   
   # 02_merge_a_all-dhs-gps.R
@@ -62,7 +68,7 @@
   # 02_clean_GADM.R
   # Administrative boundary polygons
   gadm_in_path <- file.path(data_external_clean,"GADM","global")
-  gadm_in_filename <- paste0("GADM_global_ADM_",level,".rds")
+  gadm_in_filename <- paste0("GADM_global_ADM_1.rds")
   
   if (!file.exists(file.path(gadm_in_path,gadm_in_filename))) {
     
@@ -75,10 +81,6 @@
   # source(file.path(code_folder,"02_cleaning","02_merge_b_gdat-adhi-dhs-gps_for-river-points.R"))
   
   
-# parameters ----
-
-  level <- 1 # GADM administrative level, for polygons
-  n_cores  <- 12 # 16 put 100% CPU; 14 was 93-97% CPU, just about right
 
 # bring in datasets ----
 
