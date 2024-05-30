@@ -74,7 +74,7 @@ plot <- ggplot() +
   stat_function(fun = sg_iso, args = list(U = 1.72)) +
   stat_function(fun = sg_iso, args = list(U = 2)) +
   xlab(expression(x[u])) + ylab(expression(x[d]))+
-  labs(title = expression(paste('Corner, Upstream Takes All, ',p[u],x[u]==m[u])),
+  labs(title = expression(paste('Corner, Upstream Takes All, ',x[u]==epsilon[u])),
        #caption = c(paste0("Reproduced from Moffatt and Zevallos (2021)"))
        )+
   geom_polygon(data = data.frame(x = c(0.2,0.2,6),
@@ -103,7 +103,7 @@ plot <- ggplot() +
   stat_function(fun = sg_iso, args = list(U = 1.95, b_1 = -5)) +
   stat_function(fun = sg_iso, args = list(U = 2, b_1 = -5)) +
   xlab(expression(x[u])) + ylab(expression(x[d]))+
-  labs(title = expression(paste('Interior, 0<', p[u],x[u],'<',m[u])),
+  labs(title = expression(paste('Interior, 0<', x[u],'<',epsilon[u])),
        #caption = c(paste0("Reproduced from Moffatt and Zevallos (2021)"))
        )+
   geom_polygon(data = data.frame(x = c(0.2,0.2,6),
@@ -133,7 +133,7 @@ plot <- ggplot() +
   stat_function(fun = sg_iso, args = list(U = 1.9, b_1 = -10)) +
   stat_function(fun = sg_iso, args = list(U = 2, b_1 = -10)) +
   xlab(expression(x[u])) + ylab(expression(x[d]))+
-  labs(title = expression(paste('Corner, Upstream Gives All, 0=', p[u],x[u])),
+  labs(title = expression(paste('Corner, Upstream Gives All, 0=',x[u])),
        #caption = c(paste0("Reproduced from Moffatt and Zevallos (2021)"))
        )+
   geom_polygon(data = data.frame(x = c(0.2,0.2,6),
