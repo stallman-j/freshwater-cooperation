@@ -120,132 +120,18 @@
                                                 "africa_river_width_locations_equal_area.rds"))
   toc()
 
-# bring in distances data  ----
+  main_rivs <- hydro_rivers %>% sf::st_drop_geometry() %>%
+              select(MAIN_RIV) %>% unique() %>%
+              #dplyr::sample_n(size = 4) %>%
+              as.vector()%>% .[[1]]
   
-  # get the folder where the dyad distances are located
-  dyad_distances_path <- file.path(data_external_temp,"merged","DHS_HydroSHEDS","dyad-distances")
+  # some rivers with just 1 town on them to try
+  # [1] "11327713" "10539521" "11113306" "11317581" "11458329"
+  # [6] "11232185" "10037612" "10065667" "11429171" "10301817"
+  # [11] "11157421" "11301586" "11516789" "10541316" "10355346"
+  # [16] "11349773" "10560899" "11417243" "11456457" "10736117"
+  # # 10877433
   
-  # get the filenames of the countries in our list 
-  distances_filenames <- list.files(path = dyad_distances_path,
-                                    pattern = "dyad_distances")
-  
-  
-  #distances_filenames <- distances_filenames[1:500]
-  
-  main_rivs <- str_remove_all(distances_filenames,"DHS_MAIN_RIV_") %>%
-    str_remove_all("_dyad_distances.rds")
-  
-  # rbind all the rows we want to bring in   
-  tic("Looped over and rbinded all data in")
-  
-  for (filename in distances_filenames){
-    
-    temp_data <- readRDS(file.path(dyad_distances_path,filename)) %>% 
-      mutate(MAIN_RIV = str_remove_all(filename,"DHS_MAIN_RIV_") %>% str_remove_all("_dyad_distances.rds"),
-             n_towns  = length(unique(downstream)))
-    
-    number_of_towns <- temp_data$n_towns %>% unique()
-    
-    main_river <- temp_data$MAIN_RIV %>% unique()
-    
-    print(paste0("Currently working on MAIN_RIV ",main_river,". It has ",nrow(temp_data)," rows and ",number_of_towns," towns."))
-    
-    #print(paste0("dataset ",filename," has ",nrow(temp_data)," rows."))
-    if (filename == distances_filenames[1]){
-      
-      distance_data <- temp_data
-      
-      
-    } else {
-      
-      
-      if (number_of_towns>100) { # ignoring big rivers
-        
-        rm(temp_data)
-        gc() 
-        
-      }  else {
-        distance_data  <- rbind(distance_data,temp_data)
-      }
-      
-      
-      
-    } # end ifelse to get the first df to be setting things up
-    
-  } # end loop over filenames
-  
-  toc()
-  #Looped over and rbinded all data in: 781.85 sec elapsed
-  # this is like 955 seconds
-  
-  out_path <- file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS")
-  
-  if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
-  
-  distance_data <- distance_data %>%
-    mutate(same_river_segment = if_else((upstream!=downstream) & (distance_m ==0),
-                                        true = 1,
-                                        false = 0),
-           point_to_itself    = if_else(upstream==downstream,
-                                        true = 1,
-                                        false = 0)) 
-  
-  saveRDS(distance_data, file = file.path(out_path,"river-distances_under-100-towns.rds"))
-  
-  
-  
-  single <- distance_data %>%
-    filter(n_towns == 1)
-  
-  saveRDS(single, file = file.path(out_path,"singletons_node-level.rds"))
-  
-  dyads <- distance_data %>%
-    filter(n_towns == 2) 
-  
-  
-  saveRDS(dyads, file = file.path(out_path,"dyads_node-level.rds"))
-  
-  
-  triads <- distance_data %>% filter(n_towns ==3 )
-  
-  saveRDS(triads, file = file.path(out_path,"triads_node-level.rds"))
-  
-  
-  singletons <- distance_data %>%
-    filter(n_towns == 1) %>%
-    left_join(era5_gps_childmort,
-              by = c("downstream" = "DHSID"),keep = TRUE) %>%
-    filter(!is.na(precip_current_annual_avg_mm_month))
-  
-  
-  
-  saveRDS(singletons, file = file.path(out_path,"singletons_panel.rds"))
-
-# bring in the data ----
-  
-  
-  singletons <- readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","singletons_node-level.rds"))
-  dyads      <- readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","dyads_node-level.rds"))
-  triads     <- readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","triads_node-level.rds"))
-  under_100  <-  readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","river-distances_under-100-towns.rds"))
-# select main rivers to go over ----
-  
-  main_rivers_singletons <- singletons %>% select(MAIN_RIV) %>% unique() %>% as.vector()%>% .[[1]]
-  
-  main_rivers_dyads <- dyads %>% select(MAIN_RIV) %>% unique() %>% as.vector() %>% .[[1]]
-  
-  main_rivers_triads <- triads %>% select(MAIN_RIV) %>% unique() %>% as.vector() %>% .[[1]]
-    
-  main_rivers_under_100 <- under_100 %>% select(MAIN_RIV) %>% unique() %>% as.vector() %>% .[[1]]
-    
-  # requires:
-  # dhs_tmp
-  # hydro_rivers
-    
-  # need to have run the following: 
-  # source(file.path(code_folder,"02_cleaning","02_merge_a_all-dhs-gps.R"))
-  
-
   system.time(
   get_river_points(main_river = 10877433,
                    points_data = GPS_data
@@ -272,43 +158,12 @@
   
   clusterExport(cl, c("hydro_rivers","gadm_data")) # this is a big export b/c the hydro_rivers is huge
   clusterExport(cl, c("GPS_data"))
-  #clusterExport(cl, c("dhs_data"))
-  
-    #clusterExport(cl, c("max_distance_to_snap"))
-  #clusterExport(cl, c("equal_area_crs"))
-  
- 
-  #parLapply(cl, main_rivers_under_100, get_river_points, points_data = GPS_data)
-  
-  tic("Getting river points for singletons")
-  parLapply(cl, main_rivers_singletons, get_river_points_safe, points_data = GPS_data)
-  toc()
-  # Getting river points for singletons: 2979.62 sec elapsed
-  
-  # 
-  tic("Getting river points for the dyads")
-  parLapply(cl, main_rivers_dyads, get_river_points_safe, points_data = GPS_data)
-  toc()
-  # Getting river points for the dyads: 949.93 sec elapsed
 
-  tic("Getting river points for the triads")
-  parLapply(cl, main_rivers_triads, get_river_points_safe, points_data = GPS_data)
+  tic("Getting river points")
+  parLapply(cl, main_rivs, get_river_points_safe, points_data = GPS_data)
   toc()
-  
-  # Getting river points for the triads: 636.69 sec elapsed
+  # haven't checked how long this'll take with all rivers
 
-  
-  tic("Getting river points for the sub-100-town rivers")
-  parLapply(cl, main_rivers_under_100, get_river_points_safe, points_data = GPS_data)
-  toc()
-  # Getting river points for the sub-100-town rivers: 3012.93 sec elapsed
-  # 
-  
-  # parLapply(cl, main_rivers_singletons, get_dhs_rivers_points_glow)
-  # parLapply(cl, main_rivers_dyads, get_dhs_rivers_points_glow)
-  # parLapply(cl, main_rivers_triads, get_dhs_rivers_points_glow)
-  
-  
   
   gc()
   toc()
