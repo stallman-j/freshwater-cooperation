@@ -105,22 +105,22 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
     
     # plot to see that everything makes sense
     
-    m <- 1
-    t <- 1
-    
-    # use plots to check that measurements are going all right
-    plot(current_river_network)
-    #showends(seg = 29, rivers = current_river_network)
-    #points(towns_points$X, towns_points$Y, pch = 2, col = "red")
-    riverpoints(seg = towns_points_on_river$seg,vert = towns_points_on_river$vert, rivers = current_river_network, col = "red", pch = 17)
-    #points(measurement_points$X, measurement_points$Y, pch = 0, col = "blue")
-    riverpoints(seg = measurement_points_on_river$seg,vert = measurement_points_on_river$vert, rivers = current_river_network, col = "blue", pch = 15)
-
-
-    riverpoints(seg = towns_points_on_river[t,]$seg,vert = towns_points_on_river[t,]$vert, rivers = current_river_network, col = "black",pch = 17)
-    riverpoints(seg = measurement_points_on_river[m,]$seg,vert = measurement_points_on_river[m,]$vert, rivers = current_river_network, col = "black", pch = 15)
-
-    
+    # m <- 1
+    # t <- 1
+    # 
+    # # use plots to check that measurements are going all right
+    # plot(current_river_network)
+    # #showends(seg = 29, rivers = current_river_network)
+    # #points(towns_points$X, towns_points$Y, pch = 2, col = "red")
+    # riverpoints(seg = towns_points_on_river$seg,vert = towns_points_on_river$vert, rivers = current_river_network, col = "red", pch = 17)
+    # #points(measurement_points$X, measurement_points$Y, pch = 0, col = "blue")
+    # riverpoints(seg = measurement_points_on_river$seg,vert = measurement_points_on_river$vert, rivers = current_river_network, col = "blue", pch = 15)
+    # 
+    # 
+    # riverpoints(seg = towns_points_on_river[t,]$seg,vert = towns_points_on_river[t,]$vert, rivers = current_river_network, col = "black",pch = 17)
+    # riverpoints(seg = measurement_points_on_river[m,]$seg,vert = measurement_points_on_river[m,]$vert, rivers = current_river_network, col = "black", pch = 15)
+    # 
+    # 
     # https://cran.r-project.org/web/packages/riverdist/vignettes/riverdist_vignette.html
     #  In the flow-connected case, upstream() returns the network distance as positive if the second location is upstream of the first, and negative if downstream
     
@@ -156,7 +156,7 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
     } # end forloop over measurement points m
     
       saveRDS(object = dists_df,
-              file =file.path(town_measurement_distances_path,paste0(points_leading_string,main_river,"_town_measurement_distances.rds")))
+              file =file.path(town_measurement_distances_path,paste0(points_leading_string,main_river,"_town-measurement-distances.rds")))
     
       toc()
 
@@ -173,19 +173,20 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
     #                                                      y = towns_points_test$Y,
     #                                                      rivers = current_river_network)  
     
-    t <- 1
-    m <- 2
-    
-    plot(current_river_network)
-    #showends(seg = 29, rivers = current_river_network)
-    #points(towns_points$X, towns_points$Y, pch = 2, col = "red")
-    riverpoints(seg = towns_points_on_river$seg,vert = towns_points_on_river$vert, rivers = current_river_network, col = "red", pch = 17)
-    #points(measurement_points$X, measurement_points$Y, pch = 0, col = "blue")
-    riverpoints(seg = measurement_points_on_river$seg,vert = measurement_points_on_river$vert, rivers = current_river_network, col = "blue", pch = 15)
-
-
-    riverpoints(seg = towns_points_on_river[t,]$seg,vert = towns_points_on_river[t,]$vert, rivers = current_river_network, col = "black",pch = 17)
-    riverpoints(seg = measurement_points_on_river[m,]$seg,vert = measurement_points_on_river[m,]$vert, rivers = current_river_network, col = "black", pch = 15)
+    # testing plots
+    # t <- 1
+    # m <- 2
+    # 
+    # plot(current_river_network)
+    # #showends(seg = 29, rivers = current_river_network)
+    # #points(towns_points$X, towns_points$Y, pch = 2, col = "red")
+    # riverpoints(seg = towns_points_on_river$seg,vert = towns_points_on_river$vert, rivers = current_river_network, col = "red", pch = 17)
+    # #points(measurement_points$X, measurement_points$Y, pch = 0, col = "blue")
+    # riverpoints(seg = measurement_points_on_river$seg,vert = measurement_points_on_river$vert, rivers = current_river_network, col = "blue", pch = 15)
+    # 
+    # 
+    # riverpoints(seg = towns_points_on_river[t,]$seg,vert = towns_points_on_river[t,]$vert, rivers = current_river_network, col = "black",pch = 17)
+    # riverpoints(seg = measurement_points_on_river[m,]$seg,vert = measurement_points_on_river[m,]$vert, rivers = current_river_network, col = "black", pch = 15)
 
     
       # for each town, get the distance from each measurement point
@@ -206,7 +207,7 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
 
           dists_temp[m,"distance"] <- 0
         }
-          if (m < t) {
+          if (m < t) { # just delete the lower diagonal observations ex post
             dists_temp[m,"distance"] <- "to_delete"
           }
           
@@ -219,8 +220,7 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
                                                flowconnected = TRUE)
           
           } # end if-else if m > t then take distance
-          
-          
+      
         } # end for loop over towns t
         
         if (t==1) {
@@ -238,45 +238,44 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
     toc()
     
     
-    
-    
-    tic("Got distances for T squared")
-    for (t in 1:nrow(towns_points_on_river)) {
-      
-      
-      dists_temp <- data.frame(town_a_ID = towns_points$ID[t],
-                               town_b_ID = towns_points$ID,
-                               distance = NA,
-                               MAIN_RIV = main_river)
-      
-      
-      for (m in 1:nrow(towns_points_on_river)){
-        
-
-          dists_temp[m,"distance"] <- upstream(startseg = towns_points_on_river[t,]$seg, # row t, segment column
-                                               endseg   = towns_points_on_river[m,]$seg, # row m, segment column
-                                               startvert = towns_points_on_river[t,]$vert,
-                                               endvert   = towns_points_on_river[m,]$vert,
-                                               rivers = current_river_network,
-                                               flowconnected = TRUE)
-        
-        
-      } # end for loop over towns t
-      
-      if (t==1) {
-        dists_df <- dists_temp
-      } else {
-        dists_df <- rbind(dists_df,dists_temp)
-      }
-    } # end forloop over measurement points m
-    
-
-    toc()
-    
+    # There are cases where this is faster to just go through all the town-town distances, esp. with small river networks
+    # 
+    # tic("Got distances for T squared")
+    # for (t in 1:nrow(towns_points_on_river)) {
+    #   
+    #   
+    #   dists_temp <- data.frame(town_a_ID = towns_points$ID[t],
+    #                            town_b_ID = towns_points$ID,
+    #                            distance = NA,
+    #                            MAIN_RIV = main_river)
+    #   
+    #   
+    #   for (m in 1:nrow(towns_points_on_river)){
+    #     
+    # 
+    #       dists_temp[m,"distance"] <- upstream(startseg = towns_points_on_river[t,]$seg, # row t, segment column
+    #                                            endseg   = towns_points_on_river[m,]$seg, # row m, segment column
+    #                                            startvert = towns_points_on_river[t,]$vert,
+    #                                            endvert   = towns_points_on_river[m,]$vert,
+    #                                            rivers = current_river_network,
+    #                                            flowconnected = TRUE)
+    #     
+    #     
+    #   } # end for loop over towns t
+    #   
+    #   if (t==1) {
+    #     dists_df <- dists_temp
+    #   } else {
+    #     dists_df <- rbind(dists_df,dists_temp)
+    #   }
+    # } # end forloop over measurement points m
+    # 
+    # 
+    # toc()
     
     
     saveRDS(object = dists_df,
-            file = file.path(town_town_distances_path,paste0(points_leading_string,main_river,"_town_town_distances.rds")))
+            file = file.path(town_town_distances_path,paste0(points_leading_string,main_river,"_town-town-distances.rds")))
     
     
     
