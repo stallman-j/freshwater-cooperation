@@ -8,21 +8,15 @@
 #' @param checked_river_path where to log that the river distances have been obtained
 #' @export
 
-get_river_distances <- function(main_river,
+get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width measurements, good for an example
                                 max_current_points = 1000, # the max is 1886 for triads and below; biggest 30-40 are above 200
                                 points_data_path = file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","river-points"), 
-                                #file.path("E:","data","02_temp","merged","DHS_HydroSHEDS","river-points"), # for just DHS
                                 points_leading_string  = "DHS_GLOW_MAIN_RIV_", #"DHS_MAIN_RIV_", # for just DHS      
                                 river_network_path = file.path("E:","data","03_clean","HydroSHEDS","river_networks"),
-                                ID_varname = "ID", #"DHSID", # else "ID" for GLOW
                                 checked_river_path = file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","checked-main-rivers","dhs-glow-distances"),
-                                #file.path("E:","data","02_temp","merged","DHS_HydroSHEDS","checked-main-rivers","dhs-river-distances"),
                                 river_network_missing_path =  file.path("E:","data","02_temp","HydroSHEDS","river-network-missing"),
-                                dyad_distances_path =         file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","dyad-distances"),
-                                #file.path("E:","data","02_temp","merged","DHS_HydroSHEDS","dyad-distances"),
-                                distance_matrices_path =      file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","distance-matrices"),
-                                distance_matrices_flat_path = file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","distance-matrices_flat")
-                                #file.path("E:","data","02_temp","merged","DHS_HydroSHEDS","distance-matrices_flat")
+                                town_measurement_distances_path =         file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","town-measurement-distances"),
+                                town_town_distances_path =      file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","town-town-distances")
                                   
 ){
   
@@ -32,9 +26,8 @@ get_river_distances <- function(main_river,
     
     paths_to_create <- c(checked_river_path,
                          river_network_missing_path,
-                         dyad_distances_path,
-                         distance_matrices_path,
-                         distance_matrices_flat_path,
+                         town_measurement_distances_path,
+                         town_town_distances_path,
                          river_network_missing_path
     )
     
@@ -87,58 +80,204 @@ get_river_distances <- function(main_river,
       
     }
     
-    # rename the ID so we can keep it
-    names(current_points)[names(current_points) == ID_varname] <- "ID"
+  # 1) block out the current points which are type DHS_town
+  # 2) for each of these, calculate the upstream distance to all other points
     
-    points_on_river <- xy2segvert(x = current_points$X,
-                                  y = current_points$Y,
+  # plot to test 
+  # main_riv <- 10865554 # has 8 measurement obs and 10 towns
+  # main_riv <- 11527323 # has 216 total obs
+  
+    towns_points <- current_points %>%
+                    dplyr::filter(type == "DHS_town")
+    
+    measurement_points <- current_points %>%
+                          dplyr::filter(type == "GLOW")
+
+    # get the segment and vertex of the river network for all the towns
+    towns_points_on_river <- riverdist::xy2segvert(x = towns_points$X,
+                                                   y = towns_points$Y,
+                                                   rivers = current_river_network)
+    
+    # for each town, calculate the upstream distance to 
+    measurement_points_on_river <- riverdist::xy2segvert(x = measurement_points$X,
+                                  y = measurement_points$Y,
                                   rivers = current_river_network)
     
-    # distance_mat <- upstreammat(seg = points_on_river$seg,
-    #                             vert = points_on_river$vert,
-    #                             ID = current_points$ID,
-    #                             rivers = current_river_network,
-    #                             flowconnected = TRUE)
+    # plot to see that everything makes sense
     
-    distance_mat <- upstreammat_upper_triangle(seg = points_on_river$seg,
-                                                 vert = points_on_river$vert,
-                                                 ID = current_points$ID,
-                                                 rivers = current_river_network,
-                                                 flowconnected = TRUE)
+    m <- 1
+    t <- 1
     
-    #own_ID_names  <- rownames(distance_mat)
-    #pair_ID_names <- colnames(distance_mat)
+    # use plots to check that measurements are going all right
+    plot(current_river_network)
+    #showends(seg = 29, rivers = current_river_network)
+    #points(towns_points$X, towns_points$Y, pch = 2, col = "red")
+    riverpoints(seg = towns_points_on_river$seg,vert = towns_points_on_river$vert, rivers = current_river_network, col = "red", pch = 17)
+    #points(measurement_points$X, measurement_points$Y, pch = 0, col = "blue")
+    riverpoints(seg = measurement_points_on_river$seg,vert = measurement_points_on_river$vert, rivers = current_river_network, col = "blue", pch = 15)
+
+
+    riverpoints(seg = towns_points_on_river[t,]$seg,vert = towns_points_on_river[t,]$vert, rivers = current_river_network, col = "black",pch = 17)
+    riverpoints(seg = measurement_points_on_river[m,]$seg,vert = measurement_points_on_river[m,]$vert, rivers = current_river_network, col = "black", pch = 15)
+
     
-    # borrowed from dist2list from vmikk/metagMisc on Github
+    # https://cran.r-project.org/web/packages/riverdist/vignettes/riverdist_vignette.html
+    #  In the flow-connected case, upstream() returns the network distance as positive if the second location is upstream of the first, and negative if downstream
     
-    dat <- as.data.frame(distance_mat)
+    # for each town, get the distance from each measurement point
     
-    rownames(dat) <- rownames(distance_mat)
-    value         <- stack(dat)$values
-    rnames        <- rownames(dat)
-    namecol       <- expand.grid(rnames,rnames)
-    colnames(namecol) <- c("row","col")
+    tic("Got towns-measurements distances")
+    for (t in 1:nrow(towns_points_on_river)) {
+      
+      
+      dists_temp <- data.frame(town_ID = towns_points$ID[t],
+                               measurement_ID = measurement_points$ID,
+                               distance = NA,
+                               MAIN_RIV = main_river)
+      
+
+      for (m in 1:nrow(measurement_points_on_river)){
+        
+    dists_temp[m,"distance"] <- upstream(startseg = towns_points_on_river[t,]$seg, # row t, segment column
+                     endseg   = measurement_points_on_river[m,]$seg, # row m, segment column
+                     startvert = towns_points_on_river[t,]$vert,
+                     endvert   = measurement_points_on_river[m,]$vert,
+                     rivers = current_river_network,
+                     flowconnected = TRUE)
     
-    # (i,j) positive value if 2nd location is upstream of the first; negative if downstream
-    # positive value if col upstream of row 
     
-    dyad_distances <- data.frame(namecol, value)%>%
-      rename(downstream = row,
-             upstream   = col,
-             distance_m = value)
+    } # end for loop over towns t
     
-    dyad_upstream  <- dyad_distances %>%
-      filter(value >= 0) 
+      if (t==1) {
+    dists_df <- dists_temp
+      } else {
+        dists_df <- rbind(dists_df,dists_temp)
+      }
+    } # end forloop over measurement points m
     
-   
-      saveRDS(object = dyad_upstream,
-              file =file.path(dyad_distances_path,paste0(points_leading_string,main_river,"_dyad_distances.rds")))
+      saveRDS(object = dists_df,
+              file =file.path(town_measurement_distances_path,paste0(points_leading_string,main_river,"_town_measurement_distances.rds")))
     
-    saveRDS(object = dyad_distances,
-            file = file.path(distance_matrices_flat_path,paste0(points_leading_string,main_river,"_distances_matrix_flat.rds")))
+      toc()
+
+      
+# get distances for town to town
+
+      # https://cran.r-project.org/web/packages/riverdist/vignettes/riverdist_vignette.html
+      #  In the flow-connected case, upstream() returns the network distance as positive if the second location is upstream of the first, and negative if downstream
+      
+    # make a toy version
     
-    saveRDS(object = distance_mat,
-            file = file.path(distance_matrices_path,paste0(points_leading_string,main_river,"_distances_matrix.rds")))
+    # towns_points_test <- towns_points[1:3,]
+    # towns_points_on_river_test <- riverdist::xy2segvert(x = towns_points_test$X,
+    #                                                      y = towns_points_test$Y,
+    #                                                      rivers = current_river_network)  
+    
+    t <- 1
+    m <- 2
+    
+    plot(current_river_network)
+    #showends(seg = 29, rivers = current_river_network)
+    #points(towns_points$X, towns_points$Y, pch = 2, col = "red")
+    riverpoints(seg = towns_points_on_river$seg,vert = towns_points_on_river$vert, rivers = current_river_network, col = "red", pch = 17)
+    #points(measurement_points$X, measurement_points$Y, pch = 0, col = "blue")
+    riverpoints(seg = measurement_points_on_river$seg,vert = measurement_points_on_river$vert, rivers = current_river_network, col = "blue", pch = 15)
+
+
+    riverpoints(seg = towns_points_on_river[t,]$seg,vert = towns_points_on_river[t,]$vert, rivers = current_river_network, col = "black",pch = 17)
+    riverpoints(seg = measurement_points_on_river[m,]$seg,vert = measurement_points_on_river[m,]$vert, rivers = current_river_network, col = "black", pch = 15)
+
+    
+      # for each town, get the distance from each measurement point
+    
+    tic("Got distances for T squared divided by 2")
+      for (t in 1:nrow(towns_points_on_river)) {
+        
+        
+        dists_temp <- data.frame(town_a_ID = towns_points$ID[t],
+                                 town_b_ID = towns_points$ID,
+                                 distance = NA,
+                                 MAIN_RIV = main_river)
+        
+        
+        for (m in 1:nrow(towns_points_on_river)){
+          
+        if (m==t){ # if it's the same town, distance will be zero
+
+          dists_temp[m,"distance"] <- 0
+        }
+          if (m < t) {
+            dists_temp[m,"distance"] <- "to_delete"
+          }
+          
+          if (m > t) { # this will give the "upper triangle" of a distance matrix if t is rows and m columns
+          dists_temp[m,"distance"] <- upstream(startseg = towns_points_on_river[t,]$seg, # row t, segment column
+                                               endseg   = towns_points_on_river[m,]$seg, # row m, segment column
+                                               startvert = towns_points_on_river[t,]$vert,
+                                               endvert   = towns_points_on_river[m,]$vert,
+                                               rivers = current_river_network,
+                                               flowconnected = TRUE)
+          
+          } # end if-else if m > t then take distance
+          
+          
+        } # end for loop over towns t
+        
+        if (t==1) {
+          dists_df <- dists_temp
+        } else {
+          dists_df <- rbind(dists_df,dists_temp)
+        }
+      } # end forloop over measurement points m
+      
+    # NOTE: This also removes the NA obs (which are where the obs are not flow connected)
+    dists_df <- dists_df %>%
+                dplyr::filter(distance != "to_delete") %>%
+                dplyr::mutate(distance = as.numeric(distance))
+    
+    toc()
+    
+    
+    
+    
+    tic("Got distances for T squared")
+    for (t in 1:nrow(towns_points_on_river)) {
+      
+      
+      dists_temp <- data.frame(town_a_ID = towns_points$ID[t],
+                               town_b_ID = towns_points$ID,
+                               distance = NA,
+                               MAIN_RIV = main_river)
+      
+      
+      for (m in 1:nrow(towns_points_on_river)){
+        
+
+          dists_temp[m,"distance"] <- upstream(startseg = towns_points_on_river[t,]$seg, # row t, segment column
+                                               endseg   = towns_points_on_river[m,]$seg, # row m, segment column
+                                               startvert = towns_points_on_river[t,]$vert,
+                                               endvert   = towns_points_on_river[m,]$vert,
+                                               rivers = current_river_network,
+                                               flowconnected = TRUE)
+        
+        
+      } # end for loop over towns t
+      
+      if (t==1) {
+        dists_df <- dists_temp
+      } else {
+        dists_df <- rbind(dists_df,dists_temp)
+      }
+    } # end forloop over measurement points m
+    
+
+    toc()
+    
+    
+    
+    saveRDS(object = dists_df,
+            file = file.path(town_town_distances_path,paste0(points_leading_string,main_river,"_town_town_distances.rds")))
+    
     
     
     saveRDS(main_river,

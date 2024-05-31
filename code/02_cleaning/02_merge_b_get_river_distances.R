@@ -76,16 +76,12 @@
 # select main rivers to go over ----
   
   singletons <- readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","singletons_node-level.rds"))
-  dyads      <- readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","dyads_node-level.rds"))
-  triads     <- readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","triads_node-level.rds"))
-  under_100  <-  readRDS(file = file.path(data_external_clean,"merged","DHS_ERA5_HydroSHEDS","river-distances_under-100-towns.rds"))
-  
-  main_rivers_singletons <- singletons %>% select(MAIN_RIV) %>% unique() %>% as.vector()%>% .[[1]]
-  main_rivers_dyads <- dyads %>% select(MAIN_RIV) %>% unique() %>% as.vector() %>% .[[1]]
-  main_rivers_triads <- triads %>% select(MAIN_RIV) %>% unique() %>% as.vector() %>% .[[1]]
-  main_rivers_under_100 <- under_100 %>% select(MAIN_RIV) %>% unique() %>% as.vector() %>% .[[1]]
-  
 
+  main_rivers_singletons <- singletons %>% select(MAIN_RIV) %>% unique() %>% as.vector()%>% .[[1]]
+
+# test a changed distance function
+
+  main_river <- 10865554
 
 # get the DHS locations placed on river networks ----
 

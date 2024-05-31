@@ -185,7 +185,15 @@
   current_river_network <- line2network(sf = single_river)
   
   current_river_network$mouth$mouth.seg <- mouth_segment
-  current_river_network$mouth$mouth.vert<- 1
+  
+  # get mouth vertex 
+  # how many vertices are there on this segment of the river
+  len <- dim(current_river_network$lines[[mouth_segment]])[1]
+  
+  # come back to this one, use showends() function to look at which vertex should be set as the final one
+  #showends(seg = mouth_segment, rivers = current_river_network)
+  
+  current_river_network$mouth$mouth.vert<- len
   
   # try cleaning up the river network
   
