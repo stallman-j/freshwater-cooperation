@@ -39,12 +39,14 @@ get_river_points_safe <- function(main_river,
     river_points_path               <- file.path(data_temp_path,"merged","DHS_GLOW_HydroSHEDS","river-points")
     hydro_rivers_units_missing_path <- file.path(data_temp_path,"HydroSHEDS","hydro_rivers_units_missing")
     glow_countries_units_missing_path  <- file.path(data_temp_path,"GLOW_global-long-term-river-width","glow_units_missing")
+    error_message_path              <- file.path(data_temp_path,"merged","DHS_GLOW_HydroSHEDS","river-points-errors")
     
     paths_to_create <- c(checked_river_path,
                          river_network_missing_path,
                          river_points_path,
                          hydro_rivers_units_missing_path,
-                         glow_countries_units_missing_path
+                         glow_countries_units_missing_path,
+                         error_message_path
     )
     
     for (path in paths_to_create){
@@ -239,6 +241,9 @@ get_river_points_safe <- function(main_river,
     message(paste("Error was returned on main_river:",main_river))
     message("Here's the original error message:")
     message(conditionMessage(cond))
+    txt <- as.character(conditionMessage(cond))
+    writeLines(txt,file.path(error_message_path,paste0(main_river,"_river_points_error.txt")))
+    
     # choose a return value in case of error
     return(NA) },
   warning = function(cond) {

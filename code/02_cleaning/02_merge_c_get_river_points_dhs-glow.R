@@ -40,7 +40,7 @@
   # parameters ----
   
   level <- 1 # GADM administrative level, for polygons
-  n_cores  <- 12 # 16 put 100% CPU; 14 was 93-97% CPU, just about right
+  n_cores  <- 12 # 16 put 100% CPU; 14 was 93-97% CPU, just about right, 12 
   
   
 # prior cleaning code ----  
