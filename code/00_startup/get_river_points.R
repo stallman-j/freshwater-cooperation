@@ -34,9 +34,9 @@ get_river_points_safe <- function(main_river,
   
   tryCatch( {
     # create output folders
-    checked_river_path         <- file.path(data_temp_path,"merged","DHS_GLOW_HydroSHEDS","checked-main-rivers","dhs-glow-river-points")
-    river_network_missing_path <- file.path(data_temp_path,"HydroSHEDS","river-network-missing")
-    river_points_path        <- file.path(data_temp_path,"merged","DHS_GLOW_HydroSHEDS","river-points")
+    checked_river_path              <- file.path(data_temp_path,"merged","DHS_GLOW_HydroSHEDS","checked-main-rivers","dhs-glow-river-points")
+    river_network_missing_path      <- file.path(data_temp_path,"HydroSHEDS","river-network-missing")
+    river_points_path               <- file.path(data_temp_path,"merged","DHS_GLOW_HydroSHEDS","river-points")
     hydro_rivers_units_missing_path <- file.path(data_temp_path,"HydroSHEDS","hydro_rivers_units_missing")
     glow_countries_units_missing_path  <- file.path(data_temp_path,"GLOW_global-long-term-river-width","glow_units_missing")
     
@@ -53,10 +53,12 @@ get_river_points_safe <- function(main_river,
       
     }
     
+    message(paste("Processing river"))
+    
     # create temp variables for the points data 
     # create some variables to manipulate; this is easier in base R than dplyr?
-    points_data[["lat"]]          <- points_data[[lat_varname]]
-    points_data[["lon"]]          <- points_data[[long_varname]]
+    points_data[["lat"]]           <- points_data[[lat_varname]]
+    points_data[["lon"]]           <- points_data[[long_varname]]
     points_data[["ID"]]            <- points_data[[id_varname]]
     points_data[["country_iso3c"]] <- points_data[[country_varname]]
     
@@ -232,14 +234,30 @@ get_river_points_safe <- function(main_river,
     
   }, # main part of the function for tryCatch
   
-  error = function(e) {
+  error = function(cond) {
     # code executed in event of an error
-    return(0) },
-  warning = function(w) {
-    # code executed in event of a warning
-    return(1)
+    message(paste("Error was returned on main_river:",main_river))
+    message("Here's the original error message:")
+    message(conditionMessage(cond))
+    # choose a return value in case of error
+    return(NA) },
+  warning = function(cond) {
+    message(paste("Warning was caused for main_river:", main_river))
+    message("Here's the original warning message:")
+    message(conditionMessage(cond))
+    # Choose a return value in case of warning
+    NULL
+  },
+  finally = {
+    # NOTE:
+    # Here goes everything that should be executed at the end,
+    # regardless of success or error.
+    # If you want more than one expression to be executed, then you
+    # need to wrap them in curly brackets ({...}); otherwise you could
+    # just have written 'finally = <expression>' 
+    message(paste("Processed main_river:", main_river))
+    message("Some other message at the end")
   }
-  
   
   ) # end tryCatch
 } # end function

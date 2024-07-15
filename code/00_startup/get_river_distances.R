@@ -6,6 +6,9 @@
 #' @param river_network_path where the river network lives
 #' @param river_network_missing_path where to log that the river network is currently missing
 #' @param checked_river_path where to log that the river distances have been obtained
+#' @param river_network_missing_path path to log that the river network is missing
+#' @param town_measurement_distances_path place to put the distance matrices for distances between a town and a river width measurement location
+#' @param town_town_distances_path file path of where to put the distance matrices for (on-river) distances between towns
 #' @export
 
 get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width measurements, good for an example
@@ -39,7 +42,7 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
     
     # run through conditions that should stop the function 
     # 
-    # Stop if riverr network directory doesn't exist
+    # Stop if river network directory doesn't exist
     if (!dir.exists(river_network_path)) {
       
       stop(paste0("River network directory in ",river_network_path," doesn't exist. You either need to create the river networks or check that you wrote the path correctly."))
@@ -93,6 +96,7 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
     measurement_points <- current_points %>%
                           dplyr::filter(type == "GLOW")
 
+    
     # get the segment and vertex of the river network for all the towns
     towns_points_on_river <- riverdist::xy2segvert(x = towns_points$X,
                                                    y = towns_points$Y,
@@ -126,6 +130,8 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
     
     # for each town, get the distance from each measurement point
     
+    
+    if (nrow(measurement_points)>0 & nrow(towns_points)>0) {
     tic("Got towns-measurements distances")
     for (t in 1:nrow(towns_points_on_river)) {
       
@@ -159,7 +165,7 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
               file =file.path(town_measurement_distances_path,paste0(points_leading_string,main_river,"_town-measurement-distances.rds")))
     
       toc()
-
+} # end if-else statement that only asks for measurement-town distances if there are both measurement and towns 
       
 # get distances for town to town
 
@@ -191,7 +197,9 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
     
       # for each town, get the distance from each measurement point
     
-    tic("Got distances for T squared divided by 2")
+    if (nrow(towns_points)>0) {
+      
+      tic("Got distances for T squared divided by 2")
       for (t in 1:nrow(towns_points_on_river)) {
         
         
@@ -236,7 +244,7 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
                 dplyr::mutate(distance = as.numeric(distance))
     
     toc()
-    
+    } # end if nrow(towns_points)>0 then take town distances
     
     # There are cases where this is faster to just go through all the town-town distances, esp. with small river networks
     # 

@@ -21,10 +21,11 @@
 
 # bring in the packages, folders, paths ----
   
-  code_folder <- file.path("P:","Projects","environment","code")
+  code_folder <- file.path("P:","Projects","freshwater-cooperation","code")
   source(file.path(code_folder,"00_startup_master.R"))
-  #source(file.path(code_startup_general,"merge_dhs_gps.R")) # function for merging dhs and gps data
-
+  # the function to get the fiver network
+  source(file.path(code_startup_project_specific,"get_river_network.R"))
+  
   if (!require("pacman")) install.packages("pacman")
   pacman::p_load(
     stringr, # string operations
@@ -41,17 +42,17 @@
   )
 
   level <- 1
-  dhs_gps_filename <- "UGGE7AFL" # # UGGE7AFL and #UGGC7BFL
+  #dhs_gps_filename <- "UGGE7AFL" # # UGGE7AFL and #UGGC7BFL
   
-  country          <- "UG"
+  #country          <- "UG"
   n_cores          <- 18 #detectCores(logical = TRUE) - 2
   #units_name       <- c("Uganda")
   equal_area_crs   <- "ESRI:102022"
   max_distance_to_snap <- 10000 # max distance at which to snap to a river; 10km b/c that's max perturbation
-  surveyyear_start <- 2018 %>% as.character()
-  surveyyear_end   <- 2020 %>% as.character()
+  #surveyyear_start <- 2018 %>% as.character()
+  #surveyyear_end   <- 2020 %>% as.character()
   long_river_threshold <- 4000 # original was 4000 
-  period_length    <- 60 # what months window is used for the mortality data
+  #period_length    <- 60 # what months window is used for the mortality data
 # bring in hydrorivers ----
   
   path <- file.path(data_external_raw,"HydroSHEDS","HydroRIVERS_v10_af.gdb","HydroRIVERS_v10_af.gdb")
@@ -86,7 +87,6 @@
   
   # country codes 
   #  https://dhsprogram.com/data/File-Types-and-Names.cfm#CP_JUMP_10136
-  
   
   countries_DHS <- readRDS(
     file= file.path(data_external_clean,"DHS","datasets-for-selection",
@@ -141,7 +141,7 @@
   
 # find which rivers are missing ----
 # 
-  missing_rivers_path <- file.path(data_external_temp,"HydroSHEDS","river-network-missing")
+  missing_rivers_path <- file.path(data_external_clean,"HydroSHEDS","river_network_missing")
   missing_river_files <- list.files(missing_rivers_path)
   
   missing_rivers <- str_extract(missing_river_files, "[^MAIN_RIV_]+")
@@ -157,67 +157,7 @@
   if (!dir.exists(out_path)) dir.create(out_path, recursive = TRUE) # recursive lets you create any needed subdirectories
   
   
-  get_river_network <- function(current_main_river,
-                                out_path = file.path("E:","data","03_clean","HydroSHEDS"),
-                                long_rivers_path = file.path("E:","data","02_temp","HydroSHEDS","long-rivers"),
-                                long_river_threshold = 4000
-                                #hydro_rivers = hydro_rivers # DO NOT Uncomment this - including it caused a recursive error
-                                ){
-  
-    if (!dir.exists(long_rivers_path)) dir.create(long_rivers_path, recursive = TRUE) 
-    
-    if (file.exists(file = file.path(out_path,"river_networks",paste0("MAIN_RIV_",current_main_river,"_cleaned_river_network.rds")))){
-      
-      print(paste0("Current river network for main_river ",current_main_river," already exists. No need to create."))
-      
-    } else {
-    single_river <- hydro_rivers %>%
-    dplyr::filter(MAIN_RIV==current_main_river)%>%
-    dplyr::mutate(width = 1/as.numeric(ORD_CLAS)) 
-  
-    if (nrow(single_river)>long_river_threshold){
-      
-  saveRDS(current_main_river,file = file.path(long_rivers_path,paste0("long_river_MAIN_RIV_",current_main_river,".rds")))
-    } else {
-      
-  mouth_segment <- which(single_river$NEXT_DOWN == 0)
 
-  current_river_network <- line2network(sf = single_river)
-  
-  current_river_network$mouth$mouth.seg <- mouth_segment
-  
-  # get mouth vertex 
-  # how many vertices are there on this segment of the river
-  len <- dim(current_river_network$lines[[mouth_segment]])[1]
-  
-  # come back to this one, use showends() function to look at which vertex should be set as the final one
-  #showends(seg = mouth_segment, rivers = current_river_network)
-  
-  current_river_network$mouth$mouth.vert<- len
-  
-  # try cleaning up the river network
-  
-  # tic(paste0("cleaning up river network",main_river," with ",nrow(single_river)," segments"))
-  # # started around 6:26pm 2023-12-05
-  # #current_river_network_fix <- cleanup(current_river_network)
-  # 
-  # #current_river_network <- current_river_network_fix
-  # 
-  # 
-  # toc()
-  
-  buildsegroutes(current_river_network,
-                 lookup = TRUE,
-                 verbose = FALSE)
-  
-  saveRDS(current_river_network, file = file.path(out_path,"river_networks",paste0("MAIN_RIV_",current_main_river,"_cleaned_river_network.rds")))
-  
-  rm(current_river_network)
-  
-  gc()
-    } # end if-else that if river is really big we'll deal with it later
-    } # end if-else that if river network already exists we won't create it
-  }
   
   # run as an example
   # 
@@ -229,8 +169,10 @@
   
   get_river_network(10746900)
   
+  tic("Got river network for a very big river")
   get_river_network(10071782,
                     long_river_threshold = 13000)
+  toc()
   
   # run some big rivers
   # for (i in 1:length(main_rivers_medium_big[1,1])) {

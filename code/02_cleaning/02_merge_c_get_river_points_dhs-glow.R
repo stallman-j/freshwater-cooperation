@@ -4,7 +4,7 @@
 # 
 # Stallman
 # Started 2023-10-11
-# Last edited: 
+# Last edited: 2024-05-31
 #________________________________#
 
 
@@ -18,13 +18,11 @@
 
 # bring in the packages, folders, paths
 
-  home_folder <- file.path("P:","Projects","environment")
+  home_folder <- file.path("P:","Projects","freshwater-cooperation")
   
   source(file.path(home_folder,"code","00_startup_master.R"))
-
-# requires having run
+  source(file.path(code_startup_project_specific,"get_river_points.R")) # function for getting along-river points
 # 02_merge_a_era5_dhs
-# 02_clean_dhs_child-mortality_annual
 
 # packages ----
 
@@ -133,9 +131,15 @@
   # # 10877433
   
   system.time(
-  get_river_points(main_river = 10877433,
+  get_river_points_safe(main_river = 10877433,
                    points_data = GPS_data
                    )
+  )
+  
+  system.time(
+    get_river_points_safe(main_river = 11113306,
+                     points_data = GPS_data
+    )
   )
   
   

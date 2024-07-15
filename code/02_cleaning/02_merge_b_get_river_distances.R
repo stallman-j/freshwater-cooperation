@@ -35,40 +35,21 @@
   )
 
 
-  n_cores          <- 18 #detectCores(logical = TRUE) - 2
+  # 18 cores put CPU at 100% try going lower
+  # 14 cores put CPU around 95%, that's about right
+  n_cores          <- 14 #detectCores(logical = TRUE) - 2
 
   
-  # bring in data ----
+  # get all the rivers for which river points exist by looking at the filenames of river points
+  # outputted from the get_river_points function
   
-  # if we want to examine which rivers to go over
-  path <- file.path(data_external_raw,"HydroSHEDS","HydroRIVERS_v10_af.gdb","HydroRIVERS_v10_af.gdb")
 
-  system.time(
-    hydro_rivers <- st_read(dsn = path) %>%
-      st_transform(crs = equal_area_crs) %>%
-      rename(geometry = Shape) # need this to use riverdist package
-  )
-  # get all the main rivers and convert to a vector to lapply through
-  main_rivers_all <- hydro_rivers %>% st_drop_geometry() %>% select(MAIN_RIV) %>%
-    unique() %>% as.vector() %>% .[[1]]
+  path <- file.path(data_external_temp,"merged","DHS_GLOW_HydroSHEDS","river-points")
+  
 
-  main_rivers_sizes <- hydro_rivers %>%
-    st_drop_geometry() %>%
-    group_by(MAIN_RIV) %>%
-    summarise(n_segments = n()) %>%
-    ungroup()
-
-
-  main_rivers_small <- hydro_rivers %>%
-                            st_drop_geometry() %>%
-                            group_by(MAIN_RIV) %>%
-                            summarise(n_segments = n()) %>%
-                            ungroup() %>%
-                            filter(n_segments <= 30 & n_segments >=1) %>%
-                            arrange(n_segments) %>%
-                            select(MAIN_RIV) %>% unique() %>% as.vector() %>% .[[1]]
-
-
+  main_rivers_list <- stringr::str_remove(list.files(path),"DHS_GLOW_MAIN_RIV_") %>%
+                       stringr::str_remove("_river_points.rds")
+  
 # test a changed distance function
   
   # some examples of rivers
@@ -85,11 +66,15 @@
   get_river_distances(main_river=11524662) # should give an error, this is the one with 1886 current points
   
   tic("Got a single river distance fully")
-  get_river_distances(main_river=11344899) # this has 323 current points
+  get_river_distances(main_river=11276981 ) 
+  toc()
+  
+  tic("Got a single river distance fully")
+  get_river_distances(main_river=main_rivers_small[100] ) 
   toc()
   # Got a single river distance fully: 1.66 sec elapsed
   
-  get_river_distances(main_river=11527323) # this has 261 current points
+  get_river_distances(main_river=10009216) 
 
 
 # to check the plotting in detail, look in the get_river_distances function
@@ -113,6 +98,8 @@ clusterEvalQ(cl,library(sf)) # send these separately, clusterEvalQ(cl, fun) is t
 clusterEvalQ(cl,library(riverdist))
 clusterEvalQ(cl, library(dplyr))
 clusterEvalQ(cl, library(countrycode))
+clusterEvalQ(cl, library(tictoc))
+
 #clusterEvalQ(cl, library(ggplot2))
 
 
@@ -123,10 +110,22 @@ clusterExport(cl, c("get_river_distances"))
 #parLapply(cl, main_rivers_all, get_dhs_river_distances)
 
 
-tic("Got distances for rivers of < 30 segments")
-parLapply(cl, main_rivers_small, get_river_distances, max_current_points = 1000)
+tic("Got distances for rivers of < 1000 points which have river points calculated already")
+parLapply(cl, main_rivers_list, get_river_distances, max_current_points = 1000)
 toc()
 
+
+tic("Got distances for rivers of < 2000 & > 1000 points which have river points calculated already")
+parLapply(cl, main_rivers_list, get_river_distances, max_current_points = 2000)
+toc()
+
+tic("Got distances for rivers of < 3000 & > 2000 points which have river points calculated already")
+parLapply(cl, main_rivers_list, get_river_distances, max_current_points = 3000)
+toc()
+
+tic("Got distances for rivers of < 4000 & > 3000 points which have river points calculated already")
+parLapply(cl, main_rivers_list, get_river_distances, max_current_points = 4000)
+toc()
 
 gc()
 toc()
