@@ -16,7 +16,7 @@ rm(list = ls())
 
 # bring in the packages, folders, paths
 
-home_folder <- file.path("P:","Projects","environment")
+home_folder <- file.path("P:","Projects","freshwater-cooperation")
 
 source(file.path(home_folder,"code","00_startup_master.R"))
 

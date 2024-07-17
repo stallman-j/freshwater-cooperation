@@ -160,9 +160,11 @@
   clusterEvalQ(cl, library(ggplot2))
   
   
+  tic(paste0("Exporting hydro_rivers and gadm_data and GPS_data to ",n_cores," cores."))
   clusterExport(cl, c("hydro_rivers","gadm_data")) # this is a big export b/c the hydro_rivers is huge
   clusterExport(cl, c("GPS_data"))
-
+  toc()
+  
   tic("Getting river points")
   parLapply(cl, main_rivs, get_river_points_safe, points_data = GPS_data)
   toc()
@@ -174,6 +176,46 @@
   
   stopCluster(cl)
   
+# get a data frame of all the towns and measurement counts 
+
+  path <- file.path(data_external_temp,"merged","DHS_GLOW_HydroSHEDS","river-points")
+  
+  
+  main_rivers_list <- stringr::str_remove(list.files(path),"DHS_GLOW_MAIN_RIV_") %>%
+    stringr::str_remove("_river_points.rds")
+  
+  
+  
+  for (main_river in main_rivers_list){
+    
+    
+    # bring in river network
+    points_filename_string <- paste0(points_leading_string,main_river,"_river_points.rds")
+    
+    current_river_network <- readRDS(file = file.path(river_network_path,paste0("MAIN_RIV_",main_river,"_cleaned_river_network.rds")))
+    
+    current_points        <- readRDS(file = file.path(points_data_path,points_filename_string))
+    towns_points <- current_points %>%
+      dplyr::filter(type == "DHS_town")
+    
+    measurement_points <- current_points %>%
+      dplyr::filter(type == "GLOW")
+    
+    
+    # print(paste0("In main_river ", main_river, "there are ",nrow(towns_points)," towns and ",nrow(measurement_points)," measurements."))
+    
+    temp_df <- data.frame(MAIN_RIV = main_river,
+                          n_towns = nrow(towns_points),
+                          n_measurements = nrow(measurement_points))
+    
+    if (main_river == main_rivers_list[1]){
+      df <- temp_df
+    } else {
+      df <- rbind(df,temp_df)
+    }
+    
+    saveRDS(df, file = file.path(data_external_temp, "merged","DHS_GLOW_HydroSHEDS","towns_measurement_counts.rds"))
+  } # end ifelse
   
 
 

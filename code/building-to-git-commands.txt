@@ -1,4 +1,4 @@
-# To push to git, do this in a gitbash terminal
+ # To push to git, do this in a gitbash terminal
 git add .
 git commit -m "commit message here"
 git push -u origin main

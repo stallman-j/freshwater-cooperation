@@ -1,6 +1,7 @@
 # requires the following data in environment: hydro_rivers
 #' @param main_river hydrorivers ID
 #' @param data_clean_path the place to put cleaned data
+#' @param checked_points_path path to whether the main_river has been checked for whether there are river points we should take
 #' @param points_data_path where the points data lives
 #' @param points_leading_string header for the points data, assumes the points data name is of form paste0(points_leading_string,main_river,"_river_points.rds")
 #' @param river_network_path where the river network lives
@@ -9,29 +10,33 @@
 #' @param river_network_missing_path path to log that the river network is missing
 #' @param town_measurement_distances_path place to put the distance matrices for distances between a town and a river width measurement location
 #' @param town_town_distances_path file path of where to put the distance matrices for (on-river) distances between towns
+#' @param error_message_path file path of where a txt file will be stored saying what the stopping error was for a particular main_river in the event that distances aren't calculated (makes parallel computing way easier)
 #' @export
 
 get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width measurements, good for an example
                                 max_current_points = 1000, # the max is 1886 for triads and below; biggest 30-40 are above 200
+                                checked_points_path = file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","checked-main-rivers","dhs-glow-river-points"),
                                 points_data_path = file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","river-points"), 
                                 points_leading_string  = "DHS_GLOW_MAIN_RIV_", #"DHS_MAIN_RIV_", # for just DHS      
                                 river_network_path = file.path("E:","data","03_clean","HydroSHEDS","river_networks"),
                                 checked_river_path = file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","checked-main-rivers","dhs-glow-distances"),
                                 river_network_missing_path =  file.path("E:","data","02_temp","HydroSHEDS","river-network-missing"),
                                 town_measurement_distances_path =         file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","town-measurement-distances"),
-                                town_town_distances_path =      file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","town-town-distances")
+                                town_town_distances_path =      file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","town-town-distances"),
+                                error_message_path              = file.path("E:","data","02_temp","merged","DHS_GLOW_HydroSHEDS","river-distances-errors")
                                   
 ){
   
   tryCatch( {
     
-    points_filename_string <- paste0(points_leading_string,main_river,"_river_points.rds")
+    # main_river <- 11175613 # has 6 DHS towns, no width measurements
     
     paths_to_create <- c(checked_river_path,
                          river_network_missing_path,
                          town_measurement_distances_path,
                          town_town_distances_path,
-                         river_network_missing_path
+                         river_network_missing_path,
+                         error_message_path
     )
     
     for (path in paths_to_create){
@@ -45,7 +50,7 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
     # Stop if river network directory doesn't exist
     if (!dir.exists(river_network_path)) {
       
-      stop(paste0("River network directory in ",river_network_path," doesn't exist. You either need to create the river networks or check that you wrote the path correctly."))
+      stop(paste0("River network directory in ",river_network_path," doesn't exist for MAIN_RIV ", main_river,". You either need to create the river networks or check that you wrote the path correctly."))
       
     }
     
@@ -64,22 +69,31 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
       
     }
     
-    # Stop if the river has already been checked, don't check it again
-    if (!file.exists(file = file.path(points_data_path,points_filename_string))){
+    # bring in river network
+    points_filename_string <- paste0(points_leading_string,main_river,"_river_points.rds")
+    
+    
+    if (!file.exists(file = file.path(checked_points_path,paste0("MAIN_RIV_",main_river,"_already_checked.rds")))){
       
-      stop(paste0("The closest points to ",main_river," have not yet been calculated. Go through a get_river_points function first to get these points."))
+      stop(paste0("Haven't checked whether ",main_river," has towns or measurements for the relevant river distance calculations. Go through a get_river_points function first to see if we should run this calculation."))
       
     }
     
-    # bring in river network
+    # Stop if the river has already been checked, don't check it again
+    if (!file.exists(file = file.path(points_data_path,points_filename_string))){
+      
+      stop(paste0("There aren't any river measurements or towns that we're using on ",main_river,", so there's nothing to take distances of."))
+      
+    }
     
+
     current_river_network <- readRDS(file = file.path(river_network_path,paste0("MAIN_RIV_",main_river,"_cleaned_river_network.rds")))
     
     current_points        <- readRDS(file = file.path(points_data_path,points_filename_string))
     
     if (nrow(current_points)>max_current_points){
       
-      stop(paste0("There are ",nrow(current_points)," rows in the current points data - too many to bother with for now."))
+      stop(paste0("There are ",nrow(current_points)," rows in the current points data for MAIN_RIV ", main_river, ", and you've set the max to be ",max_current_points," so we won't run this calculation right now."))
       
     }
     
@@ -97,39 +111,36 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
                           dplyr::filter(type == "GLOW")
 
     
+    if (nrow(towns_points)==0){
+      
+      saveRDS(main_river,
+              file.path(checked_river_path,paste0("MAIN_RIV_",main_river,"_already_checked.rds")))
+      
+      stop(paste0("There are no towns in the current points data for MAIN_RIV ",main_river," - pick a river with towns that you can put in between width observations."))
+      
+    }
+    
+    
     # get the segment and vertex of the river network for all the towns
     towns_points_on_river <- riverdist::xy2segvert(x = towns_points$X,
                                                    y = towns_points$Y,
                                                    rivers = current_river_network)
     
+    if (nrow(measurement_points)>0) {
     # for each town, calculate the upstream distance to 
     measurement_points_on_river <- riverdist::xy2segvert(x = measurement_points$X,
                                   y = measurement_points$Y,
                                   rivers = current_river_network)
     
-    # plot to see that everything makes sense
-    
-    # m <- 1
-    # t <- 1
-    # 
-    # # use plots to check that measurements are going all right
-    # plot(current_river_network)
-    # #showends(seg = 29, rivers = current_river_network)
-    # #points(towns_points$X, towns_points$Y, pch = 2, col = "red")
-    # riverpoints(seg = towns_points_on_river$seg,vert = towns_points_on_river$vert, rivers = current_river_network, col = "red", pch = 17)
-    # #points(measurement_points$X, measurement_points$Y, pch = 0, col = "blue")
-    # riverpoints(seg = measurement_points_on_river$seg,vert = measurement_points_on_river$vert, rivers = current_river_network, col = "blue", pch = 15)
-    # 
-    # 
-    # riverpoints(seg = towns_points_on_river[t,]$seg,vert = towns_points_on_river[t,]$vert, rivers = current_river_network, col = "black",pch = 17)
-    # riverpoints(seg = measurement_points_on_river[m,]$seg,vert = measurement_points_on_river[m,]$vert, rivers = current_river_network, col = "black", pch = 15)
-    # 
+    }
+
     # 
     # https://cran.r-project.org/web/packages/riverdist/vignettes/riverdist_vignette.html
     #  In the flow-connected case, upstream() returns the network distance as positive if the second location is upstream of the first, and negative if downstream
     
     # for each town, get the distance from each measurement point
     
+
     
     if (nrow(measurement_points)>0 & nrow(towns_points)>0) {
     tic("Got towns-measurements distances")
@@ -172,27 +183,6 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
       # https://cran.r-project.org/web/packages/riverdist/vignettes/riverdist_vignette.html
       #  In the flow-connected case, upstream() returns the network distance as positive if the second location is upstream of the first, and negative if downstream
       
-    # make a toy version
-    
-    # towns_points_test <- towns_points[1:3,]
-    # towns_points_on_river_test <- riverdist::xy2segvert(x = towns_points_test$X,
-    #                                                      y = towns_points_test$Y,
-    #                                                      rivers = current_river_network)  
-    
-    # testing plots
-    # t <- 1
-    # m <- 2
-    # 
-    # plot(current_river_network)
-    # #showends(seg = 29, rivers = current_river_network)
-    # #points(towns_points$X, towns_points$Y, pch = 2, col = "red")
-    # riverpoints(seg = towns_points_on_river$seg,vert = towns_points_on_river$vert, rivers = current_river_network, col = "red", pch = 17)
-    # #points(measurement_points$X, measurement_points$Y, pch = 0, col = "blue")
-    # riverpoints(seg = measurement_points_on_river$seg,vert = measurement_points_on_river$vert, rivers = current_river_network, col = "blue", pch = 15)
-    # 
-    # 
-    # riverpoints(seg = towns_points_on_river[t,]$seg,vert = towns_points_on_river[t,]$vert, rivers = current_river_network, col = "black",pch = 17)
-    # riverpoints(seg = measurement_points_on_river[m,]$seg,vert = measurement_points_on_river[m,]$vert, rivers = current_river_network, col = "black", pch = 15)
 
     
       # for each town, get the distance from each measurement point
@@ -232,17 +222,25 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
         } # end for loop over towns t
         
         if (t==1) {
-          dists_df <- dists_temp
+          dists_df_towns <- dists_temp
         } else {
-          dists_df <- rbind(dists_df,dists_temp)
+          dists_df_towns <- rbind(dists_df_towns,dists_temp)
         }
       } # end forloop over measurement points m
       
     # NOTE: This also removes the NA obs (which are where the obs are not flow connected)
-    dists_df <- dists_df %>%
+    dists_df_towns <- dists_df_towns %>%
                 dplyr::filter(distance != "to_delete") %>%
                 dplyr::mutate(distance = as.numeric(distance))
     
+    # add a flag of whether town_b is downstream or upstream of town a
+    # #  In the flow-connected case, upstream() returns the network distance as positive if the second location is upstream of the first, and negative if downstream
+    # 
+    dists_df_towns <- dists_df_towns %>% 
+                      dplyr::mutate(town_b_upstream = dplyr::case_when(distance > 0 ~ "b_upstream",
+                                                                       distance == 0 ~ "same_location",
+                                                                       distance < 0 ~ "b_downstream"),
+                                    )
     toc()
     } # end if nrow(towns_points)>0 then take town distances
     
@@ -282,7 +280,7 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
     # toc()
     
     
-    saveRDS(object = dists_df,
+    saveRDS(object = dists_df_towns,
             file = file.path(town_town_distances_path,paste0(points_leading_string,main_river,"_town-town-distances.rds")))
     
     
@@ -291,13 +289,36 @@ get_river_distances <- function(main_river,# 10865554 has 10 towns and 8 width m
             file.path(checked_river_path,paste0("MAIN_RIV_",main_river,"_already_checked.rds")))
   }, # main part of the function for tryCatch
 
-  error = function(e) {
-    # code executed in event of an error
-    return("error") },
-  warning = function(w) {
-    # code executed in event of a warning
-    return("warning")
-  }
+error = function(cond) {
+  # code executed in event of an error
+  message(paste("Error was returned on main_river:",main_river))
+  message("Here's the original error message:")
+  message(conditionMessage(cond))
+  txt <- as.character(conditionMessage(cond))
+  writeLines(txt,file.path(error_message_path,paste0(main_river,"_river_distances_error.txt")))
+  
+  # choose a return value in case of error
+  return(NA) },
+warning = function(cond) {
+  message(paste("Warning was caused for main_river:", main_river))
+  message("Here's the original warning message:")
+  message(conditionMessage(cond))
+  txt <- as.character(conditionMessage(cond))
+  writeLines(txt,file.path(error_message_path,paste0(main_river,"_river_distances_warning.txt")))
+  
+  # Choose a return value in case of warning
+  return(NULL)
+},
+finally = {
+  # NOTE:
+  # Here goes everything that should be executed at the end,
+  # regardless of success or error.
+  # If you want more than one expression to be executed, then you
+  # need to wrap them in curly brackets ({...}); otherwise you could
+  # just have written 'finally = <expression>' 
+  message(paste("Processed distances for main_river:", main_river))
+  message("Some other message at the end")
+}
 
 
   ) # end tryCatch

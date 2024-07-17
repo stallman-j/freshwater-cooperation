@@ -1,10 +1,10 @@
 # _______________________________#
-# Environment
+# Freshwater Cooperation
 # Merge 02 b: Get River Distances
 # 
 # Stallman
 # Started: 2023-10-23
-# Last edited: 2024-05-31
+# Last edited: 2024-07-15
 #________________________________#
 
 
@@ -30,6 +30,7 @@
     riverdist, # calculating river distances
     parallel, # for parallelizing operations
     tidyverse,
+    stringr, # for string calculations
     dplyr,
     tictoc # timing 
   )
@@ -50,6 +51,43 @@
   main_rivers_list <- stringr::str_remove(list.files(path),"DHS_GLOW_MAIN_RIV_") %>%
                        stringr::str_remove("_river_points.rds")
   
+  
+  for (main_river in main_rivers_list){
+    
+    
+    # bring in river network
+    points_filename_string <- paste0(points_leading_string,main_river,"_river_points.rds")
+    
+    current_river_network <- readRDS(file = file.path(river_network_path,paste0("MAIN_RIV_",main_river,"_cleaned_river_network.rds")))
+    
+    current_points        <- readRDS(file = file.path(points_data_path,points_filename_string))
+    towns_points <- current_points %>%
+      dplyr::filter(type == "DHS_town")
+    
+    measurement_points <- current_points %>%
+      dplyr::filter(type == "GLOW")
+    
+    
+    # print(paste0("In main_river ", main_river, "there are ",nrow(towns_points)," towns and ",nrow(measurement_points)," measurements."))
+    
+    temp_df <- data.frame(MAIN_RIV = main_river,
+                          n_towns = nrow(towns_points),
+                          n_measurements = nrow(measurement_points))
+    
+    if (main_river == main_rivers_list[1]){
+      df <- temp_df
+    } else {
+      df <- rbind(df,temp_df)
+    }
+    
+  } # end loop over main rivers for which we have points
+  
+  df <- df %>% 
+        dplyr::arrange(n_towns,n_measurements)
+  
+  saveRDS(df, file = file.path(data_external_temp, "merged","DHS_GLOW_HydroSHEDS","towns_measurement_counts.rds"))
+  
+  
 # test a changed distance function
   
   # some examples of rivers
@@ -57,7 +95,7 @@
   #main_river <- 11139531  
   #main_river <- 10856281 # a super long river, river network should be missing
  
-  main_river <- 11123192
+  main_river <- 10047142 # 395 measurements, 545 towns 
   
   #erroneous_river_network_path <- file.path("E:","data","03_clean","HydroSHEDS","river-river")
   #erroneous_hydro_rivers_units_path = file.path("E:","data","02_temp","HydroSHEDS","shape-files")
@@ -66,7 +104,7 @@
   get_river_distances(main_river=11524662) # should give an error, this is the one with 1886 current points
   
   tic("Got a single river distance fully")
-  get_river_distances(main_river=11276981 ) 
+  get_river_distances(main_river=11175613 ) 
   toc()
   
   tic("Got a single river distance fully")
@@ -74,9 +112,11 @@
   toc()
   # Got a single river distance fully: 1.66 sec elapsed
   
-  get_river_distances(main_river=10009216) 
+  get_river_distances(main_river=10586953) 
 
 
+  get_river_distances(main_river=10575182) 
+  
 # to check the plotting in detail, look in the get_river_distances function
 # 
 # MAIN_RIV 10865554 is a good one to test plotting
@@ -115,6 +155,9 @@ parLapply(cl, main_rivers_list, get_river_distances, max_current_points = 1000)
 toc()
 
 
+# Got distances for rivers of < 1000 points which have river points calculated already: 86677.47 sec elapsed
+# About 24 hours
+
 tic("Got distances for rivers of < 2000 & > 1000 points which have river points calculated already")
 parLapply(cl, main_rivers_list, get_river_distances, max_current_points = 2000)
 toc()
@@ -123,7 +166,7 @@ tic("Got distances for rivers of < 3000 & > 2000 points which have river points 
 parLapply(cl, main_rivers_list, get_river_distances, max_current_points = 3000)
 toc()
 
-tic("Got distances for rivers of < 4000 & > 3000 points which have river points calculated already")
+tic("Got distances for rivers of < 4000 points which have river points calculated already")
 parLapply(cl, main_rivers_list, get_river_distances, max_current_points = 4000)
 toc()
 
