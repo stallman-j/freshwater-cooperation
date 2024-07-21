@@ -162,6 +162,10 @@ tic("Got distances for rivers of < 2000 & > 1000 points which have river points 
 parLapply(cl, main_rivers_list, get_river_distances, max_current_points = 2000)
 toc()
 
+# Got distances for rivers of < 2000 & > 1000 points which have river points calculated already: 292574.25 sec elapsed
+
+# Get DHS and GLOW Intersections for triads: 379259.2 sec elapsed
+
 tic("Got distances for rivers of < 3000 & > 2000 points which have river points calculated already")
 parLapply(cl, main_rivers_list, get_river_distances, max_current_points = 3000)
 toc()
