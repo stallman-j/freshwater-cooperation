@@ -1,0 +1,30 @@
+\documentclass[12pt,openany]{book}      % paper size is in preamble.sty
+
+
+
+\usepackage{preambles/preamble_book}
+
+
+\begin{document}
+% \frontmatter puts the pages numbered in lowercase roman, doesn't number chapters
+% https://latexref.xyz/_005cfrontmatter-_0026-_005cmainmatter-_0026-_005cbackmatter.html
+
+\frontmatter
+% at the top of new .tex documents before anything else, put 
+
+%!TEX root = filepath-to-main_book.tex 
+% and then your latex will compile correctly from the master file, even if you hit "compile" while you're in the sub-document
+
+\input{templates/01_front-matter/title-page}
+\input{templates/01_front-matter/copyright-page}
+\input{templates/01_front-matter/preface}
+\input{templates/01_front-matter/toc-page}
+
+% \mainmatter changes the behavior back to expected and resets the pagenumber
+\mainmatter
+\pagestyle{fancy}
+
+\input{templates/02_body/01_general-writing/book-chapter-template}
+
+
+\end{document}

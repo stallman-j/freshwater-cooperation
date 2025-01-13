@@ -1,0 +1,81 @@
+\section{Creating Theorems, Hypotheses, and Lemmas}\label{sec:theorems-hypotheses}
+
+If you'd like to have something titled to which you can refer, like hypotheses 1-4, theorems, definitions, assumptions and so forth, you can create a command in the preamble that defines this new environment. 
+
+For an intro tutorial, see \url{https://www.overleaf.com/learn/latex/theorems_and_proofs}, which has most of what you should need. Many examples below have been taken from here.
+
+See \url{https://tex.stackexchange.com/questions/386905/hypothesis-with-amsthm-package}. You need \verb+amsthm+, and then check this preamble (the one in \verb+preambles/preamble_article.sty+) in the area under the \verb+amsthm+ package. The high level of customization uses \verb+thmtools+, and the \verb+\cref+ uses the \verb+cleverref+ package, a package for fancy cross references. 
+
+Note, though, that \verb+cleverref+ can clash with the \verb+cases+ package: \url{https://tex.stackexchange.com/questions/201437/cleveref-and-cases-packages-clash}. 
+
+See \url{https://tex.stackexchange.com/questions/36295/cross-reference-packages-which-to-use-which-conflict} for tons of pros and cons you'll hopefully never need. 
+
+The short: \verb+cleverref+ is a great package. Just make sure that \verb+cleverref+ is the last loaded cross-referencing package (the last one in your preamble)
+
+Note also that the "hypothesis" environment used \verb+amsthm+, and the fancy cross referencing used \verb+cleverref+. You wouldn't need \verb+cleverref+ just to introduce the hypothesis environment, although it did require \verb+thmtools+ to make it so customized.
+
+ \begin{hyp}[Test hypothesis] \label{hyp:a}This is my first hypothesis. \end{hyp}
+ \begin{hyp} \label{hyp:b}This is my second hypothesis. \end{hyp}
+
+  \Cref{hyp:a,hyp:b}.
+
+Additionally, you can use the easier redefinition of commands from \verb+amsthm+ to designate theorems and lemmas that go under theorems, for instance:
+
+
+
+\section{Examples}
+
+\begin{theorem}[Test theorem]
+This is the first theorem
+\end{theorem}
+
+\begin{corollary}
+Here's a corollary to the theorem
+\end{corollary}
+
+
+
+
+\begin{theorem}
+Let $f$ be a function whose derivative exists in every point, then $f$ is 
+a continuous function.
+\end{theorem}
+
+\begin{theorem}[Pythagorean theorem]
+\label{pythagorean}
+This is a theorema about right triangles and can be summarised in the next 
+equation 
+\[ x^2 + y^2 = z^2 \]
+\end{theorem}
+
+And a consequence of theorem \ref{pythagorean} is the statement in the next 
+corollary.
+
+\begin{corollary}
+There's no right rectangle whose sides measure 3cm, 4cm, and 6cm.
+\end{corollary}
+
+You can reference theorems such as \ref{pythagorean} when a label is assigned.
+
+\begin{lemma}
+Given two line segments whose lengths are $a$ and $b$ respectively there is a 
+real number $r$ such that $b=ra$.
+\end{lemma}
+
+\begin{assumption}
+I am making an assumption
+\end{assumption}
+
+\section{Restarting the examples}
+
+\begin{theorem}
+Let $f$ be a function whose derivative exists in every point, then $f$ is 
+a continuous function.
+\end{theorem}
+
+You can reference theorems such as \ref{pythagorean} when a label is assigned.
+
+\begin{lemma}
+Given two line segments whose lengths are $a$ and $b$ respectively there is a 
+real number $r$ such that $b=ra$.
+\end{lemma}

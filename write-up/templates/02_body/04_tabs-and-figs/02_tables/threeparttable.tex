@@ -1,0 +1,63 @@
+\section{Fancier Tables: Threeparttable}\label{sec:threeparttable}
+
+
+Making highly editable tables can be a bit of a hassle. To have a table with notes, you'll want the package \verb+threepartable+. 
+
+For a table that spans multiple pages, you need \verb+longtable+. 
+
+For a table that spans multiple pages AND has customizable notes, you'll want to add the package \verb+threeparttablex+, which allows you to use \verb+longtable+ with \verb+threeparttable+. You'll need to spend a little time finagling with the table notes in order to get this to work. See \verb+longtable-with-text-wrapping+ (if it's included, it's in \ref{sec:longtable-with-text-wrapping}) for longtable examples.
+
+(to be continued)
+\subsection{threeparttable}
+See \href{https://tug.org/pracjourn/2007-2/asknelly/}{here} for some examples.
+The following is an example from \href{https://tex.stackexchange.com/questions/118743/threeparttable-notes-layout}{tex stack exchange}
+
+
+\begin{table}[htp]
+\caption{Some very informative caption}
+\begin{center}
+\begin{threeparttable}
+\begin{tabular}{c c c c}
+    \toprule
+    \textbf{1st Column} & \textbf{2nd Colimn} & \textbf{3rd Colimn} & \textbf{4th Colimn} \\ \midrule
+      QWERTY\tnote{1}   &                     &                     &  \\
+      ASDFGH\tnote{2}   &                     &                     &  \\ \bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item[1] qwerty; \item[2] asdfgh
+\end{tablenotes}
+\end{threeparttable}
+\end{center}
+\label{table:simDisimCoefNewDef}
+\end{table}
+
+
+
+\begin{table}[H]
+\centering
+\caption{...}
+\footnotesize
+{
+\def\sym#1{\ifmmode^{#1}\else\(^{#1}\)\fi}
+\begin{threeparttable}
+
+\begin{tabular}{c c c c}
+    \toprule
+    \textbf{1st Column} & \textbf{2nd Colimn} & \textbf{3rd Colimn}\tnote{\dag} & \textbf{4th Colimn} \\ \midrule
+      QWERTY\tnote{1}   &                     &                     &  \\
+      ASDFGH\tnote{2}   &                     &                     &  \\ \bottomrule
+\end{tabular}
+  \begin{tablenotes}
+    \item[$*$] $p<0.1$, \sym{**} $p<0.05$, \sym{***} $p<0.01$
+    \item[\dag] These ... \smallskip
+    \item \emph{Note:} This is a note. I'm not sure if it will switch onto the next line as I'd like, so here I am going to go ahead and keep writing to see if it will indeed switch lines
+  \end{tablenotes}
+
+\end{threeparttable}
+}
+\label{tbl:name}
+\end{table}
+
+
+
+   

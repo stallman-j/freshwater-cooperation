@@ -1,0 +1,18 @@
+{
+	"folders":
+	[
+		{
+			"path": "."
+		}
+	],
+	"settings" : {
+        "latextools.tex_root": "main.tex",
+        "latextools.tex_file_exts": [".tex", ".tikz"],
+        "latextools.builder_settings": {
+            "program": "xelatex",
+            "options": "--shell-escape"
+        },
+        "latextools.aux_directory": "C:/Projects/caches/freshwater-cooperation",
+        "latextools.output_directory": "C:/Projects/caches/freshwater-cooperation"
+    }
+}

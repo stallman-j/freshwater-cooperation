@@ -1,0 +1,71 @@
+\noindent
+\Large CLASS NAME HERE  
+ 	\large PROBLEM SET XX  
+ 	\large Due DATE 
+ 	\large YOUR NAME
+ 	\today  [1.5em] % today's date, then gives a little space below
+ 
+
+\section{Problem 1}
+
+
+\subsection{Pre-Processing}
+
+ 
+    \begin{quote}
+    To keep children from being confused, it's better when men look and act like men, and women look and act like women.    
+    \end{quote} 
+    
+    
+\textbf{Covariates to Include:}
+    
+    The authors describe their preferred covariates in their Supplementary Materials, although I don't necessarily share their priors. They suggest that Democrats will be more responsive to treatment than Republicans:
+    \begin{itemize}
+        \item \verb+vf\_racename+ (possibly different cultural experiences or personal experience with different gender expression, and variation in social desirability of certain views)
+        \item \verb+vf\_party+ (may pick up differences in social desirability)
+    \end{itemize}
+    
+    \textbf{Preliminary Data Processing:}
+    Figures~\ref{fig:hw-04_q-01a_data-skim_keepvars-01} and ~\ref{fig:hw-04_q-01a_data-skim_keepvars-02} present an initial look at the data with \verb+skim+. I have included additional outcomes for the purposes of missing data analysis, to which we now turn. 
+    
+
+    \begin{figure}[H]
+	\centering % centers
+	\includegraphics[width=.8\linewidth]{figures/frog.jpg}
+	\caption{An Initial Look at the Data} 
+	\label{fig:hw-04_q-01a_data-skim_keepvars-01}
+    \end{figure}
+    
+        \begin{figure}[H]
+	\centering % centers
+	\includegraphics[width=.8\linewidth]{figures/frog.jpg}
+	\caption{An Initial Look at the Data} 
+	\label{fig:hw-04_q-01a_data-skim_keepvars-02}
+    \end{figure}
+
+   
+            
+
+\input{tables/tables-from-stata/estout-sumstats_template.tex}
+
+   
+    
+
+    \begin{figure}
+    \centering
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/frog.jpg} % first figure itself
+        \caption{Forest as Ntree grows}
+       \label{fig:hw-04_q-01e_forest}
+    \end{minipage}\hfill
+    \begin{minipage}{0.45\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/frog.jpg} % second figure itself
+        \caption{Xgboost as Nrounds Grows}
+    \end{minipage}
+    \label{fig:hw-04_q-01e_xg}
+\end{figure}
+
+
+

@@ -1,0 +1,36 @@
+\begin{table}[H]
+
+\caption{Panel Regression, Life Expectancy \label{tab:hw03regpanel}}
+\centering
+\begin{threeparttable}
+\begin{tabular}[t]{lcccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{4}{c}{Life Expectancy at Birth} \\
+\cmidrule(l{3pt}r{3pt}){2-5}
+\multicolumn{1}{c}{ } & \multicolumn{1}{c}{1960} & \multicolumn{1}{c}{2019} & \multicolumn{1}{c}{Within} & \multicolumn{1}{c}{Twoway} \\
+\cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3} \cmidrule(l{3pt}r{3pt}){4-4} \cmidrule(l{3pt}r{3pt}){5-5}
+  & (1) & (2) & (3) & (4)\\
+\midrule
+Intercept & 37.484 & 62.576 &  & \\
+ & (1.786) & (0.789) &  & \\
+GDP (units) per (units) capita & 5.465 & 0.891 & 0.821 & -0.141\\
+ & (1.025) & (0.082) & (0.065) & (0.048)\\
+(GDP(units) per (units))$$^2$$ & -0.280 & -0.014 & -0.008 & 0.001\\
+ & (0.112) & (0.002) & (0.001) & (0.000)\\
+(GDP (units) per (units))$$^3$$ & 0.005 & 0.000 & 0.000 & 0.000\\
+ & (0.003) & (0.000) & (0.000) & (0.000)\\
+\midrule
+Num.Obs. & 107 & 182 & 10201 & 10201\\
+R2 & 0.660 & 0.694 & 0.785 & 0.929\\
+Mean & 53.59 & 73.08 & 64.31 & 64.31\\
+Country FE & N & N & Y & Y\\
+Time FE & N & N & N & Y\\
+R2 Within &  &  & 0.302 & 0.035\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item \textit{Notes: } 
+\item Heteroskedascicity-robust standard errors clustered at the country (for within) and country and year (for twoways) levels given in parentheses. Population and life expectancy data are from \citet{undesaWorldPopulationProspects2022}. Gross domestic product (GDP) is (what units) from \citet{feenstraNextGenerationPenn2015}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

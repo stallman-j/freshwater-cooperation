@@ -1,0 +1,236 @@
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+\usetheme{boxes}
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+%\usetheme{Berkeley} %do like
+%\usetheme{Berlin} %do like
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt} %do like
+%\usetheme{Dresden} %do like
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins} %do like
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg} %do like
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto} %do like
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin} %do like
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily} %do like
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+%\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+\definecolor{myblue}{rgb}{0.55,0.64,0.8}
+\definecolor{mygreen}{HTML}{228B22}
+\definecolor{lilgreen}{HTML}{85C285}
+\definecolor{yaleblue}{HTML}{00356B}
+
+
+\usecolortheme[named=yaleblue]{structure}
+
+
+%\usecolortheme[named=mygreen]{structure}
+
+
+% set colors so blocks are visible
+\setbeamercolor{block body alerted}{bg=alerted text.fg!10}
+\setbeamercolor{block title alerted}{bg=alerted text.fg!20}
+\setbeamercolor{block body}{bg=structure!10}
+\setbeamercolor{block title}{bg=structure!20}
+\setbeamercolor{block title example}{bg=mygreen!20}
+
+
+
+
+% -----------------
+% make the outline appear before every section 
+% -----------------
+
+\AtBeginSection[]
+{
+  \begin{frame}
+    \frametitle{Table of Contents}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+\setbeamertemplate{footline}{\raisebox{5pt}{\makebox[\paperwidth]{\hfill\makebox[10pt]{\scriptsize\insertframenumber}}}}
+% To replace the footer line in all slides with a simple slide count uncomment this line % replace frmae with page to show actual pages
+
+\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+\usepackage{etex}
+\usepackage{graphicx} % Allows including images
+%\usepackage{caption}
+%\usepackage{subcaption}
+\graphicspath{{Pictures/}}
+\usepackage{booktabs}
+\usepackage{dcolumn}
+\usepackage{calc}
+\newlength \MyColSep
+\setlength \MyColSep{.01cm}
+\newlength\MyColWd
+\setlength\MyColWd{0.3333\textwidth-0.666\MyColSep}
+\usepackage{morefloats}
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}
+\usepackage{verbatim}
+\usepackage[utf8]{inputenc}
+\usepackage{tikz}
+\tikzset{
+  treenode/.style = {shape=rectangle, rounded corners,
+                     draw, align=center,
+                     top color=white, bottom color=blue!20},
+  root/.style     = {treenode, font=\ttfamily\normalsize, bottom color=blue!20},
+  oc/.style     = {treenode, font=\ttfamily\normalsize, bottom color=red!20},
+  env/.style      = {treenode, font=\ttfamily\normalsize},
+  dummy/.style    = {circle,draw}
+}
+
+\usepackage{array}
+\usepackage{booktabs}
+
+\usepackage{subfig}
+
+\usepackage{etoolbox}
+\usepackage{pdflscape}
+%\setlength\parindent{0pt} % Uncomment to remove all indentation from paragraphs
+\usepackage{morefloats}
+
+\usepackage{threeparttable}% Alternative for Notes below table
+\usepackage{tabularx}
+
+
+% multimedia embedding
+\usepackage{multimedia}
+
+
+
+
+% *****************************************************************
+% Estout related things
+% *****************************************************************
+\newcommand{\sym}[1]{\rlap{#1}}% Thanks to David Carlisle
+
+\let\estinput=\input% define a new input command so that we can still flatten the document
+
+\newcommand{\estwide}[3]{
+		\vspace{0pt}{
+			\begin{tabular*}
+			{\textwidth}{@{\hskip\fill}l*{#2}{#3}}
+			\toprule
+			\estinput{#1}
+			\bottomrule
+			\addlinespace[.75ex]
+			\end{tabular*}
+			}
+		}	
+
+\newcommand{\estauto}[3]{
+		\vspace{0pt}{
+			\begin{tabular}{l*{#2}{#3}}
+			\toprule
+			\estinput{#1}
+			\bottomrule
+			\addlinespace[.25ex]
+			\end{tabular}
+			}
+		}
+
+% Allow line breaks with \\ in specialcells
+	\newcommand{\specialcell}[2][c]{%
+	\begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
+% *****************************************************************
+% Custom subcaptions
+% *****************************************************************
+% Note/Source/Text after Tables
+%\newcommand{\figtext}[1]{
+%	\vspace{-1.9ex}
+%	\captionsetup{justification=justified,font=footnotesize}
+%	\caption*{\hspace{6pt}\hangindent=1.5em #1}
+%	}
+
+%Try uncommenting below if text below figures is ugly	
+\newcommand{\figtext}[1]{%
+ %\vspace{-1.9ex}% Comment here or adjust accordingly
+ \captionsetup{options=figtext, font=footnotesize}
+ \caption*{\hspace{6pt}\hangindent=1.5em #1}
+}
+ 
+\newcommand{\fignote}[1]{\figtext{\emph{Note:~}~#1}}
+
+\newcommand{\figsource}[1]{\figtext{\emph{Source:~}~#1}}
+
+% Add significance note with \starnote
+\newcommand{\starnote}{\figtext{* p < 0.1, ** p < 0.05, *** p < 0.01. Standard errors in parentheses.}}
+
+% ---------------------%
+% siunitx
+% ---------------------%
+\usepackage{siunitx} % centering in tables
+	\sisetup{
+		detect-mode,
+		tight-spacing		= true,
+		group-digits		= false ,
+		input-signs		= ,
+		input-symbols		= ( ) [ ] - + *,
+		input-open-uncertainty	= ,
+		input-close-uncertainty	= ,
+		table-align-text-post	= false
+        }
+        
+        
+        % Note/Source/Text after Tables
+\newcommand{\Figtext}[1]{%
+ \begin{tablenotes}[para,flushleft,font=footnotesize]
+ \hspace{3pt}
+ \hangindent=1.75em
+ #1
+ \end{tablenotes}
+}
+
+\newcommand{\Fignote}[1]{\Figtext{\emph{Note:~}~#1}}
+\newcommand{\Figsource}[1]{\Figtext{\emph{Source:~}~#1}}
+\newcommand{\Starnote}{\Figtext{* p < 0.1, ** p < 0.05, *** p < 0.01. Standard errors in parentheses.}}% Add significance note with \starnote
+
+\usepackage{enumitem}
+
+
+\usepackage{natbib} % this is one of the citation-specific packages
+\bibliographystyle{apalike}
+\setcitestyle{authoryear,open={(},close={)}}

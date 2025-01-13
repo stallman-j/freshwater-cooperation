@@ -1,0 +1,52 @@
+\section{Citations}
+- author: Jillian
+\subsection{The Basics}
+You shouldn't need to manually create a citation style, although you could manually create citations if you didn't feel like using any of the great capabilities of Latex and staring at \verb+@+ signs and trying to figure out where things go.... To each her own.\\
+
+ There are a few packages for if you for some reason needed to input your entries manually, like \verb+biblatex+ or \verb+bibtex+, but you should really be using something like Mendeley, Endnote, or Zotero (if you're a Windows system) or Bibdesk (if Mac). Mendeley, Endnote and Zotero support exporting to a .bib file, so if you're also using Word for inputting citations, you're better off generating and housing your bibliographies in one of those three, and then exporting/syncing to a .bib file that gets sent to your  \verb+Bibliography+ folder. If this is the case, you should never manually edit your \verb+.bib+ file, but only consult to see what automatic citation keys they generated for you. Zotero is something I think is far superior.
+
+
+
+ and see somewhere like \url{https://www.overleaf.com/learn/latex/Biblatex_citation_styles}, or, as is more common, use the package \verb+natbib+: 
+I want to cite one of the articles from the library:~\cite{acemogluEnvironmentDirectedTechnical2012}. The tilde before that code makes the spacing slightly nicer sometimes.
+
+% see https://www.overleaf.com/learn/latex/natbib_citation_styles for further examples
+
+This document is an example, two items are cited: \textit{The \LaTeX\ Companion} book  - this should have a parentheses around it \citep[see][chap 2]{acemogluEnvironmentDirectedTechnical2012} and Einstein's journal paper \cite{acemogluEnvironmentDirectedTechnical2012}. 
+
+This is a text citation \citet{acemogluEnvironmentDirectedTechnical2012}, parenthetical \citep{acemogluEnvironmentDirectedTechnical2012}, that prints all names of all authors \cite*{acemogluEnvironmentDirectedTechnical2012}, and parenthetical with all authors \citep*{acemogluEnvironmentDirectedTechnical2012}, name only \citeauthor{acemogluEnvironmentDirectedTechnical2012}, and year only \citeyear{acemogluEnvironmentDirectedTechnical2012}. 
+
+
+For more on natbib styles, see \href{https://www.overleaf.com/learn/latex/Natbib_bibliography_styles}{this page on overleaf}
+
+\subsection{Mendeley, Zotero, Endnote, Jabref ETC with Bibtex}
+See the MIT library guide for general info on using all these versions with bibtex: \url{https://libguides.mit.edu/cite-write/bibtex}. MIT has quick guides for all those softwares to get you synced and going quickly.\\
+
+If you're already using one of these primarily, go for it. If you haven't started using a citation software, use one. Just do it.\\
+
+I've done a project in Endnote and ended up not loving it. Lisha uses Zotero. I'm going to try Mendeley next.
+
+The short:\\
+\begin{itemize}
+\item Zotero can automatically sync with the use of the "Better BibTex" plugin.
+\item Mendeley can autosync, but only your entire library
+\item Endnote can't autosync
+\item Use Jabref if you're on Windows, Latex is your primary compiler, and you can't imagine writing a cited article in Word.
+\item Use Bibdesk if the conditions for Jabref hold but you use a Mac.
+\end{itemize}
+
+If Mendeley isn't playing nice and generating citation keys, see \url{https://tex.stackexchange.com/questions/461971/mendeley-not-generating-citation-key-on-desktop-version} and see if that fixes it. You shouldn't need to generate your own.
+
+\subsection{Adding a Bib Style (Mac)}
+If you're trying to add  a bibstyle on a mac, in the folder ~Library, which you have to make unhidden (google "how to show the Library folder"); and then make folders called \verb+texmf/bibtex/bst+, and dump the .bst file inside there.
+
+Note: there are some installed .bst files, which are what natbib reads to view your citation style, which aren't registering as bib style files. If you want to use them later, drag and drop the .bst into the same folder. 
+
+Those files are currently in\\
+\verb+usr/local/texlive/2020/texmf-dist/...+\\
+\verb+bibtex/bst/[name of style]/[name of style].bst.+
+
+Note also that you can copy+paste a .bst file from the internet into a new .tex file, but then save as .bst.
+
+\subsection{Actual Citations}
+Chances are you'll end up using \verb+natbib+ as the package, so see \url{https://www.overleaf.com/learn/latex/Bibliography_management_with_natbib}. Overleaf recommends using \verb+biblatex+ 

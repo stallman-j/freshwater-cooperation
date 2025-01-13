@@ -1,0 +1,144 @@
+
+\section{Math Equations}\label{sec:math-equations}
+
+
+
+\subsection{Equations}
+The following is adapted from \url{https://www.overleaf.com/learn/latex/mathematical_expressions}.
+
+
+
+Equations in-line can be demarcated like so \(x^2 + 2^e = \pi \) or $42=2a-i$.
+
+This basic math environment centers equations on a single line:
+
+\[ \cos(2\pi)+\sinh(x)=\lim_{n\to \infty} f^n(\cdot)\]
+
+Number equations with the \verb+equation+ environment. To use this environment, you need the package \verb+amsmath+, but if you're using Latex you probably want this package anyways.
+
+\begin{equation}
+	\int_{0}^{\infty} [\sqrt{n}+4] dx + \sum_{i=1}^{-\infty} A_{jkl}^{3}
+\end{equation}
+
+See \url{https://www.overleaf.com/learn/latex/Aligning%20equations%20with%20amsmath} for explanations\\
+
+For more operators and functions, see \url{https://www.overleaf.com/learn/latex/Operators}.\\
+
+\subsubsection{Split and a fraction}
+If you have several lines of equations but you're really only interested in one equation, you can group them together into a single equation. Note that the \& is setting the delimiter. This is common (tables and matrices also use this delimiter).\\
+
+This is also how you do fractions. Fractions can nest within fractions.
+
+\begin{equation} \label{eq1}
+	\begin{split}
+		A & = \frac{\pi r^2}{2} \\
+		& \neq  \frac{1}{2\frac{2\alpha}{48}} \pi r^2\\
+		B & = \frac{2\{A,b,c\}}{\varepsilon}\\
+		\mathbb{R} & \supset [0,1]
+	\end{split}
+\end{equation}
+
+\subsubsection{Cross-Referencing Equations}
+You can also reference equations by giving them a label. 
+This \verb+\ref+ is a command in the Latex kernel. Note that it doesn't put parentheses around the number.
+
+\begin{equation} \label{eu_eqn}
+	e^{\pi i} + 1 = 0
+\end{equation}
+
+The beautiful equation \ref{eu_eqn} is known as the Euler equation
+
+
+The other way to do it, \verb+\eqref+, uses \verb+amsmath+.
+\begin{equation} \label{eq:anothereq}
+	\varnothing = \emptyset
+\end{equation}
+
+See \url{https://tex.stackexchange.com/questions/107422/what-is-the-difference-between-eqref-and-ref}.
+
+
+The varnothing in equation \eqref{eq:anothereq} requires the package \verb+amssymb+.
+
+
+\subsubsection{Labeling or not}
+If you want just a specific equation labeled within your align environment, you can either force a tag or force no tag. the \verb+\notag+ command can go at the beginning or end of the equation, it just has to be on the correct line.\\
+
+Since \verb+align+ automatically labels each equation, you can pick out a particular equation and refer to it: 
+
+\begin{align} 
+	2x - 5y 		&=  8 \label{eq:a}\\ 
+	3x + 9y 		&=   -12 \notag \\
+	\notag  \Psi 	&=  \emptyset  \\
+\end{align}
+
+The first equation above is equation \eqref{eq:a}
+
+\subsubsection{Aligning Equations}
+If you're doing a row of equations and specifically want to align them, put them in the align environment. The asterisk in \verb+\begin{align*}+ and \verb+\end{align*}+ says "don't label this equation" Note the double backslash to put on a new line, and note that you need the asterisk both at the beginning and the end of  environment.
+
+\begin{align*} 
+	2x - 5y &=  8 \\ 
+	3x + 9y &=  -12
+\end{align*}
+
+Another example:
+
+\begin{align*}
+	x&=y           &  w &=z              &  a&=b+c\\
+	2x&=-y         &  3w&=\frac{1}{2}z   &  a&=b\\
+	-4 + 5x&=2+y   &  w+2&=-1+w          &  ab&=cb
+\end{align*}
+
+Hopefully you'd have found a nicer way to type that up. All the ampersands take a while to figure out.
+
+\subsubsection{... or not}
+Or if you don't want to align anything: 
+
+\begin{gather*} 
+	2x - 5y =  8 \\ 
+	3x^2 + 9y =  3a + c
+\end{gather*}
+
+
+
+
+
+\subsection{Bracketing}
+
+You can tell latex to decide how big the brackets should be in an equation:
+
+\[ 
+F = G \left( \frac{m_1 m_2}{r^2} \right)
+\]
+
+ \[ 
+\left[  \frac{ N } { \left( \frac{L}{p} \right)  - (m+n) }  \right]
+\]
+
+
+You need to have both left and right in order for the parentheses to register. If you don't want one of them, replace with a dot that makes the brace invisible.
+
+
+ This is a common mistake that leads to compiling errors.
+ \begin{equation}
+ \begin{split}
+ y  = 1 + & \left(  \frac{1}{x} + \frac{1}{x^2} + \frac{1}{x^3} + \ldots \right. \\
+ & \quad \left. + \frac{1}{x^{n-1}} + \frac{1}{x^n} \right)
+ \end{split}
+ \end{equation}
+
+
+ \subsubsection{Types of Brackets and Some Symbols}
+ 
+ \begin{align}
+	& (a+b) 							& \leq  4\\
+ 	& [x+y] 							& \neq  3\\
+ 	& \{ z+f\} 							& \subsetneq \beta\\
+ 	& \langle \vec{x} + \hat{y} \rangle & \subseteq \tilde{z}\\
+ 	& | \overline{X}_n - \mu | 			& \approx \frac{1}{n}\sum_{i=1}^{n} X_i \\
+ 	& \| \Theta - \chi^2 \| 			& \geq 42
+ \end{align}
+
+\subsection{Theorems, Assumptions, and Hypotheses}
+ See the section on \verb+theorems-hypotheses-template+ in \verb+02_layout-formatting+ for how to add theorems and hypotheses and such to the environment, in \ref{theorems-hypotheses}. For the quick, see \url{https://www.overleaf.com/learn/latex/theorems_and_proofs}.
+ 

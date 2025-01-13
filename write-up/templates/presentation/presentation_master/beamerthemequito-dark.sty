@@ -1,0 +1,43 @@
+\mode<presentation>
+
+%
+% USE THEME FILES
+%
+\useinnertheme{quito-dark}
+\useoutertheme{quito-dark}
+\usecolortheme{quito-dark}
+
+%
+% REQUIRED PACKAGES
+%
+\RequirePackage{tikz}
+\RequirePackage{xcolor}
+
+%
+% COLORS
+%
+% Custom color definitions
+\definecolor{MyBlue}{RGB}{0,97,165}
+\definecolor{MyGray}{RGB}{120,120,120}
+\definecolor{MyOrange}{RGB}{255,80,30}
+\definecolor{MyRed}{RGB}{200,0,0}
+\definecolor{yale_blue}{HTML}{00356b}
+% This is a four-color theme
+\definecolor{ColorOne}{named}{yale_blue} 		% Titles, highligths, 
+\definecolor{ColorTwo}{named}{MyOrange} 	% Alerts
+\definecolor{ColorThree}{named}{MyGray} 	% Equations, definitions, higlights
+\definecolor{ColorFour}{named}{yellow}		% Bibliography
+
+%
+% OTHER
+%
+\setbeamertemplate{navigation symbols}{}
+\setbeamercovered{invisible} % decides whether paused text is just absent; alt is transparent
+\addtobeamertemplate{headline}{}{\vskip 6pt}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+\setbeamertemplate{footline}{\raisebox{5pt}{\makebox[\paperwidth]{\hfill\makebox[10pt]{\scriptsize\insertframenumber}}}}
+% To replace the footer line in all slides with a simple slide count uncomment this line % replace frmae with page to show actual pages
+
+
+\mode<all>

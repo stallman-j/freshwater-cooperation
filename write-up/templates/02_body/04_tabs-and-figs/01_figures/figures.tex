@@ -1,0 +1,42 @@
+\section{Figures}\label{figure}
+
+% this is a very basic figure insertion. You can have subfigures or basically whatever you can think of.
+%[H] forces it to be HERE. otherwise latex will put it at the next convenient place
+
+
+\begin{figure}[H]
+	\centering % centers
+	\includegraphics[width=.6\linewidth]{frog.jpg}
+	\caption{Here's my caption} % note caption is required in order to get the cross referencing
+	\label{fig:frog}
+\end{figure}
+
+This refers to the \textbf{ figure} above, Figure\ref{fig:frog}.
+
+
+\begin{figure}[H]  %for putting in a single figure
+\centering
+\includegraphics[width=.7\linewidth]{figures/pv/sekhon_net-structure.jpg}\\
+\tiny{Source: Jas Sekhon's Lecture Notes}
+\end{figure}
+
+This refers to the \textbf{ figure} above, Figure\ref{fig:frog}.
+
+% you need the subcaption package in your preamble to make this work
+\begin{figure}[H]
+\centering
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{figures/frog.jpg}
+  %\caption{A subfigure}
+  %\label{fig:sub1}
+\end{subfigure}%
+\begin{subfigure}{.5\textwidth}
+  \centering
+  \includegraphics[width=.9\linewidth]{figures/frog.jpg}
+  %\caption{A subfigure}
+  %\label{fig:sub2}
+\end{subfigure}
+\caption{Predicted Capacity, MW and log(MW)}
+\label{fig:pred-capacity-hists}
+\end{figure}

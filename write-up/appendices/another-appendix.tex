@@ -1,0 +1,52 @@
+\begin{appendices}
+
+
+\section{Mathematical Notes}
+
+\begin{subappendices}
+\subsection{Hotelling's Rule Intuition}\label{sec:hotellingrule}
+What's the intuition for this? 
+    
+    We know from our Hotelling rule (Lecture 10) that in a competitive market with no extraction cost, the price of the nonrenewable resource should rise at the rate of interest $r$, and it's easier to think of the intuition from this first.\\
+
+    
+    In that case, we have that optimality requires for flows
+    
+        \begin{equation*}
+            \frac{\dot{P(t)}}{P(t)} = r
+        \end{equation*}
+    which in terms of stocks means
+    
+        \begin{equation*}
+            P(t)=P(0)e^{rt}.
+        \end{equation*}
+    
+    Why is this the case? We can consider the Hotelling rule as an arbitrage rule, and the nonrenewable resource as an investment opportunity for the firm. If the firm digs the coal out of the ground (here at cost zero), it can sell it on the market at the going price. Alternatively, it can decide \textit{not} to sell, and sell in the future, which is the "hoarding" we've discussed in class.\\
+    
+    One way to consider this is to say, suppose we have a price today that we think is the equilibrium price for coal today. We'll show that with a price path that's anything different than $r$, this proposed equilibrium price can't hold. It will either be too high or too low. The only way today's price will be stable is if the price path follows the interest rate.\\
+    
+    Suppose for the sake of argument that the price of coal increased at the rate of 2\%, which is below our rate of interest of 4\%. If this were the case, then it would make more sense for the firm to extract more today and put the money in the bank to earn 4\% interest for the future. This would push up the supply today, which would push down the price today. Therefore that price today can't be an equilibrium price.\\
+    
+    If on the other hand the price of coal was increasing at a rate of 10\%, which is above the interest rate 4\%, then we'd be better off reducing the amount of coal we sell today. If we wait for the future, then that would be a better investment than selling today. However, if everyone thinks this, then supply today falls, so that the price today rises, which means that the price today wasn't an equilibrium price, either. If the price today wasn't an equilibrium price, then the proposed price path can't be an equilibrium price path.\\
+    
+    When we have an extraction cost to incorporate, whenever we delay, we defer the profits from extracting but also the costs of extracting. The fact that deferring costs means they're less costly from a present-value standpoint makes us want to drag out the extraction and delay paying these costs. This condition ends up saying that, after adjusting for this cost delay, we end up indifferent between extracting and paying the cost now, or waiting to extract and also waiting to pay the costs, and this condition exactly balances the two.
+    
+    
+\subsection{Net Present Value: Integrals and Sums:}\label{sec:npvintegrals}
+
+
+    How did we know to take the sum for net present value in Equation~\eqref{eq:npvcoal}?
+    
+    This relates to your early days of calculus, back when integrals sounded like some kind of granola brand. When you took Riemann sums and calculated the area under a curve by making rectangles, and then taking the point on the curve that decided the height of your rectangle to be the left, the left, from the right, and the middle, you were using these rectangles to approximate the true integral.\\
+    
+    You may recall some tedious homework where you had to calculate this Riemann approximation for rectangles of length 1, length $\frac{1}{2}$, length $\frac{1}{4}$, and if your teacher was especially nasty even smaller.\\
+    
+    We're doing exactly the same type of approximation here, except our x-axis is in years, rather than units of distance, and our y-axis measures the net present value. The net present value curve is tracing out, at any instant $t$ in time, the value of the net present value for extracting that instantaneous resource.
+    
+    When you did this in early calc classes and counted these rectangles, in some cases you would overshoot, and in some you would undershoot. Do you remember when you would go over or under? Draw a picture of some curves and rectangle approximations if it's not coming to you. This will help you picture it visually. \\
+    
+    The summation notation, then, is just a bunch of rectangles approximating that integral curve. The integral is what we would get if we took the width of time and shrank it from 1 to infinitesimally small.
+    
+\end{subappendices}
+
+\end{appendices}

@@ -1,0 +1,39 @@
+\section{Appendices}
+
+You can reference an appendix just like you can reference a chapter. An easy setup for articles and theses is along the lines of \url{https://tex.stackexchange.com/questions/49643/making-appendix-for-thesis}.
+
+You can start an appendices section with \verb+\appendix+, and then just keep writing, but then you can't switch back. You split appendices with the same method you'd used to split up your regular text (e.g. after \verb+\appendix+, if you used \verb+\section{An Appendix}+ it would be numbered like an Appendix, not a regular section.
+
+
+More sensibly, add package \verb+\usepackage[toc]{appendix}+. Depending on the document class, you'll either use \verb+\chapter{Appendix name}+ or \verb+\section{Appendix name}+ and then you add labels as you would elsewhere. TOC option puts the appendix in the table of contents.You can also add \verb+page+ as an option, which puts it on a new page.
+
+For fuller detail, see \url{http://www.texfaq.org/FAQ-appendix}
+
+
+\begin{appendices}
+
+%\chapter{Some Appendix} for book or thesis class
+The contents...
+
+\section{An Appendix}
+La la la
+
+
+\end{appendices}
+
+You can also use \verb+subappendices+, which makes use of the \verb+subsection+ environment:
+
+\section{Here's a Regular Section}
+
+Now I have some text
+
+\begin{subappendices}
+
+\subsection{Subsection appendix}\label{sec:miniappendix}
+This is a Mini Appendix for my section
+
+\end{subappendices}
+
+\section{A New Section}
+
+The miniappendix is Appendix~\ref{sec:miniappendix}

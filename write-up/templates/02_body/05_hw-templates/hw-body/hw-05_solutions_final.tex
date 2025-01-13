@@ -1,0 +1,355 @@
+\noindent
+\Large ECON XX \\
+ 	\large Problem Set 05 \\
+ 	\large Due October 18, 2021 at 10:30 a.m.\\
+ 	\large Solutions \\
+ 	\today \\[1.5em] % today's date, then gives a little space below
+
+\section*{Solutions (short)}
+    \begin{enumerate}
+        \item Question 1
+        \begin{enumerate}
+            
+        \item Part a
+        \end{enumerate}
+        
+        \item Question 2
+        \begin{enumerate}
+            \item Part b
+        \end{enumerate}
+    \end{enumerate}
+
+\section*{Solutions (long)}
+
+\Opensolutionfile{ans}[ans1]
+
+\begin{enumerate}
+
+\begin{Exercise}{Suppose you have an initial stock of oil equal to 6,730 Quads, a stock of natural gas equal to 7,740 Quads, and a stock of coal equal to 20,300 Quads of energy. Suppose that the cost of extracting oil is \$1.5 million/Quad, the cost of extracting natural gas is \$2 million / Quad, and the cost of extracting coal is \$3 million / Quad.\\
+
+The annual global demand $Q$ for energy in Quads is 
+
+    \begin{equation}
+        Q(P) = 13,700,000P^{-0.7},
+        \label{eq:demandenergy}
+    \end{equation}
+    where $P$ is price. The market interest rate $r$ is 4\%. There is a ceiling price for renewable energy at \$100 million / Quad. Suppose you can use these resources one at a time.\\
+    
+    Create an Excel file to answer the following questions, solving backwards through time.
+    :}
+    
+
+    
+    
+    \Question{Question question?}
+     \begin{sol}
+         \textbf{Answer:} Answer here.
+         
+     \end{sol}
+    
+
+    
+    \Question{Another question?}
+
+      \begin{sol}
+       \textbf{Answer:}\\
+       Another answer
+     \end{sol}
+     
+     
+    \Question{Another question?}
+    \begin{sol}
+    \textbf{Answer:}\\
+    
+    Some equations
+    
+        \begin{equation}
+            \frac{\dot{P(t)}}{P(t)}=r\left(1-\frac{C}{P(t)}\right),
+            \label{eq:opt-time-der}
+        \end{equation}
+        
+    or rearranging
+    
+        \begin{equation*}
+            \dot{P(t)}=P(t)r\left(1-\frac{C}{P(t)}\right).
+        \end{equation*}
+    
+    
+    
+    
+    
+    \end{sol}
+    
+    
+    \Question{Another question}
+    \begin{sol}
+    \textbf{Answer:} Split equations
+    
+        \begin{equation}
+        \begin{split}
+            \max_{ \{Q(t)\}_{t=0}^\infty} & \int_{0}^\infty \left[P(t)-C\right] Q(t) e^{-rt}dt\\
+            \text{such that } & \int_{t=0}^\infty Q(t) = S
+        \end{split}
+        \label{eq:npv}
+        \end{equation}
+        
+        A list with equations
+        
+        \begin{enumerate}
+            \item item with equation
+            \begin{equation*}
+                P(0)-C = [P(t)-C]e^{-rt}.
+            \end{equation*}
+            \item Time horizon:
+            \begin{equation*}
+                \int_{t=0}^\infty Q(t) = S
+            \end{equation*}
+            \item final comment
+        \end{enumerate}
+        
+        \textbf{Note:}\\
+        
+        Another note
+        
+        \textbf{The Implementation:}\\
+        
+                \noindent 
+                \textbf{Step 1:}\\        
+        We can rearrange Equation~\eqref{eq:opt-time-der}:
+        
+        \begin{equation*}
+            \dot{P(t)}=P(t)r\left(1-\frac{C_{coal}}{P(t)}\right)
+        \end{equation*}
+        
+        
+        Here's a way to write verbatim. Column \texttt{verbatim(t) think}, the demand \textit{in} time $t$.
+
+        Another verbatim thing if we want to talk about spreadsheets.
+        
+        \begin{verbatim}
+            =SUM($D$3:D3)
+        \end{verbatim}
+        and drag down.\\
+        
+        The \texttt{\$D\$3} dollar signs say that this reference doesn't change (it's the absolute reference. You can also use these double dollar signs for the cells where you pull the interest rates and extraction costs from), but the \texttt{D3} will change as you go down the column. For $T-2$, you should have 71.75; for $T-198$, you get 50,548, which is clearly greater than the stock of 20,300. We see that at $T-118$ is where we go from 20,025 to $T-119$ at 20,367.\\
+        
+        Alternatively, you could dispense with the running sum, start from the stock of 20,300, and subtract backwards. If you subtracted backwards, it goes from a positive 274 to negative 67 at this same time, so we would make the transition sometime in that year.\\
+        
+        If we say we made the switch in $T-118$ rather than $T-119$, the implication is that we would rather leave some of the coal in the ground than extract more coal than exists on the planet. This seems more reasonable. \\
+        
+        \textbf{Step 3: Price and Quantity for Gas}\\
+        
+        We know that we'll make the switch at time $T-118$, at which point we're now going to be on the price path for gas, rather than coal. Our cost of extraction is different. Now we have $C_{gas}=2$ million, rather than the \$3 million for coal. Equation~\eqref{eq:pricepathcoal} becomes
+        
+        \begin{equation}
+            \begin{split}
+            P(T-1) & = P(T)-r(P(T)-C_{gas}).
+            \end{split}
+            \label{eq:pricepathgas}
+        \end{equation}       
+        
+        At $T-119$, then, we take
+        
+        \begin{equation*}
+            P(T-119) = P(T-118)-r(P(T-118)-C_{gas}).
+        \end{equation*}
+        
+        Here $P(T-118)$ is calculated based on the coal price. We can make another column \texttt{Price Gas} to store this information, starting the price path now at $T-119$ rather than $T$. The price makes a jump from $P(T-118)=3.78$ million to $P(T-119)=3.71$ million. For $P(T-120)$, remember to re-enter the formula it so that you're taking $P(T-119)$ from the \textit{gas} column. If you drag down from $P(T-119)$ without making this adjustment, you'll get the wrong price sequence for gas. $P(T-198)$ should get you 2.07 million.\\
+        
+        Do the same thing with calculating the demand and cumulative demand for gas as we did for coal. We find that we exhaust the gas pretty quickly (there wasn't much stock relative to coal), in $T-138$.\\
+        
+        We still have the question of what we do with the little extra bit of stock of coal left over. There are a couple assumptions you could make that would change the details but won't change your final calculations much. For instance, you could assume that the leftover stock is wasted, which would be like saying that the first bit of, say, coal that you use in the year you've used up the natural gas just gets burned.\\
+        
+        Another slightly more realistic assumption might be to say that, in the year in which the transition is made from gas to coal, the first little quantity of coal is so easy to extract that it's effectively the same marginal cost as the coal. This gives us a little buffer between the gas and the coal, and makes slightly more sense than saying the resource is burned, but either assumption could be justified, and we're after all making a discrete approximation to a continuous process. In the excel sheets, we've assumed that the leftover coal becomes effectively a natural gas stock.\\
+        
+        \textbf{Step 4: Price and Quantity for Oil}\\
+        
+        Now let's do the same thing for oil. We should get $P(T-139)=2.74$ million. Depending on the assumption you make about extra stocks of gas and coal, the stock of oil goes to zero sometime between $T-152$ and $T-153$. This means that somewhere in this time is where time, going forwards, actually starts. We exhaust the resources about 153 years. \\
+        
+        Tracking backward, then, we can get that the price of energy is \$2.2 million.
+        
+        
+        
+        
+        
+
+        
+        
+    \end{sol}
+    
+    
+    \Question{What is the net present value of each resource to society?}
+    \begin{sol}
+    \textbf{Answer:}\\
+    
+    We need to translate our integral net present value formula from Equation~\ref{eq:npv} into a discrete net present value. We can do this by summing up over the years the net present value of the stock for each year. For instance, in $T-1$, which is the 152nd year, we use coal, and we'll get\footnote{See Appendix~\ref{sec:npvintegrals} for a little intuition about this net present value and how it relates to the integral we see in class.}
+    
+    \begin{equation}
+        NPV(Coal_{t=152}) = [P(152) - C]Q(152)e^{-r(152)}.
+        \label{eq:npvcoal}
+    \end{equation}
+    
+    
+    
+    
+    We'll get the total net present value if we sum these similar expressions up over all times in which we're extracting coal, call it $NPV(Coal_{t=start}^{t=end})$
+    
+    \begin{equation*}
+        NPV(Coal_{t=118}^{t=152}) = \sum_{t=118}^{152} [P(t)-C]Q(t)e^{-rt}.
+    \end{equation*}
+    
+    In general, for any of the resources, we can write for $Resources$ and $t=$start the time to start extraction, $t=$end the final year of extraction:
+    
+    \begin{equation*}
+        NPV(\text{Resource}_{t=\text{start}}^{t=\text{end}}) = \sum_{t=\text{start}}^{\text{end}} [P(t)-C]Q(t)e^{-rt}.
+        \label{eq:npvall}
+    \end{equation*}
+    
+    In excel, we can make a column for time running forwards, from $t=153$ at the top to $t=0$ at the bottom. We then calculate the net present value for a particular year in another column, and tally them up in a third column.\\
+    
+    This gives a total of \$4 billion.\\
+    
+    Doing the same for gas gives us \$3.36 billion, and for oil \$4.89 billion.
+    
+
+    
+    
+    \end{sol}
+    
+
+    
+
+\end{Exercise}
+
+
+\begin{Exercise}{Suppose that the environmental damage from burning oil is \$23.5 million/ Quad, natural gas is \$25 million / Quad and the environmental damage from burning coal is \$32 million / Quad.}
+    \Question{How does that change the optimal answers to Question 1?}
+     \begin{sol}
+         \textbf{Answer:}\\
+         
+         We'll perform the same exercise as before, but incorporating the environmental damage as an additional cost. Lecture 11, slide 11 and the visual with slide 12 gives us the relevant information. Our problem now becomes
+         
+        \begin{equation}
+        \begin{split}
+            \max_{ \{Q(t)\}_{t=0}^\infty} & \int_{0}^\infty \left[P(t)-C-E(t)\right] Q(t) e^{-rt}dt\\
+            \text{such that } & \int_{t=0}^\infty Q(t) = S
+        \end{split}
+        \label{eq:npv-damage}
+        \end{equation}
+        
+        Optimality conditions now become:
+        
+        \begin{enumerate}
+            \item The net price should be the same for all periods. That is, for all $t$ the following should hold:
+            \begin{equation*}
+                P(0)-C = [P(t)-C-E(t)]e^{-rt}
+            \end{equation*}
+            or
+            
+            \begin{equation}
+        \dot{P} = P(t)r\left(1-\frac{C+E(t)}{P(t)}\right)
+        \label{eq:opt-envidamage}
+            \end{equation}
+            \item The resources should be consumed over the time horizon:
+            \begin{equation*}
+                \int_{t=0}^\infty Q(t) = S
+            \end{equation*}
+            \item Any resource whose cost exceeds the price shouldn't be extracted.
+        \end{enumerate}
+        
+        As noted in the slides, we should find 1) a higher initial price, and 2) a flatter price path, dragging out the time of exploitation of the fuels.\\
+        
+        Therefore, if we find that our time is \textit{less} than 153 years, or if we find that the initial price  is \textit{less} than 2.2 million, something has gone wrong.\\
+        
+        The intuition for taking longer is that the inclusion of the marginal damages acts like a cost. Just like we want to defer costs into the future so that their present value is smaller, we also want to defer the damages. This means sending more of the costs and damages into the future, which lengthens the time of extraction.\\
+        
+        Because the coal is both the dirtiest and the most expensive to extract, we still extract it last (the cumulative cost is still greatest). Ditto for natural gas and for oil. Therefore our order of extraction remains the same: oil, natural gas, and coal.\\
+        
+        If the environmental damages were dispersed differently, that might change the order, but it would depend on the relative magnitudes of costs of extraction and environmental damages.
+        
+
+        
+        
+     \end{sol}
+
+    \Question{What's the final price of energy when the fossil fuels are exhausted?}
+     \begin{sol}
+         \textbf{Answer:}\\
+        \$100 million / Quad. The ceiling price is the same, so prices will end up at the same place. (Try to run through the logic of why it can't be higher or lower than \$100 million again without flipping back to the previous question to see if you really get where it's coming from).     
+    \end{sol}
+    
+    
+    \Question{How fast does the price of coal increase during its extraction?}
+     \begin{sol}
+         \textbf{Answer:}\\
+         Our optimality condition is now Equation~\eqref{eq:opt-envidamage}, or rearranging
+         
+            \begin{equation}
+        \dot{P} = r\left(P(t)-C-E(t)\right).
+        \label{eq:dotp-envidamage}
+            \end{equation}
+            
+      
+            
+            
+    \end{sol}    
+
+    \Question{What is the initial price of energy?}
+     \begin{sol}
+         \textbf{Answer:}\\
+        
+        As before, in order to figure out the initial price of energy, we'll need to work backwards. This time, our discrete approximation of Equation~\eqref{eq:dotp-envidamage} for the change in price will be
+        
+             \begin{equation*}
+        P(t) - P(t-1) = r\left(P(t)-C-E(t)\right).
+            \end{equation*}
+            
+        Rearranging for $P(t-1)$ gives how we'll get our approximation within each cell of our new spreadsheet:
+        
+        \begin{equation}
+             P(t-1) = P(t)- r\left(P(t)-C-E(t)\right).
+             \label{eq:approx-envidamages}
+        \end{equation}  
+        
+        With much greater environmental damages than the marginal costs we'd seen previously, we'll end up using the resource at a \textit{much} slower pace.\\
+        
+        We can set this question up in another sheet, adding the environmental damages to the top row as parameters, and then calculating first the price of coal and demand for coal given that price, and then calculating the cumulative demand for coal.\\
+        
+        We get that at $k=301$, we still have positive stock of 70 left, but if $k=302$ then we have demanded more cumulative coal than there exists in the stock, so we make the transition in $T-301$.\\
+        
+        We'll again make the assumption that in that year of transition, there are 70 units of coal that are easy to extract at the same marginal cost of the resource we just transitioned from, which will be the natural gas.\\
+        
+        When we do this and calculate where we should make the transition, this little extra leads us to different year choices. If we add up the cumulative demand, we get that the stock of gas if exhausted in $T-395$. If we use the assumption that in the year the gas is exhausted, we start on a little bit of the coal, we get that we should transition in $T-396$. For the sake of consistency, we'll use $T-396$.\\
+        
+        We then get that the oil traces back to $T-471$, with an initial energy price of \$25.1 million, which is a much greater initial price than the \$2.2 million we'd found previously.
+        
+        
+        
+    \end{sol} 
+    
+    \Question{What is the net present value of each resource to society?}
+     \begin{sol}
+         \textbf{Answer:}\\
+          When we do the net present value exercise as before, we should take now instead of Equation~\eqref{eq:npvall}, we now have
+
+    \begin{equation}
+        NPV(\text{Resource}_{t=\text{start}}^{t=\text{end}}) = \sum_{t=\text{start}}^{\text{end}} [P(t)-C-E(t)]Q(t)e^{-rt}.
+        \label{eq:npvalldamages}
+    \end{equation}
+    
+    We include the environmental damages because those damages are part of what we're discounting, that's why this problem differs from question 1. If we'd used just $P(t)-C$ inside the parentheses in Equation~\eqref{eq:npvalldamages}, this would have implied that we'd taken into account the damages when we made the choice to use stock, but somehow that we didn't take into account the damages when we valued them, which would be an inconsistent way to assess the value of the resources.\\
+    
+    When we do as in Question 1 for each of our three resources, we get for coal an NPV of \$7,603, a massive reduction from our previous \$40 million. When we take into account the damages that are accruing to the environment in our calculation, this resource stream is much less valuable.\\
+    
+    Likewise the net present value of the stream of profits from gas is \$66.8 million, relative to over \$3 billion in the case in which we didn't take into account the environmental cost.\\
+    
+    Finally, the net present value for oil is now \$699 million, compared with \$4.89 billion previously.
+          
+    \end{sol} 
+    
+\end{Exercise}
+
+\end{enumerate}
+
+\Closesolutionfile{ans}
+

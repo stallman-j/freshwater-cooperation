@@ -1,0 +1,45 @@
+\section{Page Formatting}\label{sec:page-formatting}
+
+\subsection{Landscape Format}
+See \url{https://tex.stackexchange.com/questions/337/how-to-change-certain-pages-into-landscape-portrait-mode} for the fuller discussion.
+
+If you're compiling with PDFLatex, use the package \verb+pdflscape+. In a normal situation, just add the package \verb+lscape+, and then do like so
+
+\begin{landscape}
+
+
+\section{A Horizontal Page}
+
+\end{landscape}
+
+\subsection{Adding Vertical Space}
+For adding in vertical spacing, use \verb+\vspace{distance}+. 1em is a line, I think.
+
+\subsection{Centering}
+Then \verb+\centering+ says to center, and best with beginning and ending curly brackets around the text desired to be centered. It will center everything within its "environment", which can mean the entire following document, so you can put it in a "minipage" environment, which will limit the centering to just that block of text you designate as your minipage.
+
+For more on minipage see \url{https://www.sascha-frank.com/latex-minipage.html}
+
+\noindent
+\begin{minipage}{\textwidth} % establishes a different environment
+\centering
+\vspace{1em}
+[Figure 2 about here]
+\vspace{1em}
+
+\end{minipage}
+
+\noindent
+Here is some more text. Notice it is no longer centered.\\
+
+
+Alternatively, you can use \verb+\begin{center}+ as well. 
+
+\begin{center}
+\vspace{1em}
+This text is centered now.
+\vspace{1em}
+\end{center}
+
+\noindent
+This text is back to normal. 

@@ -1,0 +1,210 @@
+\mode<presentation>
+
+% Set theme colors
+\setbeamercolor*{normal text}{fg=white}
+\setbeamercolor*{structure}{fg=white}
+
+\setbeamercolor{title page header}{fg=white}
+\setbeamercolor*{author}{fg=white}
+\setbeamercolor*{institute}{fg=white}
+\setbeamercolor*{date}{fg=white}
+
+\setbeamercolor*{item}{fg=ColorTwo}
+\setbeamercolor*{alerted text}{fg=ColorTwo}
+
+\setbeamercolor*{title in head/foot}{fg=ColorOne!45!black, bg=ColorOne!25!black!25}
+\setbeamercolor*{frame title}{fg=ColorOne}
+
+% set just the button background color
+
+\setbeamercolor{button}{bg=ColorOne!80!white,fg=white}
+
+% Items
+\setbeamertemplate{itemize item}{$\bullet$}
+
+% Sections inToC
+\setbeamertemplate{section in toc}{\leavevmode \bf \inserttocsection\par}
+\setbeamertemplate{subsection in toc}{\leavevmode\leftskip=0em$\bullet$\hskip1em\inserttocsubsection\par}
+
+\mode
+<all>
+
+\mode<presentation>
+
+%
+% FONTS
+%
+% Title page
+\setbeamerfont{title}{size=\huge, series=\bf}
+\setbeamerfont{author}{size=\large, series=\bf}
+\setbeamerfont{institute}{size=\large}
+\setbeamerfont{date}{size=\normalsize}
+% Foot and head
+\setbeamerfont{author in head/foot}{size=\small}
+\setbeamerfont{title in head/foot}{size=\footnotesize}
+\setbeamerfont{date in head/foot}{size=\small}
+\setbeamerfont{frametitle}{size=\large, series= \normalsize}
+\setbeamerfont{framesubtitle}{size=\Large, series= \bf}
+
+%
+% TITLES
+%
+\setbeamertemplate{frametitle}{%
+	\raggedleft \usebeamerfont{frametitle} \insertframetitle\\ 	
+	\vskip-6pt
+	\raggedleft \rule{0.33\paperwidth}{0.5pt} \\  \medskip
+	\usebeamerfont{framesubtitle} \insertframesubtitle}
+
+%
+% HEAD
+%
+\setbeamertemplate{headline}{
+}
+
+%
+% FOOT
+%
+\makeatletter
+\defbeamertemplate*{footline}{SJ theme}
+{\leavevmode%
+\hbox{%
+\begin{beamercolorbox}[wd=\paperwidth,ht=1.4em,dp=4pt,center]{%
+title in head/foot}%
+%
+\hfill
+\usebeamerfont{author in head/foot}\insertshortauthor\expandafter\beamer@ifempty\expandafter{\beamer@shortinstitute}{}{~~(\insertshortinstitute)}
+%
+\hfill
+$\bullet$
+\hfill
+%
+{\bfseries \usebeamerfont{title in head/foot} \insertshorttitle}
+%
+\hfill
+$\bullet$
+\hfill
+%
+\usebeamerfont{date in head/foot} \insertshortdate{}
+%
+\hfill
+$\bullet$
+\hfill
+%
+(\insertframenumber{}/\inserttotalframenumber)
+\hfill
+\end{beamercolorbox}}%
+\vskip0pt%
+}
+\makeatother
+
+
+%
+% BLOCKS
+%
+\setbeamertemplate{blocks}[rounded,shadow=false]
+% Basic highlight block
+\setbeamerfont{block title}{size=\normalsize,series=\bf}
+\setbeamercolor{block title}{fg=ColorOne!45!black,bg= ColorOne!25!black!25}
+\setbeamercolor{block body}{fg=black,bg=ColorThree!15}
+
+%
+% NOTES
+%
+\setbeamercolor{note title}{bg=black!5!, fg=black}
+\setbeamercolor{note page}{bg=white, fg=black}
+
+%
+% BIBLIOGRAPHY SETTINGS
+%
+\setbeamertemplate{bibliography entry title}{}
+\setbeamertemplate{bibliography entry location}{}
+\setbeamertemplate{bibliography entry note}{}
+
+\mode<all>
+
+\mode<presentation>
+\setbeamertemplate{background}{
+\begin{tikzpicture}
+\fill[top color = ColorOne!45!black, bottom color=ColorOne!45!black] (0,0) rectangle (\the\paperwidth, 0.72\paperheight);
+\fill[color=ColorOne!45!black] (0,-\the\paperheight) rectangle (\paperwidth,0.01);
+\ifnum\thepage>1\relax%
+\fill[ColorOne!45!black] (0,0) rectangle(\the\paperwidth,\the\paperheight);
+\fi
+\end{tikzpicture}
+}
+
+
+%
+% TITLE PAGE
+%
+
+\defbeamertemplate*{title page}{quito-light}[1][]
+{ 
+\vfill
+\begin{beamercolorbox}[wd=\paperwidth,sep=8pt,#1]{title page header}
+\centering
+\usebeamerfont{title}\inserttitle\par%
+\end{beamercolorbox}%
+\vfill%
+\begin{beamercolorbox}[wd=\paperwidth,#1]{author}
+\centering
+\usebeamerfont{author}\insertauthor%
+\end{beamercolorbox}
+\vfill%
+\begin{beamercolorbox}[wd=\paperwidth,#1]{institute}
+\centering
+\usebeamerfont{institute}\insertinstitute%
+\end{beamercolorbox}
+\vfill%
+\begin{beamercolorbox}[wd=\paperwidth,#1]{date}
+\centering
+\usebeamerfont{date}\insertdate%
+\end{beamercolorbox}
+}
+
+\mode
+<all>
+
+\mode<presentation>
+
+%
+% USE THEME FILES
+%
+\useinnertheme{quito-dark}
+\useoutertheme{quito-dark}
+\usecolortheme{quito-dark}
+
+%
+% REQUIRED PACKAGES
+%
+\RequirePackage{tikz}
+\RequirePackage{xcolor}
+
+%
+% COLORS
+%
+% Custom color definitions
+\definecolor{MyBlue}{RGB}{0,97,165}
+\definecolor{MyGray}{RGB}{120,120,120}
+\definecolor{MyOrange}{RGB}{255,80,30}
+\definecolor{MyRed}{RGB}{200,0,0}
+\definecolor{yale_blue}{HTML}{00356b}
+% This is a four-color theme
+\definecolor{ColorOne}{named}{yale_blue} 		% Titles, highligths, 
+\definecolor{ColorTwo}{named}{MyOrange} 	% Alerts
+\definecolor{ColorThree}{named}{MyGray} 	% Equations, definitions, higlights
+\definecolor{ColorFour}{named}{yellow}		% Bibliography
+
+%
+% OTHER
+%
+\setbeamertemplate{navigation symbols}{}
+\setbeamercovered{invisible} % decides whether paused text is just absent; alt is transparent
+\addtobeamertemplate{headline}{}{\vskip 6pt}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+\setbeamertemplate{footline}{\raisebox{5pt}{\makebox[\paperwidth]{\hfill\makebox[10pt]{\scriptsize\insertframenumber}}}}
+% To replace the footer line in all slides with a simple slide count uncomment this line % replace frmae with page to show actual pages
+
+
+\mode<all>

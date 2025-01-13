@@ -1,0 +1,619 @@
+
+\begin{frame}[label = lnmap]
+\frametitle{Background: Location and Economy \hyperlink{data}{\beamerbutton{Back to Data}}}
+\begin{figure}
+\includegraphics[width=.6\textwidth]{figures/frog.jpg} \vspace*{-.5cm}\\%\hspace*{2cm} \\
+{\tiny }
+\end{figure}
+{\tiny 
+\begin{itemize}
+\item - Mostly (over 90\%) agrarian
+\item - Treaty of Tianjin opened Yingkou to trade in 1861
+\end{itemize}
+\hyperlink{outcomes}{\beamerbutton{Outcomes}}
+\hyperlink{stylizedex}{\beamerbutton{Stylized Example}}}
+\end{frame} 
+
+
+
+
+
+\begin{comment}
+
+
+\section{Framework}
+
+\begin{frame}
+\frametitle{How Do Households Allocate Resources?}
+\onslide<1->{ Without social structure or norms, families would consider :
+\begin{itemize}
+\item Resource constraints
+\item Gains to male v. female labor
+\end{itemize}}
+\onslide<2->{
+Here, villages also have:
+\begin{itemize}
+\item Dowries: greater for richer families
+\item Hypergamy: strategic sons v. daughters
+\item Exogamous marriage: daughters leave the household
+\end{itemize}}
+\onslide<3->{
+Norms according to ethnic / philosophical identification:
+\begin{itemize}
+\item Son preference {\tiny (Han yes, Manchu less)}
+\item Hierarchy / filiality {\tiny (Han yes, Manchu less)}
+\item Disapprove of women outside the home {\tiny (Han yes, Manchu less)}
+\end{itemize}}
+
+\end{frame}
+
+\begin{comment}
+\begin{frame}
+\frametitle{Expectations:}
+\onslide<1->{
+\begin{itemize}
+\item (1) Positive (negative) income shock:
+\begin{itemize}
+\item  - If just resource constraints and male labor: better (worse) relative mortality for women
+\item  - Better relative outcomes in villages with more egalitarian preferences
+\end{itemize}}
+\onslide<2->{
+\item (2) Changes in labor opportunities with commercialization
+\begin{itemize}
+\item  - Depends on relative gains to male v. female labor
+\end{itemize}}
+\onslide<3->{
+\item (3) Better relative mortality for adult women in Han villages
+\begin{itemize}
+\item - Do not need to labor as hard
+\item - Children more filial
+\end{itemize}}
+
+\end{itemize}
+\onslide<4->{Testing requires both levels and interactions}
+\end{frame}
+
+\end{comment}
+
+
+
+\begin{frame}
+\frametitle{Economics and Culture in Regression Form}
+\begin{block}{Full Specification Example}
+\begin{equation}
+\begin{split}
+Y_{j,t} = \beta_0 + & \beta_1 trade\_shock_{j,t} + \beta_2 positions_{j,t} + \beta_3 grain\_prices_{j,t} 
+\\ & + \beta_4 non\_Han_{j,t} + \beta_7 non\_Han_{j,t} \times trade\_shock
+\\ & + \beta_8 non\_Han_{j,t} \times grain\_prices + \lambda_t + \alpha_j + \epsilon_{j,t}
+\end{split}
+\end{equation} 
+\end{block}
+{\tiny
+\begin{itemize}
+\item $Y_{j,t}$: mortality outcome in village $j$ in time $t$\\
+{\tiny $Y>1$, relatively worse for women. $Y<1$, relatively better}
+\item $trade\_shock_{j,t} $: trade shock proxy
+\item $grain\_prices_{j,t}$ weather proxy
+\item $positions_{j,t}$ : wealth proxy
+\item $non\_Han_{j,t}$ : ethnicity proxy
+\item $Confucian_{j,t}$ philosophy proxy 1
+\item $Buddhist_{j,t}$ : philosophy proxy 2
+\item $\lambda_t$ : time trend ; $\alpha_j$ village fixed effects; $\epsilon_{j,t}$ error term 
+\end{itemize}}
+
+\end{frame}
+
+\section{Data}
+
+
+\begin{frame}[label=data]
+\frametitle{Data}
+\begin{itemize} % full i
+\item Outcomes: \hyperlink{mortratio}{\beamerbutton{Definition}} \hyperlink{stylizedex}{\beamerbutton{Stylized Example}}
+
+\begin{itemize} % outcomes
+\item China Multi-Generational Panel Dataset (CMGPD), Imperial Household Registers
+\item Han Banner people, 1749 - 1909, triennial census
+\item Mortality: \hyperlink{morttrends120}{\beamerbutton{Male-Female Trends}}\\
+\end{itemize} % outcomes
+\pause
+\item Economic Variables:
+\begin{itemize} %econ
+\item Exports: Yingkou Imperial Maritime Customs \hyperlink{exports}{\beamerbutton{here}}
+{\small
+\begin{itemize} %trade 
+\item Interact with distance \hyperlink{distance}{\beamerbutton{here}}
+\item to proxy for trade shock \hyperlink{tradeshock}{\beamerbutton{here}}\\
+\end{itemize}
+} %trade
+\pause
+
+\item Monthly Prefectural Sorghum Prices from Qing Grain Price Records
+{\small 
+\begin{itemize} % sorghum
+\item  Proxy for weather shocks\\
+\end{itemize}} % sorghum
+
+\pause
+\item Proportion of population with a position in the Qing bureaucracy (CMGPD)
+{\small 
+\begin{itemize} %position
+\item  Proxy for wealth
+\end{itemize}} %position
+
+\end{itemize} % econ
+\end{itemize} % full
+
+\end{frame}
+
+\begin{frame}[label=data2]
+\frametitle{Data con't}
+\begin{itemize} % full
+\item Cultural Variables:
+\begin{itemize} % cultural vars
+\item Non-Han naming (CMGPD): 
+\begin{itemize} % non han
+\item Proportion of population with a non-Han name
+\item Naming trend \hyperlink{culture}{\beamerbutton{here}}
+\end{itemize} % non han
+
+\item Temple building (local gazetteers)
+\begin{itemize}
+\item No. of Confucian / Buddhist temples in 15 km
+\item More \hyperlink{templesdata}{\beamerbutton{here}}
+\end{itemize}
+\end{itemize} % cultural vars
+\end{itemize} % full
+
+{\tiny Complications in the registers \hyperlink{ageofdeath}{\beamerbutton{here}}}
+
+\end{frame}
+
+
+
+\section{Results}
+
+
+\begin{frame}[label = results16to20]
+\frametitle{1749-1909, Outcome: Mortality Index, 16-20 \emph{sui} \hyperlink{datadefs}{\beamerbutton{Data Definitions}} \hyperlink{sumstats16to20}{\beamerbutton{Summary Stats}}}
+\begin{table}\centering
+\scalebox{0.5}{
+ \begin{threeparttable}
+ \vspace*{-1.7cm}\estauto{Tables/fm_nd_ratio_16_to_20full1.tex}{5}{S[table-format=1,table-column-width=2mm]}
+\end{threeparttable}}
+\end{table}
+\parbox{\linewidth}{\tiny * p < 0.1, ** p < 0.05, *** p < 0.01. Standard errors in parentheses.\\
+Age in \emph{sui} = Western age + 1.5 years
+}
+\end{frame}
+
+
+\begin{frame}[label = results21to50]
+\frametitle{1825-1906, Outcome: Mortality Index, 21-50 \emph{sui} \hyperlink{datadefs}{\beamerbutton{Data Definitions}} \hyperlink{sumstats21to50}{\beamerbutton{Summary Stats}}}
+\begin{table}\centering
+\scalebox{0.4}{
+ \begin{threeparttable}
+ \vspace*{-1.7cm}\estauto{Tables/fm_nd_ratio_21_to_50full2.tex}{5}{S[table-format=1,table-column-width=2mm]}
+\end{threeparttable}}
+\end{table}
+\parbox{\linewidth}{\tiny * p < 0.1, ** p < 0.05, *** p < 0.01. Standard errors in parentheses.\\
+Age in \emph{sui} = Western age + 1.5 years
+}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Results: Young Ages  \hyperlink{robustness}{\beamerbutton{Robustness Checks}}}
+\begin{itemize}
+\item Trade shock increase $\rightarrow$ 
+
+\begin{itemize}
+\item (1) Relative mortality worse for very young females
+\item (2) Better for females in late teens
+\end{itemize}
+\pause
+\item Possible channels:
+{\small
+\begin{itemize}
+\item - Status differences for women working
+\item - Dowries
+\item - Hypergamy: sons as a status symbol
+\item - More labor opportunities for females in late teens
+\item - Teen daughters in households preferring daughters 
+\end{itemize}
+}
+
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}[label=resultsadults]
+\frametitle{Results: Adult Mortality \hyperlink{robustness}{\beamerbutton{Robustness Checks}}}
+\begin{itemize}
+\item Grain price increase: relatively worse for women
+\item Women in Han-like villages relatively better off than non-Han villages
+\item ... but worse off in bad harvests
+\pause
+\item Possible channels:
+{\small
+\begin{itemize}
+\item Male labor more valuable\\
+\item Filiality to women (mothers) in Han-like villages\\
+\item Han-like village preference for sons in bad years\\
+\end{itemize}
+}
+\end{itemize}
+\end{frame}
+
+
+
+\section{Conclusion}
+
+\begin{frame}
+\frametitle{Conclusions}
+\begin{itemize}
+\item In certain age groups:
+{\small
+\begin{itemize}
+\item - Trade shock and grain prices significant
+\item - Temple construction not a strong measure
+\item - Non-Han naming significant 
+\end{itemize}
+}
+\pause
+\item \textbf{Need to consider more than just infant mortality} %: can outcomes be better for women who do survive in socieities with excess female mortality?
+\pause
+\item Overall takeaways:
+{\small
+\begin{itemize}
+\item - Incorporated both cultural and economic measures\\
+
+\item - Tried to overcome data limitations \\
+
+\item - Suggested new sources for quantiative analysis in Chinese economic history\\
+\end{itemize}
+}
+\end{itemize}
+\end{frame}
+
+
+
+
+\begin{frame}
+\frametitle{My thanks to:}
+
+\begin{itemize}
+
+\item Steve Nafziger\\
+\bigskip
+\item Jessica Leight and Sara LaLumia\\
+\item The folks at the Oakley Center in 2015-2016
+\item Many conversants: professors, colleagues, friends
+\item Folks at and around Dabei Old Temple, Pujue Temple, Liaoning Provincial Archives, Liaoning Municipal Archives, Liaoning Municipal Library, Dalian Municipal Archives, Dalian Municipal Library
+\item Professor Man He and parents
+\item Professor Yu Li
+\item Benefactors:
+\begin{itemize}
+\item The Barbara Solow Economic History Fellowship
+\item The Ruchman Family
+\end{itemize}
+\pause
+\item And y'all for making it out!
+\end{itemize}
+
+
+\end{frame}
+
+
+\appendix
+\section{Further Directions}
+\begin{frame}
+\frametitle{Further Directions}
+
+\begin{itemize}
+\item - Marriage Markets and Sex Ratios: temples had explanatory power\\
+\item - Better outcome modeling (HLM)
+\item - Further dynamics within older age brackets
+\item - Comparison with other populations
+\end{itemize}
+
+
+\end{frame}
+
+\section{Trends}
+
+\begin{frame}[label = morttrends120]
+\frametitle{Mortality for Males and Females \hyperlink{data}{\beamerbutton{Back to data}}}
+\begin{figure}[h!]
+\includegraphics[width=.9\textwidth]{mortratios1to20}\\
+{\tiny }
+\end{figure}
+\end{frame}
+
+\begin{frame}[label = morttrends2150]
+\frametitle{Mortality for Males and Females}
+\begin{figure}[h!]
+\includegraphics[width=.9\textwidth]{mortratios21to50}\\
+{\tiny }
+\end{figure}
+\hyperlink{data}{\beamerbutton{Go back to data}}
+\end{frame}
+
+
+
+\begin{frame}[label = exports]
+\frametitle{Changes in exports \hyperlink{data}{\beamerbutton{Data}} \hyperlink{otherexportpics}{\beamerbutton{Other Export Graphs}}}
+\begin{figure}[h!]
+\includegraphics[width=.9\textwidth]{IMEXYKwantaels}\\
+{\tiny }
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}[label = distancelegend]
+\frametitle{Trade Shock Values: Distance Legend \hyperlink{distance}{\beamerbutton{Map}}  \hyperlink{data}{\beamerbutton{Back to data}}} 
+\begin{figure}[h!]
+\includegraphics[width=.8\textwidth]{legenddistanceyk}\\
+{\tiny }
+\end{figure}
+\end{frame}
+
+\begin{frame}[label = distance]
+\frametitle{Distance from Yingkou\\
+\hyperlink{distancelegend}{\beamerbutton{Legend}} \hyperlink{data}{\beamerbutton{Back to data}}}
+\begin{figure}[h!]
+\includegraphics[width=.7\textwidth]{villagedistancetoykmap}\\
+{\tiny }
+\end{figure}
+\end{frame}
+
+\begin{frame}[label = tradeshocklegend]
+\frametitle{Trade Shock: Legend \hyperlink{tradeshock}{\beamerbutton{Map}} \hyperlink{data}{\beamerbutton{Back to data}}}
+\begin{figure}[h!]
+\includegraphics[width=.8\textwidth]{tradeshocklegend}\\
+{\tiny }
+\end{figure}
+\end{frame}
+
+\begin{frame}[label = tradeshock]
+\frametitle{The Trade Shock: \hyperlink{tradeshocklegend}{\beamerbutton{Legend}} \hyperlink{data}{\beamerbutton{Back to data}}}
+\begin{figure}[h!]
+\includegraphics[width=.7\textwidth]{tradeshockallyears}\\
+\end{figure}
+\end{frame}
+
+
+
+
+\begin{frame}[label=otherexportpics]
+\frametitle{Export Trends: Other Graphs}
+\begin{figure}[h!]
+\includegraphics[width=.85\textwidth]{IMEXYKlntaels}\\
+\end{figure}
+{\small 
+Back to \hyperlink{data}{\beamerbutton{data}}.}
+\end{frame}
+
+\begin{frame}[label=otherexportpics]
+\frametitle{Export Trends: Other Graphs}
+\begin{figure}[h!]
+\includegraphics[width=.85\textwidth]{SoybeanExportsfromYingkou}\\
+\end{figure}
+{\small 
+Back to \hyperlink{data}{\beamerbutton{data}}.}
+\end{frame}
+
+\begin{frame}[label = culture]
+\frametitle{Changes in Naming Practices \hyperlink{data2}{\beamerbutton{Back to data}}}
+\begin{figure}[h!]
+\includegraphics[width=.85\textwidth]{nonhanproptime}\\
+{\tiny Proportion: number of males with a non-Han name relative to the population}
+
+\end{figure}
+
+\end{frame}
+
+
+
+\section{Temples}
+
+\begin{frame}[label = temples]
+\frametitle{Creating the Temples Data (1)  \hyperlink{data2}{\beamerbutton{Back to data}}}
+Start with a bunch of these:
+\begin{figure}[h!]
+\includegraphics[width=.7\textwidth]{dabeigusi2}\\
+{\tiny Source: Baidu.com}
+
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[label = temples2]
+\frametitle{Creating the Temples Data (2)  \hyperlink{data2}{\beamerbutton{Back to data}}}
+They got recorded like so:
+\begin{figure}[h!]
+\includegraphics[width=.7\textwidth]{SYtempleex}\\
+{\tiny Source: \emph{Fengtian Tongzhi}}
+
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[label = temples3]
+\frametitle{Creating the Temples Data (3)  \hyperlink{data2}{\beamerbutton{Back to data}}}
+Find and geolocate from here:
+\begin{figure}[h!]
+\includegraphics[width=.6\textwidth]{FTTZcountymap2}\\
+{\tiny Source: \emph{Fengtian Tongzhi}}
+\end{figure}
+And Baidu, of course.
+
+\end{frame}
+
+
+
+\begin{frame}[label=confucianlegend]
+\frametitle{Confucian Temples \hyperlink{templeculture}{\beamerbutton{Maps!}} \hyperlink{data2}{\beamerbutton{Back to data}}}
+\begin{figure}[h!]
+\includegraphics[width=.7\linewidth]{confuciantemplelegend}\\
+\end{figure}
+\end{frame}
+
+
+
+
+
+\begin{frame}[label = templeculture]
+\frametitle{Located Confucian Temples before 1750, 1800, 1909 \hyperlink{confucianlegend}{\beamerbutton{Legend}}  \hyperlink{data2}{\beamerbutton{Back to data}}}
+\begin{figure}
+    \begin{center}
+\includegraphics<1>[width=.6\linewidth]{confuciantemplepre1750}
+\includegraphics<2>[width=.6\linewidth]{confuciantemplepre1800}
+\includegraphics<3>[width=.6\linewidth]{confuciantempleallyears}
+    \end{center}
+\end{figure}
+\end{frame}
+
+
+
+\begin{frame}[label=buddhistlegend]
+\frametitle{Buddhist Temples  \hyperlink{buddhistculture}{\beamerbutton{Maps!}}\hyperlink{data2}{\beamerbutton{Back to data}}}
+\begin{figure}[h!]
+\includegraphics[width=.7\linewidth]{buddhismlegendreal}\\
+{\tiny }
+
+\end{figure}
+
+\end{frame}
+
+
+\begin{frame}[label = buddhistculture]
+\frametitle{Located Buddhist Temples before 1750, 1800, 1909 \hyperlink{buddhistlegend}{\beamerbutton{Legend}}  \hyperlink{data2}{\beamerbutton{Back to data}}}
+\begin{figure}
+    \begin{center}
+\includegraphics<1>[width=.6\linewidth]{buddhismpre1750}
+\includegraphics<2>[width=.6\linewidth]{buddhismpre1800}
+\includegraphics<3>[width=.6\linewidth]{buddhismallyears}
+    \end{center}
+\end{figure}
+\end{frame}
+
+
+\begin{frame}[label=imrlegend]
+\frametitle{Infant Mortality Ratio Legend  \hyperlink{imrratio}{\beamerbutton{Back to the maps}}}
+\begin{figure}[h!]
+\includegraphics[width=\linewidth]{imrlegendfinal2}\\
+{\tiny }
+
+\end{figure}
+
+\end{frame}
+
+
+
+\begin{frame}[label=2013lifeexpectancylegend]
+\frametitle{Infant Mortality Ratio Legend  \hyperlink{2013lifeexpectancy}{\beamerbutton{Back to the map}}}
+\begin{figure}[h!]
+\includegraphics[width=.5\linewidth]{2013lifeexpectancylegend}\\
+{\tiny }
+
+\end{figure}
+
+\end{frame}
+
+
+\section{Data Issues}
+
+\begin{frame}[label = ageofdeath]
+\frametitle{Issues with Accounting for Mortality \hyperlink{data2}{\beamerbutton{Back to data}}}
+\begin{figure}[h!]
+\includegraphics[width=.7\textwidth]{DeathAgeFinal}\\
+{\tiny }
+
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[label = obsbyyear]
+\frametitle{Issues with Observations \hyperlink{data2}{\beamerbutton{Back to data}}}
+Number of Individual Observations by Year
+\begin{figure}[h!]
+\includegraphics[width=.7\textwidth]{obsbyyear}\\
+{\tiny Data Source: CMGPD 2011}
+
+\end{figure}
+
+\end{frame}
+
+\begin{frame}[label = obsbyyear]
+\frametitle{Issues with Registers \hyperlink{data2}{\beamerbutton{Back to data}}}
+Number of Registers Recorded by Year
+\begin{figure}[h!]
+\includegraphics[width=.7\textwidth]{registersbyyear}\\
+{\tiny Data Source: CMGPD 2011}
+
+\end{figure}
+
+\end{frame}
+
+
+
+\section{Outcomes}
+\begin{frame}[label=mortratio]
+\frametitle{Outcomes: Female-Male Mortality Index \hyperlink{data}{\beamerbutton{Back to Data}} }
+\begin{block}{Mortality by sex}
+\begin{equation}
+Deaths \ ratio = \frac{deaths_{t+3,sex}}{present_{t,sex}}
+\end{equation}
+\end{block}
+
+Where:\\
+\begin{itemize}
+\item $sex$ denotes male or female\\
+\item $deaths$ is the number of deaths of a given $sex$ between time $t$ and $t+3$\\
+\item $present$: observe in time $t$ and time $t+3$
+\end{itemize}
+
+\end{frame}
+
+
+
+\section{Summary Stats}
+
+
+
+
+
+\begin{frame}[label = sumstats16to20]
+\frametitle{Summary Stats for Mortality Index, 16-20 \emph{sui} \hyperlink{datadefs}{\beamerbutton{Data Definitions}} \hyperlink{results16to20}{\beamerbutton{16-20 sui results}}}
+{\tiny \input{Tables/sumstats1620nograin.tex}}
+\end{frame}
+
+\begin{frame}[label = sumstats21to50]
+\frametitle{Summary Stats for Mortality Index, 21-50 \emph{sui} \hyperlink{datadefs}{\beamerbutton{Data Definitions}} \hyperlink{results21to50}{\beamerbutton{21-50 sui results}}}
+{\tiny \input{Tables/sumstats2150withgrain.tex}}
+\end{frame}
+
+\begin{frame}[label = sumstats]
+\frametitle{Summary Stats \hyperlink{datadefs}{\beamerbutton{Data Definitions}} \hyperlink{results}{\beamerbutton{Results}}}
+{\tiny \input{Tables/presentationsum.tex}}
+\end{frame}
+
+\begin{frame}[label=robustness]
+\frametitle{Robustness Checks  \hyperlink{resultsadults}{\beamerbutton{Back to Results}}}
+Robust to:
+\begin{itemize}
+\item - Different definitions of age brackets (1-17, 18-46, 47-80)
+\item - Taking out non-Han-named people with positions (omitted income variable)
+\item - Removing married daughters in young age brackets
+\item - Different definitions of non-Han variables
+\item - Removing extreme villages / observations of mortality index
+\item - Remove after 1888
+\item - Interpolate v. assign grain prices of the nearest prefectural seat
+\end{itemize}
+\end{frame}
+
+\end{comment}

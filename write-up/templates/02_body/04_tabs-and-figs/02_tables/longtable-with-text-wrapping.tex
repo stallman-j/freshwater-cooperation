@@ -1,0 +1,54 @@
+\section{Fancy Stuff with Longtable}\label{sec:longtable-with-text-wrapping}
+
+If you want a table to span multiple pages and have text and wrap the text within columns, here's an example:
+
+\begin{singlespace} %requires package setspace
+
+\begin{center}
+\begin{longtable}[c]{p{0.3\linewidth} | p{0.7\linewidth}}
+\caption{Sample Interview Records from Field Visits: test}
+\label{tab:interviews_test}\\
+
+
+% set first header
+\hline
+\multicolumn{2}{c}{Beginning of Table}\\
+\hline
+Topic                                                                        & Interviewee Comments                                                                                                                                                                                                                                                                                                                                               \\ \hline
+\endfirsthead 
+
+% set second-page header
+% set first header
+\hline
+\multicolumn{2}{| c | }{Continuation of Table}\\
+\hline
+Topic                                                                        & Interviewee Comments                                                                                                                                                                                                                                                                                                                                               \\ \hline
+\endhead 
+
+
+% set end of first-page table
+\hline
+\endfoot
+
+% set end of second-page table
+\hline
+\multicolumn{2}{| c |}{End of Table}\\
+\hline\hline
+\endlastfoot
+
+
+A. Selection of loan guarantee partners                  & "One of our guarantee partners was introduced by another firm in our supply chain. It is helpful at the beginning to learn about this potential partner from someone who we know   well and trust." -- A CFO at a listed firm in Shanghai                                                                                                                          \\ \cline{2-2} 
+                                                                             & "People appreciate it when   you introduce them to potential guarantee partners. Most firms here, even the   big ones, rely heavily on bank loans. But one needs to be careful about   introducing people. If later anything goes wrong, they will remember  who was the match-maker. " -- A CEO at a listed firm in Shandong                               \\ \cline{2-2} 
+                                                                             & "Companies that have  similar needs for and abilities to guarantee each other are most likely to work together well as guarantee partners. If one of them has a much higher debt ratio,   this firm may not be able to provide loan guarantees because banks will reject   it." -- A manager at a listed firm in Beijing                                                 \\ \cline{2-2} 
+                                                                             & "Your relationships with   the other firms are at stake when match-making potential guarantee partners.   They trust you and that's why they listen to your advice. You don't want to   make obvious mistakes. There are signals to pay attention to... e.g., are   they in similar financial situations? " -- A CFO at a listed firm in   Shandong                \\ \hline
+B. Bank evaluations of loan guarantees                     & "One of our main goals, as   a state-owned bank, is risk control. When evaluating loan guarantee   applications, we make sure that the applicants  do not overly rely on leverage. We also pay   attention to their performance…in the end, how can a firm that has been   losing money repay the loan?" -- A bank manager in Shandong                             \\ \cline{2-2} 
+                                                                             & "We examine the accounting   reports from both the borrower and guarantor firms, putting more weights on   the borrower. The data from publicly listed firms are more trustworthy. For   private firms, we ask them to obtain external financial reports from auditing   companies." -- A loan officer in Shanghai                                                 \\ \cline{2-2} 
+                                                                             & "Our bank has an internal system that has customer information across the nation. We can detect   connections between the guarantor and guarantee, including family ties   between their owners and top managers." -- A bank manager in Jiangsu                                                                                                                  \\ \cline{2-2} 
+                                                                             & "In loan applications,   firms usually list the projects to which the loans are going. However, our   decisions are mainly made based on firm-level information." -- A loan   officer in Shandong                                                                                                                                                                  \\ \hline
+C. The expectation of mutually beneficial loan guarantees & "We have offered loan   guarantees to unrelated companies. Why would one take financial risks for   firms outside its business group? Well, there is the understanding from the   beginning that we will take turns to help each other...today you guarantee my   loan applications and tomorrow I will guarantee yours. " -- A CFO at a   listed firm in Shandong \\ \cline{2-2} 
+                                                                             & "Behaviors influence   reputation. Being opportunistic in a loan guarantee relationship harms one's   reputation. Words spread fast among firms that are interconnected through   overlapping of personnel. Others are watching how you behave towards your loan   guarantee partner." -- A manager at a listed firm in Shanghai                                   \\ \cline{2-2} 
+                                                                             & "It is tempting not to   reciprocate one's partner after receiving a loan guarantee. However, as long   as you expect to have a need for bank loans in the future, it is a long-run   game. Both firms are likely to get what they need from the banks if they behave   cooperatively towards each other." -- A manager at a listed firm in   Shandong             \\ \cline{2-2} 
+                                                                             & "Some players have to set   up the norms around loan guarantees. The big ones have a responsibility to do   so. How could you expect cooperative behaviors from small players if the big   ones are taking advantages of their partners?"  -- A manager at a listed firm in Beijing                                                                                \\ \hline
+\end{longtable}
+\end{center}
+\end{singlespace}

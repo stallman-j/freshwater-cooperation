@@ -1,0 +1,12 @@
+\section{Inserting PDF pages directly}
+
+See \url{https://stackoverflow.com/questions/2739159/inserting-a-pdf-file-in-latex}.
+
+You'll need the package in your preamble \verb+pdfpages+. 
+
+The following includes all pages of the pdf:
+
+\includepdf[pages=-,scale=.8,pagecommand={}]{included-pdfs/ECON-511_pset-01_stallman_question-02.pdf}
+
+The following includes pages 1,3 and 5.
+\includepdf[pages={1,3,5}]{included-pdfs/ECON-511_pset-01_stallman_question-02.pdf}

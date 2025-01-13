@@ -1,0 +1,45 @@
+\section{General Writing Template}\label{sec:general-writing}
+
+
+For more see \url{https://www.overleaf.com/learn/latex/Bold,_italics_and_underlining}
+
+
+These parts are \textbf{emboldened} 
+or \underline{underlined} 
+and also \textbf{\textit{bold and italicized}}.
+
+You can also italicize with \emph{this command}. The \verb+emph+ and \verb+textit+ behave slightly differently.
+
+\subsection{Common symbols}
+
+If you want to insert an \& or \$ , you need a back slash \ before you do so, since Latex reserves these for alignment commands and math environment commands respectively.
+
+
+
+\subsection{IMPORTANT NOTE}
+You should never manually type numbers of equations, tables, figures, page numbers, citations, etc. Let Latex handle this referencing and labeling for you.\\
+
+To add a list, use
+
+\begin{enumerate}
+    \item This is an item
+\end{enumerate}
+
+or 
+
+\begin{itemize}
+    \item This is an item
+\end{itemize}
+
+For a citation, you typically either want \citet{taylorBuffaloHuntInternational2011} for in-text citations, or at the end of a sentence \citep{taylorBuffaloHuntInternational2011}.
+
+
+\section{Math}
+If you want all the great math symbols, see \url{https://oeis.org/wiki/List_of_LaTeX_mathematical_symbols}. If you can't find something in there, check out \url{http://tug.ctan.org/info/symbols/comprehensive/symbols-a4.pdf}.
+
+For a pretty empty set, put \verb+\usepackage{amssymb}+ in your preamble, and use $\varnothing$ rather than $\emptyset$ or $\{\}$.
+
+
+For script characters, use \verb+\mathcal{P}+ for, for instance, $\mathcal{F}$. \\
+
+Note that there are two epsilons, \verb+epsilon+ ($\epsilon$) and \verb+varepsilon+ ($\varepsilon$)

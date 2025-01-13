@@ -1,0 +1,139 @@
+\section{Matrices!}\label{sec:math-matrices}
+\begin{comment}
+\section{Math: Matrices}
+
+Adapted from \url{https://www.overleaf.com/learn/latex/Matrices}
+
+
+See also the documentation for the \verb+mathtools+ package for \verb+psmallmatrix+ and \verb+bsmallmatrix+ and more.
+
+All the matrices you might want. Note that \verb+\\+ is the newline command, and \verb+&+ is the alignment operator.
+
+\begin{equation*}
+\begin{matrix}
+	1 & 2 & 3\\
+	a & b & c
+\end{matrix}
+\end{equation*}
+
+\begin{equation*}
+\begin{pmatrix}
+	1 & 2 & 3\\
+	a & b & c
+\end{pmatrix}
+\end{equation*}
+
+\begin{equation*}
+\begin{bmatrix}
+	1 & 2 & 3\\
+	a & b & c
+\end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+\begin{Bmatrix}
+	1 & 2 & 3\\
+	a & b & c
+\end{Bmatrix}
+\end{equation*}
+
+\begin{equation*}
+\begin{vmatrix}
+	1 & 2 & 3\\
+	a & b & c
+\end{vmatrix}
+\end{equation*}
+
+\begin{equation*}
+\begin{Vmatrix}
+	1 & 2 & 3\\
+	a & b & c
+\end{Vmatrix}
+\end{equation*}
+
+
+For funkier matrices, you can make the brackets manually:
+
+
+\begin{equation*}
+\left\lceil
+\begin{matrix}
+	1 & 2 & 3\\
+	a & b & c
+\end{matrix}
+\right\rceil
+\end{equation*}
+
+\begin{equation*}
+\left\langle
+\begin{matrix}
+	1 & 2 & 3\\
+	a & b & c
+\end{matrix}
+\right\rangle
+\end{equation*}
+
+\subsection{Inline Matrices}
+
+Trying to typeset an inline matrix here
+$\begin{pmatrix}
+	a & b\\ 
+	c & d
+\end{pmatrix}$ 
+but it looks too big, so let's try 
+$\big(\begin{smallmatrix}
+	a & b\\
+	c & d
+\end{smallmatrix}\big)$ 
+instead.
+\end{comment}
+
+
+\section{Writing an Arbitrary System of Equations in Matrix Form}
+
+Let $X_{ij}$ denote the $i$th regressor for the $j$th observation, for $i=1,\ldots,k$ and $j=1,\ldots,n$
+        \begin{equation*}
+            \begin{bmatrix}
+Y_1 \\ Y_2 \\ \vdots \\ Y_n
+\end{bmatrix} =
+\begin{bmatrix}
+\beta_0 + \beta_1 X_{11} + \beta_2 X_{21} + \ldots + \beta_kX_{k1}\\
+\beta_0 + \beta_1 X_{12} + \beta_2 X_{22} + \ldots + \beta_kX_{k2}\\
+\ldots\\
+\beta_0 + \beta_1 X_{1n} + \beta_2 X_{2n} + \ldots + \beta_kX_{kn}
+\end{bmatrix}+
+\begin{bmatrix}
+\varepsilon_1 \\
+\varepsilon_2 \\
+\vdots\\
+\varepsilon_n
+\end{bmatrix}
+        \end{equation*}
+
+We can separate the regressors and coefficients as
+\begin{equation*}
+            \begin{bmatrix}
+Y_1 \\ Y_2 \\ \vdots \\ Y_n
+\end{bmatrix} =
+\begin{bmatrix}
+1 & X_{11} & X_{21} & \ldots & X_{k1}\\
+1 & X_{12} & X_{22} & \ldots & X_{k2}\\
+\vdots & \vdots & \vdots & \vdots & \vdots \\
+1 & X_{1m} & X_{2n} & \ldots & X_{kn}\\
+\end{bmatrix}
+\begin{bmatrix}
+\beta_0 \\
+\beta_1 \\
+\vdots\\
+\beta_n
+\end{bmatrix}+
+\begin{bmatrix}
+\varepsilon_1 \\
+\varepsilon_2 \\
+\vdots\\
+\varepsilon_n
+\end{bmatrix}
+\end{equation*}
+Then $\beta = (X'X)^{-1}X'Y$
+
+

@@ -1,0 +1,11 @@
+\section{R with Latex: Stargazer}
+If you want R to output to latex format, you'll need to load and learn some of how the stargazer package works in R. Read through the documentation \href{https://www.rdocumentation.org/packages/stargazer/versions/5.2.2/topics/stargazer}{here}. See lots of general examples with the basics \href{https://www.jakeruss.com/cheatsheets/stargazer/#change-which-statistics-are-displayed}{here}
+
+\subsection{Finessing Layout}
+If you want to be very particular about including or excluding things, you'll want to utilize \verb+table.layout+ and \verb+omit.table.layout+. These allow you to put specific items in very specific places. See \url{https://stackoverflow.com/questions/51755544/r-stargazer-add-lines-to-regression-output-and-costumise-their-order} and \url{https://stackoverflow.com/questions/39816597/stargazer-line-type} for examples of the R code.
+
+\subsection{Adding Notes}
+To add notes, see \href{https://stackoverflow.com/questions/26950517/add-a-row-with-notes-using-stargazer}{this example.}
+
+\subsubsection{Things we haven't used but might need to}
+If you need to do serious editing of the top and bottom (you have particular needs for your table notes, say), see \url{https://stackoverflow.com/questions/28662394/stargazer-options-resizebox-and-label} for using \verb+gsub+ and \verb+capture.output+ in R to manipulate the output manually.

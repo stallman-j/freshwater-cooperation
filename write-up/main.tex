@@ -1,0 +1,119 @@
+\documentclass[12pt]{article} % can also have "report", "book", etc. Note that "article" doesn't accept chapters.
+
+
+% There's a file called preamble_article.sty in the below path which contains all the options that usually clog up the top of your .tex file. 
+\usepackage{preambles/preamble_article}
+
+\begin{document}
+
+
+% Front Matter here
+\include{01_front-matter/front-matter-article-template}
+
+    
+
+
+%% Body Templates
+    
+    %% General Writing Templates
+    
+\include{templates/02_body/01_general-writing/general-writing-template}
+
+\include{how-tos/test}
+
+\begin{comment}
+\include{02_body/01_general-writing/general-writing-template}
+\include{02_body/01_general-writing/citation-template}
+\include{02_body/01_general-writing/footnotes-template}
+\include{02_body/01_general-writing/hyperlinks-template}
+\include{02_body/01_general-writing/minipage-template}
+\end{comment}
+
+
+
+    %%% Layout and Formatting
+
+
+\begin{comment}
+\include{02_body/05_other/inserting-pdfs-template}
+\include{02_body/02_layout-formatting/chapter-template} % for use with a report class
+\include{02_body/02_layout-formatting/page-formatting-template} % for things like landscape pages
+\include{02_body/02_layout-formatting/sections-template} % for adding sections, subsections, subsubsections
+\include{02_body/02_layout-formatting/theorems-hypotheses-template} % for customizing so that you can label and cross-reference your hypotheses, theorems, and so on
+\include{02_body/02_layout-formatting/hw-exercises-answers_template}
+
+\end{comment}
+
+
+
+    %%% Math Templates
+
+\begin{comment}
+
+\include{02_body/03_math/math-equations-template} % equations formatting, how to align equations, how to tag and label equations
+\include{02_body/03_math/math-symbols-template} % common math symbols and where to look for all the symbols you might want
+\include{02_body/03_math/math-matrices-template} % basic matrices format
+\end{comment}
+
+
+
+
+    %%% Tables and Figures
+    
+\begin{comment}
+% For general placement of graphics
+\include{02_body/04_tabs-and-figs/00_graphics-positioning-template} 
+
+\end{comment}
+
+
+
+
+
+        % Figure Templates
+
+\begin{comment}
+\include{02_body/04_tabs-and-figs/01_figure-templates/figure-template}
+\end{comment}
+
+
+
+
+
+        % Table Templates
+        
+
+
+
+\begin{comment}
+\include{02_body/04_tabs-and-figs/02_table-templates/tables-with-estout}
+\include{02_body/04_tabs-and-figs/02_table-templates/threeparttable-template}
+\include{02_body/04_tabs-and-figs/02_table-templates/basic-tables-template}
+\include{02_body/04_tabs-and-figs/02_table-templates/r-tables-stargazer}
+\include{02_body/04_tabs-and-figs/02_table-templates/stata-tables-template}
+\include{02_body/04_tabs-and-figs/02_table-templates/longtable-with-text-wrapping}
+
+\end{comment}
+
+
+
+
+%% Appendices
+
+
+
+\begin{comment}
+\input{appendices/basic-appendices}
+\end{comment}
+
+
+%% Bibliography
+
+%%% UNCOMMENT BELOW TO INCLUDE REFERENCES ----
+
+\bibliography{bibliography/international-environmental-economics}
+
+
+
+
+\end{document} 

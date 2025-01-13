@@ -1,0 +1,595 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"masthea",
+				"masthead-background-color"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					""
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Traditional"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder - LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Script Builder"
+				]
+			],
+			[
+				"Packages/LaTeXTools/LaTeX.sublime-build",
+				"PdfLaTeX"
+			]
+		],
+		[
+			[
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					""
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Traditional Builder"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Traditional Builder with PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Traditional Builder with XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Traditional Builder with LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder with PdfLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder with XeLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Basic Builder with LuaLaTeX"
+				],
+				[
+					"Packages/LaTeXTools/LaTeX.sublime-build",
+					"Script Builder"
+				]
+			],
+			[
+				"Packages/LaTeXTools/LaTeX.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"wordcount:",
+				"LaTeXWordCount: Word Count"
+			],
+			[
+				"word count",
+				"LaTeXWordCount: Word Count"
+			],
+			[
+				"Package Control: ",
+				"Package Control: List Packages"
+			],
+			[
+				"package ",
+				"Package Control: Install Package"
+			],
+			[
+				"sett",
+				"Preferences: Settings"
+			],
+			[
+				"settings",
+				"Preferences: Settings"
+			],
+			[
+				"customiz",
+				"UI: Customize Theme"
+			],
+			[
+				"ui:",
+				"UI: Customize Color Scheme"
+			],
+			[
+				"package",
+				"Package Control: Install Package"
+			],
+			[
+				"theme",
+				"UI: Customize Theme"
+			],
+			[
+				"menu",
+				"Markdown Preview: Export HTML in Sublime Text"
+			],
+			[
+				"liverel",
+				"LiveReload: Enable/disable plug-ins"
+			],
+			[
+				"livereload: enab",
+				"LiveReload: Enable/disable plug-ins"
+			],
+			[
+				"open preview",
+				"Markdown Preview: Export HTML in Sublime Text"
+			],
+			[
+				"markdown",
+				"Markdown Preview: Preview in Browser"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"terminus",
+				"Terminus: Open Default Shell in Tab (View)"
+			],
+			[
+				"sendcode:",
+				"SendCode: Choose Program"
+			],
+			[
+				"install p",
+				"Package Control: Install Package"
+			],
+			[
+				"package contro",
+				"Package Control: Install Package"
+			],
+			[
+				"enable bui",
+				"Disable/Enable buildview for this window"
+			],
+			[
+				"install package",
+				"Package Control: Install Package"
+			],
+			[
+				"terminus: open",
+				"Terminus: Open Default Shell in Panel"
+			],
+			[
+				"package control",
+				"Package Control: Install Package"
+			],
+			[
+				"latextools:",
+				"LaTeXTools: Clear cache"
+			],
+			[
+				"latextools",
+				"LaTeXTools: Reset user settings to default"
+			],
+			[
+				"ayu",
+				"ayu: Activate theme"
+			],
+			[
+				"a",
+				"ayu: Activate theme"
+			],
+			[
+				"ayu: ",
+				"ayu: Activate theme"
+			],
+			[
+				"browse ",
+				"Preferences: Browse Packages"
+			],
+			[
+				"a file icon",
+				"Preferences: A File Icon Settings"
+			],
+			[
+				"package co",
+				"Package Control: Install Package"
+			],
+			[
+				"package control: install package",
+				"Package Control: Install Package"
+			],
+			[
+				"install pa",
+				"Package Control: Install Package"
+			],
+			[
+				"latextools: check",
+				"LaTeXTools: Check system"
+			],
+			[
+				"latextools: check system",
+				"LaTeXTools: Check system"
+			],
+			[
+				"latextools: rese",
+				"LaTeXTools: Reset user settings to default"
+			],
+			[
+				"package control: install",
+				"Package Control: Install Package"
+			],
+			[
+				"latextools: reset",
+				"LaTeXTools: Reset user settings to default"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 94.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/P/Projects/freshwater-cooperation"
+	],
+	"file_history":
+	[
+		"/P/Projects/books/merallam/books/saahved-ascendant/00_pre-prologue.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/01_elthit-valley.tex",
+		"/P/Projects/books/merallam/main.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/1x_interlude.tex",
+		"/P/Projects/books/merallam/preambles/preamble_book.sty",
+		"/P/Projects/books/merallam/books/saahved-ascendant/10_interlude.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/10_elthit-valley.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/09_elthit-valley.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/07_elthit-valley.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/07_interlude.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/03_interlude.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/01_interlude.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/06_interlude.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/06_elthit-valley.tex",
+		"/P/Projects/books/merallam/books/elthit-valley_scratch.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/05_interlude.tex",
+		"/P/Projects/books/merallam/books/snippets/persim-vileh.tex",
+		"/P/Projects/freshwater-cooperation/write-up/LaTekonomer/preambles/preamble_article.sty",
+		"/P/Projects/books/merallam/books/saahved-ascendant/04_interlude.tex",
+		"/P/Projects/books/merallam_st-project.sublime-project",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/User/Default (Windows).sublime-keymap",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Default (Windows).sublime-keymap",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text glossplural-uppercase.sublime-snippet",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text glossplural-lowercase.sublime-snippet",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text gloss-lowercase.sublime-snippet",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text gloss-uppercase.sublime-snippet",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text glossplural.sublime-snippet",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text glosspluraluppercase.sublime-snippet",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text gloss.sublime-snippet",
+		"/P/Projects/books/merallam/books/saahved-ascendant/02_interlude.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/03_elthit-valley.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/05_elthit-valley.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/04_elthit-valley.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/02_elthit-valley.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/00_prologue.tex",
+		"/C/Projects/books/merallam/main.tex",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/LaTeXTools.sublime-settings",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text emphasize.sublime-snippet",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text boldface.sublime-snippet",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/User/LaTeXTools.sublime-settings",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/Default/Default (Windows).sublime-keymap",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text slanted.sublime-snippet",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/LaTeXTools/Text ital.sublime-snippet",
+		"/P/Projects/books/merallam/books/saahved-ascendant/01_volom.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/1x_elthit-valley.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/elthit-valley_scratch.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/11_elthit-valley.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/09_interlude.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/08_elthit-valley.tex",
+		"/C/Users/jilli/AppData/Local/SumatraPDF/SumatraPDF-settings.txt",
+		"/P/Projects/books/merallam/books/saahved-ascendant/notes_from_chris.tex",
+		"/P/Projects/books/merallam/books/saahved-ascendant/notes_from_chris",
+		"/C/Projects/books/merallam/books/saahved-ascendant/00_pre-prologue.tex",
+		"/C/Projects/books/merallam/books/saahved-ascendant/elthit-valley_scratch.tex",
+		"/C/Projects/books/merallam/books/saahved-ascendant/08_elthit-valley.tex",
+		"/C/Projects/books/merallam/books/saahved-ascendant/00_prologue.tex",
+		"/C/Projects/books/merallam/books/saahved-ascendant/00_pre-prologue (conflicted).tex",
+		"/C/Projects/books/merallam/main.log",
+		"/C/Projects/books/merallam/TeX reports the error was in file",
+		"/C/Projects/books/merallam/books/saahved-ascendant/00_pre-prologue (conflicted 2).tex",
+		"/C/Projects/books/merallam/books/saahved-ascendant/03_elthit-valley.tex",
+		"/C/Projects/books/merallam/books/saahved-ascendant/02_elthit-valley.tex",
+		"/C/Projects/books/merallam/preambles/preamble_book.sty",
+		"/C/Projects/books/merallam/books/saahved-ascendant/05_elthit-valley.tex",
+		"/C/Projects/books/merallam/books/snippets/worldbuilding.tex",
+		"/C/Projects/books/merallam/books/saahved-ascendant/07_elthit-valley.tex",
+		"/C/Projects/books/merallam/books/saahved-ascendant/01_elthit-valley.tex",
+		"/C/Projects/books/merallam/books/saahved-ascendant/04_elthit-valley.tex",
+		"/C/Projects/books/merallam/books/saahved-ascendant/06_elthit-valley.tex",
+		"/P/Projects/letters-of-recommendation/main.tex",
+		"/P/Projects/letters-of-recommendation/guo_yaya/2024_yaya-guo_emergency-medicine-outreach.tex",
+		"/C/Projects/ECON-412_2024F/attendance/ECON-412_2024F_attendance-email.txt",
+		"/C/Projects/ECON-412_2024F/homework/ps-03/2024F_ps-03_feedback-for-next-time.txt",
+		"/C/Projects/ECON-412_2024F/attendance/ECON-412_2024F_attendance-email",
+		"/C/Projects/ECON-412_2024F/ECON-412_2024F_student-comments-on-lectures",
+		"/C/Projects/ECON-412_2024F/homework/pa-04/Changes to make to PA 4 prompt for 2025",
+		"/C/Projects/ECON-412_2024F/homework/pa-03/pa-03_feedback-email-message",
+		"/C/Projects/books/merallam/books/saahved-ascendant/04_elthit-valley [conflicted 3].tex",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/User/Preferences.sublime-settings",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/User/GitHub Light.sublime-theme",
+		"/C/Users/jilli/AppData/Roaming/Sublime Text/Packages/GitHub Theme/GitHub Light.sublime-theme",
+		"/C/Projects/books/alive-electric/books/rise-of-saahved/02_elthit-valley.tex",
+		"/C/Projects/books/alive-electric/main.tex",
+		"/C/Projects/books/alive-electric/books/rise-of-saahved/01_elthit-valley.tex",
+		"/C/Projects/books/alive-electric/preambles/preamble_book.sty",
+		"/C/Projects/books/alive-electric/books/rise-of-saahved/03_elthit-valley.tex",
+		"/C/Projects/books/alive-electric/books/rise-of-saahved/elthit-valley_scratch.tex",
+		"/C/Projects/books/alive-electric/preambles/glossary.sty",
+		"/C/Projects/books/alive-electric/books/rise-of-saahved/glossary.tex",
+		"/C/Projects/books/alive-electric/books/rise-of-saahved/01_volom.tex",
+		"/C/Projects/books/alive-electric/books/rise-of-saahved/01_elthit-valley_a.tex",
+		"/C/Projects/books/rise-of-saaved/chapters/01_elthit-valley.tex",
+		"/P/2024-2025_academics/ECON-412_2024F/ECON-412_2023F_LaTex/paper-assignment-05.tex",
+		"/C/Users/jilli/Desktop/ergodash-layout.txt",
+		"/C/Projects/ekonomR/vignettes/basic-cleaning.md",
+		"/C/Projects/LaTekonomer/how-tos/ECON-412_overleaf.md",
+		"/P/Projects/collaborating/hinds_kathryn/emotional-analysis-summary.md",
+		"/C/Projects/ekonomR/_includes/head/custom.html",
+		"/C/Projects/ekonomR/documentation/equation-refs.html",
+		"/P/2024-2025_academics/ECON-412_2024F/ECON-412_2023F_LaTex/paper-assignment-04.tex",
+		"/C/Projects/minimal-mistakes-master/minimal-mistakes-master/_sass/minimal-mistakes/_variables.scss",
+		"/C/Projects/ekonomR/_sass/_variables.scss",
+		"/C/Users/jilli/Documents/output/01_tables/basic_regression_table.tex",
+		"/C/Users/jilli/Documents/output/01_tables/fixed_effects_table.tex",
+		"/C/Projects/minimal-mistakes-master/minimal-mistakes-master/assets/css/main.scss",
+		"/C/Projects/ekonomR/_layouts/default.html",
+		"/C/Projects/LaTekonomer/how-tos/documentation-LaTekonomer.md",
+		"/C/Projects/ekonomR/example-project/output/01_tables/basic_regression_table.tex",
+		"/C/Projects/minimal-mistakes-master/minimal-mistakes-master/_includes/head/custom.html",
+		"/C/Projects/stallman-j.github.io/about-me.md",
+		"/P/Projects/buena-fe_internal-documents/documents/pictures/README.txt",
+		"/P/2024-2025_academics/ECON-412_2024F/homework/pa-02/Revisions to make for PA 2 in the future",
+		"/C/Projects/stallman-j.github.io/index.md",
+		"/C/Projects/water-in-africa/documents/meeting-notes/2024-10-24_research-check-in_jillian-giovanni",
+		"/C/Projects/ekonomR/index.md",
+		"/C/Projects/ekonomR/example-project/documents/document-data_cheat-sheet",
+		"/C/Projects/ekonomR/example-project/documents/common-git-commands",
+		"/C/Projects/stallman-j.github.io/how-tos/data.md",
+		"/C/Projects/ekonomR/.gitignore",
+		"/C/Projects/water-in-africa/.gitignore",
+		"/C/Projects/output/01_tables/townsend-regression.tex",
+		"/C/Projects/ekonomR/vignettes/basic-cleaning_gcb.md",
+		"/C/Projects/ekonomR/vignettes/coding-review",
+		"/C/Projects/ekonomR/vignettes/basic-cleaning_01.md",
+		"/P/2024-2025_academics/ECON-412_2024F/homework/paper-assignment_comments",
+		"/P/Projects/qmk_firmware/keyboards/omkbd/ergodash/rev1/keymaps/stallman-j/keymap_default.c",
+		"/P/Projects/qmk_firmware/keyboards/omkbd/ergodash/rev1/keymaps/stallman-j/keymap.c"
+	],
+	"find":
+	{
+		"height": 36.0
+	},
+	"find_in_files":
+	{
+		"height": 190.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"bern",
+			"erotic fiction",
+			"non-",
+			"\\w+",
+			"erotic fiction",
+			"sex",
+			"\\w+",
+			"vol",
+			"\\w+",
+			"piercing",
+			"facet",
+			"fact",
+			"anely",
+			"opaque",
+			"mirror",
+			"ctrl+d",
+			"ctrl+l"
+		],
+		"highlight": false,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"scrollbar_highlights": true,
+		"show_context": true,
+		"use_buffer2": true,
+		"use_gitignore": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 36.0
+	},
+	"input":
+	{
+		"height": 65.6
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.Terminus":
+	{
+		"height": 156.399993896
+	},
+	"output.Terminus 2":
+	{
+		"height": 156.399993896
+	},
+	"output.diff_views":
+	{
+		"height": 119.0
+	},
+	"output.exec":
+	{
+		"height": 0.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.latextools":
+	{
+		"height": 64.0
+	},
+	"output.markdown":
+	{
+		"height": 132.399993896
+	},
+	"pinned_build_system": "",
+	"project": "freshwater-cooperation.sublime-project",
+	"replace":
+	{
+		"height": 68.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 302.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

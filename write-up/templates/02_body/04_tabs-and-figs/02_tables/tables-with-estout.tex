@@ -1,0 +1,24 @@
+
+\section{Tables with Stata's Estout Output}\label{sec:tables-with-estout}
+
+% requires commands for the estauto, search in the preamble
+
+
+\begin{singlespace}
+\begin{table}[!htbp]
+\caption{Summary Statistics for PM 2.5 by Sensor Location in Minnesota} \label{tab:city-sum-stats}
+\begin{center}
+
+%% estauto	  
+	  \estauto{tables/tables-from-stata/table-city-pm25-mean}{10}{c}
+
+\begin{minipage}{0.7\textwidth}
+\small{\textit{Note}: Readings taken for available data as daily averages from January 01, 2016 to December 31, 2018. Levels of 0-12 are considered good (corresponding to an AQI of 0-50), 12.1-35.4 are moderate (AQI 51-100); 35.5-55.4 unhealthy for sensitive groups (AQI 101-150); and 55.5-150.4 unhealthy (AQI 151-200). Data from the Minnesota Pollution Control Agency}
+\end{minipage}	  
+
+\end{center}
+\end{table}
+\end{singlespace}
+
+
+

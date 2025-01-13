@@ -1,0 +1,37 @@
+\begin{table}[H]
+
+\caption{Life Expectancy Cross-Section Comparisons, 1950 and 2019 \label{tab:lecrosssection}}
+\centering
+\begin{threeparttable}
+\begin{tabular}[t]{lcccccc}
+\toprule
+\multicolumn{1}{c}{ } & \multicolumn{2}{c}{Birth} & \multicolumn{2}{c}{Age 15} & \multicolumn{2}{c}{Age 65} \\
+\cmidrule(l{3pt}r{3pt}){2-3} \cmidrule(l{3pt}r{3pt}){4-5} \cmidrule(l{3pt}r{3pt}){6-7}
+\multicolumn{1}{c}{ } & \multicolumn{1}{c}{1950} & \multicolumn{1}{c}{2019} & \multicolumn{1}{c}{1950} & \multicolumn{1}{c}{2019} & \multicolumn{1}{c}{1950} & \multicolumn{1}{c}{2019} \\
+\cmidrule(l{3pt}r{3pt}){2-2} \cmidrule(l{3pt}r{3pt}){3-3} \cmidrule(l{3pt}r{3pt}){4-4} \cmidrule(l{3pt}r{3pt}){5-5} \cmidrule(l{3pt}r{3pt}){6-6} \cmidrule(l{3pt}r{3pt}){7-7}
+  & (1) & (2) & (3) & (4) & (5) & (6)\\
+\midrule
+Intercept & 42.823 & 67.733 & 42.617 & 42.102 & 11.127 & 14.266\\
+ & (1.676) & (0.665) & (6.361) & (4.614) & (0.224) & (0.201)\\
+GDP per capita & 0.002 & 0.000 &  &  &  & \\
+ & (0.000) & (0.000) &  &  &  & \\
+Log GDP per capita &  &  & 2.073 & 2.359 &  & \\
+ &  &  & (0.651) & (0.401) &  & \\
+TFR &  &  & -1.880 & -1.671 &  & \\
+ &  &  & (0.288) & (0.363) &  & \\
+GDP (unit) per (unit) &  &  &  &  & 0.213 & 0.093\\
+ &  &  &  &  & (0.028) & (0.009)\\
+\midrule
+Num.Obs. & 55 & 182 & 55 & 182 & 55 & 182\\
+Mean & 54.870 & 73.080 & 50.660 & 60.220 & 12.260 & 16.370\\
+R2 & 0.611 & 0.508 & 0.769 & 0.724 & 0.360 & 0.572\\
+R2 Adj. & 0.604 & 0.505 & 0.760 & 0.721 & 0.348 & 0.569\\
+F & 78.666 & 98.508 & 88.414 & 209.054 & 56.186 & 108.220\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}
+\item \textit{Notes: } 
+\item Robust standard errors given in parentheses. Population and life expectancy are obtained from \citet{undesaWorldPopulationProspects2022}. Gross domestic product (GDP) is (what units) from \citet{feenstraNextGenerationPenn2015}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}

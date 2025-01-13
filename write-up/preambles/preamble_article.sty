@@ -1,0 +1,188 @@
+
+% Packages:
+%% Language and font encodings
+\usepackage[english]{babel}
+%\usepackage[utf8x]{inputenc} % clashes with hyperref
+\usepackage[T1]{fontenc}
+\usepackage{palatino}
+\usepackage{bm} % for using bold commands. redefines the \boldsymbol command, providing the \bm command, so can make something bold with either \boldsymbol{g} or \bm{g}
+
+%% Page-Format-Related Packages
+\usepackage{lscape} % allows you to have landscape pages in a portrait doc. see page_formatting_template.
+
+% Load the parskip package with skip and indent options
+\usepackage[skip=5pt plus1pt, indent=0pt]{parskip}
+
+% titlesec allows for changing spacing between sections and subsections in format
+% \titlespacing{command}{left spacing}{before spacing}{after spacing}[right]
+% Spacing: how to read {12pt plus 4pt minus 2pt}
+% 12pt is what we would like the spacing to be.
+% plus 4pt means that TeX can stretch it by at most 4pt.
+% minus 2pt means that TeX can shrink it by at most 2pt.
+% This is one example of the concept of, 'glue', in TeX.
+
+\usepackage{titlesec}
+\titlespacing\section{0pt}{8pt plus 4pt minus 2pt}{5pt plus 2pt minus 2pt}
+\titlespacing\subsection{0pt}{8pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+\titlespacing\subsubsection{0pt}{8pt plus 4pt minus 2pt}{0pt plus 2pt minus 2pt}
+
+
+%% Sets page size and margins
+\usepackage[a4paper,top=1in,bottom=1in,left=1in,right=1in,marginparwidth=1.75cm,margin=1in]{geometry}
+\usepackage{setspace} % allows you to use \begin{singlespace}
+\setstretch{1.2}
+
+
+
+%% Graphics Packages
+\usepackage{graphicx,pstricks}
+\usepackage{graphics}
+\usepackage{float} % Jillian added, allows [H] to specify the exact location of graphics
+%\usepackage{subfigure}
+\graphicspath{{figures/}} % tells latex that pics are in the figures folder
+\usepackage{caption} % allows for figs and subfigures
+\usepackage{subcaption}
+
+
+%% Tables Packages
+\usepackage{dcolumn} % aligns decimals in table columns
+\usepackage{booktabs} % Common for publishing-ready tables, necessary.
+\usepackage{tabularx} % more table customization, also necessary if you want to change column size
+\usepackage{array} % Necessary for general but pretty tables.
+\usepackage{threeparttable} % allows for captions and notes to be the same width. 
+\usepackage{multirow} % another customization package
+\usepackage{longtable} % for multi-page tables
+\usepackage{threeparttablex} % for longtable plus threeparttable. Note that notes formatting is finicky.
+
+% Stata to Latex Commands used with the estout outputs:
+
+\let\estinput=\input % define a new input command so that we can still flatten the document
+
+\newcommand{\estwide}[3]{
+		\vspace{.75ex}{
+			%\textsymbols% Note the added command here
+			\begin{tabular*}
+			{\textwidth}{@{\hskip\tabcolsep\extracolsep\fill}l*{#2}{#3}}
+			\toprule
+			\estinput{#1}
+			\\ \bottomrule          % 08 Dec 2021. Add these slashes.
+			\addlinespace[.75ex]
+			\end{tabular*}
+			}
+		}	
+
+\newcommand{\estauto}[3]{
+		\vspace{.75ex}{
+			%\textsymbols% Note the added command here
+			\begin{tabular}{l*{#2}{#3}}
+			\toprule
+			\estinput{#1}
+			\\ \bottomrule          % 08 Dec 2021. Add these slashes.
+			\addlinespace[.75ex]
+			\end{tabular}
+			}
+		}
+
+
+%% Math-Related Packages
+\usepackage{amssymb,amsmath,amsthm}  % math environments
+\usepackage{amsfonts} % math fonts
+%\usepackage[mathscr]{eucal}
+\DeclareMathOperator*{\argmax}{arg\,max} % define a particular math command
+\DeclareMathOperator*{\argmin}{arg\,min}
+\newtheorem{theorem}{Theorem}[section] % allows you to say \begin{theorem} and it numbers them accordingly, restarting at each new section.
+\newtheorem{corollary}{Corollary}[theorem] % restarts the counter with each new theorem
+\newtheorem{lemma}[theorem]{Lemma} % uses the same counter as the "theorem" environment
+\newtheorem{assumption}{Assumption}[section] % restarts the counter with each new section
+\newtheorem{ex}{Exercise}
+\usepackage{answers} % allows for hiding solutions say for an answer key, can print 2 versions
+\Newassociation{sol}{Solution}{ans}
+\newtheorem*{definition}{Definition}
+
+% makes theorems bold at top but then normal font
+\newtheoremstyle{mystyle}% name
+  {\topsep}% Space above
+  {\topsep}% Space below
+  {\normalfont}% Body font
+  {}% Indent amount
+  {\bfseries}% Theorem head font
+  {}%Punctuation after theorem head
+  {.5em}%Space after theorem head
+  {}% theorem head spec
+
+
+\newtheorem{hyp}{Hypothesis}[section] % check this, should be that it starts over the counter with each new section
+\usepackage{thmtools} % used to customize theorem styles
+\declaretheoremstyle[
+spaceabove=6pt, spacebelow=6pt,
+headfont=\normalfont\bfseries,
+notefont=\mdseries, notebraces={(}{)},
+bodyfont=\normalfont,
+postheadspace=0.6em,
+headpunct=:
+]{hypstyle}
+%\declaretheorem[style=hypstyle, name=Hypothesis, preheadhook={\renewcommand{\thehyp}{(H\arabic{hyp})}}]{hyp}
+
+
+
+% input pdfs
+\usepackage{pdfpages}
+
+
+
+% Cross-Referencing Packages
+\usepackage{xurl} % specifically created to allow urls to break across lines
+\usepackage[hidelinks]{hyperref} % if you're using this, remember to mention to Jillian and she'll get you set up. hidelinks option makes it so there isn't an annoying colored box around the links. Pro tip that's what noobs always miss.
+\usepackage{cleveref} % used for particularly fancy cross-referencing styles. %% IMPORTANT: make sure cleverref is the LAST cross-referencing package you load, otherwise it can cause some conflicts.
+\crefname{hyp}{hypothesis}{hypotheses}
+\Crefname{hyp}{Hypothesis}{Hypotheses}
+
+
+
+% Environment Packages
+\usepackage{enumitem} % Jillian added, this is nice for making lists/outlines from scratch.
+\usepackage{comment} % enables blocking out comments with \begin{comment} and \end{comment}
+\usepackage[toc]{appendix} % for appendices. toc adds appendix to TOC and [page] puts a page in between the text and it, common options [toc,page]
+%\renewcommand{\appendixname}{Annex} % if you wanted to rename what the appendix was called
+
+\usepackage{multicol} % allows multiple columns
+
+% the following allow for tasks within a project, see 02-body/02_layout-formatting/hw-exercises-answers_template
+
+\usepackage{tasks} % allows for putting enumerated items both horizontally and in columns, like
+% a this problem b another question
+% c yet another  d the other one
+% 
+
+
+% Other
+%\usepackage[colorinlistoftodos]{todonotes} % not sure, from overleaf
+
+
+
+% Bibliography Packages
+\usepackage{natbib} % this is one of the citation-specific packages, my favorite
+\bibliographystyle{apalike}
+\setcitestyle{authoryear,open={(},close={)}}
+\usepackage{bibentry} % for putting bib entries right in the text
+
+
+
+% For the Title Page
+\title {Freshwater Cooperation: }
+\author {Jillian Stallman}
+
+\date{Version: \today}
+
+
+% For the Title Page
+\title {Here's my title}
+\author {Author name here 
+\newline
+Subtitle, Fall 2023}
+%\conferraldate {August}{2007} % cornell.sty-specific
+%\degreefield {Ph.D.} % cornell.sty-specific
+%\copyrightholder{John Doe} % cornell.sty-specific
+%\copyrightyear{2007} % cornell.sty-specific
+\date{Version: \today}
+
